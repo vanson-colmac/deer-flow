@@ -2,7 +2,7 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
-import "./src/env.mjs";
+import "./src/env.js";
 
 function getInternalServiceURL(envKey, fallbackURL) {
   const configured = process.env[envKey]?.trim();
