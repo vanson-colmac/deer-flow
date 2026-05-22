@@ -25,6 +25,7 @@ const config = {
     defaultLocale: "en",
   },
   devIndicators: false,
+  serverExternalPackages: ["nextra", "nextra-theme-docs"],
   async rewrites() {
     const rewrites = [];
     const gatewayURL = getInternalServiceURL(
