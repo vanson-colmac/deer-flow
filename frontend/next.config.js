@@ -21,7 +21,6 @@ const config = {
     defaultLocale: "en",
   },
   devIndicators: false,
-  serverExternalPackages: ["nextra"],
   async rewrites() {
     const rewrites = [];
     const gatewayURL = getInternalServiceURL(
