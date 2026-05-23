@@ -15,7 +15,8 @@ import {
 import { useI18n } from "@/core/i18n/hooks";
 import { cn } from "@/lib/utils";
 
-import { GithubIcon } from "./github-icon";
+import { LinkedinIcon } from "lucide-react";
+
 import { Tooltip } from "./tooltip";
 
 export function WorkspaceContainer({
@@ -91,14 +92,14 @@ export function WorkspaceHeader({
         </Breadcrumb>
       </div>
       <div className="pr-4">
-        <Tooltip content={t.workspace.githubTooltip}>
+        <Tooltip content={t.workspace.linkedinTooltip}>
           <a
-            href="https://marketior.com"
+            href="https://www.linkedin.com/in/evolvewithvansh/"
             target="_blank"
             rel="noopener noreferrer"
             className="opacity-75 transition hover:opacity-100"
           >
-            <GithubIcon className="size-6" />
+            <LinkedinIcon className="size-6" />
           </a>
         </Tooltip>
       </div>
