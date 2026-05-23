@@ -67,9 +67,11 @@ export function Hero({ className }: { className?: string }) {
           different levels of tasks that could take minutes to hours.
         </p>
         <Link href="/workspace">
-          <Button className="size-lg mt-8 scale-108" size="lg">
-            <span className="text-md">Launch Dashboard</span>
-            <ChevronRightIcon className="size-4" />
+          <Button
+            className="mt-8 rounded-full bg-blue-600 px-8 py-6 text-lg font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-105 hover:bg-blue-500 hover:shadow-blue-500/40"
+          >
+            Launch Dashboard
+            <ChevronRightIcon className="ml-2 size-5" />
           </Button>
         </Link>
       </div>

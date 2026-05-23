@@ -71,7 +71,7 @@ export function SandboxSection({ className }: { className?: string }) {
         {/* Right: Description */}
         <div className="w-full flex-1 space-y-6">
           <div className="space-y-4">
-            <p className="text-sm font-medium tracking-wider text-purple-400 uppercase">
+            <p className="text-sm font-medium tracking-wider text-blue-400 uppercase">
               Open-source
             </p>
             <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
