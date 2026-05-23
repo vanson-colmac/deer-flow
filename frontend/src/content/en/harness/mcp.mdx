@@ -1,6 +1,6 @@
 ---
 title: MCP Integration
-description: The **Model Context Protocol (MCP)** is an open standard for connecting language models to external tools and data sources. DeerFlow's MCP integration allows you to extend the agent with any tool server that implements the MCP protocol — without modifying the harness itself.
+description: The **Model Context Protocol (MCP)** is an open standard for connecting language models to external tools and data sources. Marketior.AI's MCP integration allows you to extend the agent with any tool server that implements the MCP protocol — without modifying the harness itself.
 ---
 
 import { Callout, Cards, Steps } from "nextra/components";
@@ -8,12 +8,12 @@ import { Callout, Cards, Steps } from "nextra/components";
 # MCP Integration
 
 <Callout type="info" emoji="🔌">
-  Model Context Protocol (MCP) lets DeerFlow connect to any external tool
+  Model Context Protocol (MCP) lets Marketior.AI connect to any external tool
   server. Once connected, MCP tools are available to the Lead Agent exactly like
   built-in tools.
 </Callout>
 
-The **Model Context Protocol (MCP)** is an open standard for connecting language models to external tools and data sources. DeerFlow's MCP integration allows you to extend the agent with any tool server that implements the MCP protocol — without modifying the harness itself.
+The **Model Context Protocol (MCP)** is an open standard for connecting language models to external tools and data sources. Marketior.AI's MCP integration allows you to extend the agent with any tool server that implements the MCP protocol — without modifying the harness itself.
 
 ## Configuration
 
@@ -56,7 +56,7 @@ Each server entry supports:
 
 ### Startup initialization
 
-When the DeerFlow server starts, `initialize_mcp_tools()` is called. This connects to all enabled MCP servers, retrieves their tool schemas, and caches the results.
+When the Marketior.AI server starts, `initialize_mcp_tools()` is called. This connects to all enabled MCP servers, retrieves their tool schemas, and caches the results.
 
 ### Lazy initialization fallback
 
@@ -66,7 +66,7 @@ If the server starts before MCP tools are initialized (e.g., in LangGraph Studio
 
 The MCP tools cache tracks the modification time (`mtime`) of `extensions_config.json`. When the file changes — for example, when a server is enabled or disabled through the Gateway API — the cache is marked stale and tools are reloaded on the next request.
 
-This means MCP server changes take effect without restarting the DeerFlow server.
+This means MCP server changes take effect without restarting the Marketior.AI server.
 
 ### Tool availability
 
@@ -90,21 +90,21 @@ With tool search enabled, MCP tools are listed by name in the system prompt but 
 
 ## OAuth support
 
-Some MCP servers require OAuth authentication. DeerFlow's `mcp/oauth.py` handles the OAuth flow for servers that declare OAuth requirements in their capability headers.
+Some MCP servers require OAuth authentication. Marketior.AI's `mcp/oauth.py` handles the OAuth flow for servers that declare OAuth requirements in their capability headers.
 
-When an OAuth-protected MCP server is connected, DeerFlow will:
+When an OAuth-protected MCP server is connected, Marketior.AI will:
 
 1. Detect the OAuth requirement from the server's capability headers
 2. Build the appropriate authorization headers using `get_initial_oauth_headers()`
 3. Wrap tool calls with an OAuth interceptor via `build_oauth_tool_interceptor()`
 
-The OAuth flow is transparent to the Lead Agent — it simply calls the tool, and DeerFlow handles the authentication.
+The OAuth flow is transparent to the Lead Agent — it simply calls the tool, and Marketior.AI handles the authentication.
 
 ## Managing MCP servers
 
 MCP servers can be managed in several ways:
 
-- **Through the DeerFlow App UI**: the extensions panel shows connected MCP servers and lets you enable/disable them.
+- **Through the Marketior.AI App UI**: the extensions panel shows connected MCP servers and lets you enable/disable them.
 - **Through the Gateway API**: `POST /api/extensions/mcp/{name}/enable` and `/disable`.
 - **By editing `extensions_config.json` directly**: useful for scripted or programmatic configuration.
 
