@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="currentColor">
+  <!-- Marketior "M" Logomark -->
+  <path d="M100 20 L40 80 L40 180 L60 180 L60 100 L100 140 L140 100 L140 180 L160 180 L160 80 Z" fill="white" opacity="0.9"/>
+  <path d="M100 20 L40 80 L60 100 L100 60 L140 100 L160 80 Z" fill="white"/>
+  <!-- Circuit accent lines -->
+  <line x1="80" y1="60" x2="80" y2="45" stroke="white" stroke-width="2" opacity="0.5"/>
+  <line x1="120" y1="60" x2="120" y2="45" stroke="white" stroke-width="2" opacity="0.5"/>
+  <circle cx="80" cy="43" r="3" fill="white" opacity="0.5"/>
+  <circle cx="120" cy="43" r="3" fill="white" opacity="0.5"/>
+  <circle cx="100" cy="30" r="2" fill="white" opacity="0.4"/>
+</svg>

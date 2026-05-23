@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: "DeerFlow's configuration system is designed around one goal: every meaningful behavior should be expressible in a config file, not hardcoded in the application. This makes deployments reproducible, auditable, and easy to customize per environment."
+description: "Marketior.AI's configuration system is designed around one goal: every meaningful behavior should be expressible in a config file, not hardcoded in the application. This makes deployments reproducible, auditable, and easy to customize per environment."
 ---
 
 import { Callout, Cards } from "nextra/components";
@@ -8,16 +8,16 @@ import { Callout, Cards } from "nextra/components";
 # Configuration
 
 <Callout type="info" emoji="⚙️">
-  All DeerFlow Harness behaviors are driven by <code>config.yaml</code>. One
+  All Marketior.AI Harness behaviors are driven by <code>config.yaml</code>. One
   file controls which models are available, how the sandbox runs, what tools are
   loaded, and how each subsystem behaves.
 </Callout>
 
-DeerFlow's configuration system is designed around one goal: every meaningful behavior should be expressible in a config file, not hardcoded in the application. This makes deployments reproducible, auditable, and easy to customize per environment.
+Marketior.AI's configuration system is designed around one goal: every meaningful behavior should be expressible in a config file, not hardcoded in the application. This makes deployments reproducible, auditable, and easy to customize per environment.
 
 ## Config file location
 
-DeerFlow resolves `config.yaml` using the following priority order:
+Marketior.AI resolves `config.yaml` using the following priority order:
 
 1. The path passed to `AppConfig.from_file(config_path)` explicitly.
 2. The `DEER_FLOW_CONFIG_PATH` environment variable.
@@ -62,14 +62,14 @@ Examples:
 
 ```yaml
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: marketior.sandbox.local:LocalSandboxProvider
 
 tools:
-  - use: deerflow.community.tavily.tools:web_search_tool
+  - use: marketior.community.tavily.tools:web_search_tool
     api_key: $TAVILY_API_KEY
 ```
 
-This pattern is how DeerFlow achieves pluggability without hardcoding class references.
+This pattern is how Marketior.AI achieves pluggability without hardcoding class references.
 
 ## Extra fields are passed through
 
@@ -143,15 +143,15 @@ models:
     supports_vision: true
 
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: marketior.sandbox.local:LocalSandboxProvider
 
 tools:
-  - use: deerflow.community.ddg_search.tools:web_search_tool
-  - use: deerflow.community.jina_ai.tools:web_fetch_tool
-  - use: deerflow.sandbox.tools:ls_tool
-  - use: deerflow.sandbox.tools:read_file_tool
-  - use: deerflow.sandbox.tools:write_file_tool
-  - use: deerflow.sandbox.tools:bash_tool
+  - use: marketior.community.ddg_search.tools:web_search_tool
+  - use: marketior.community.jina_ai.tools:web_fetch_tool
+  - use: marketior.sandbox.tools:ls_tool
+  - use: marketior.sandbox.tools:read_file_tool
+  - use: marketior.sandbox.tools:write_file_tool
+  - use: marketior.sandbox.tools:bash_tool
 ```
 
 Start from `config.example.yaml` in the repository root and uncomment the sections you need.

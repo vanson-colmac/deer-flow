@@ -1,13 +1,13 @@
 ---
 title: Agents and Threads
-description: DeerFlow App supports multiple named agents and maintains conversation state across sessions through threads and checkpointing.
+description: Marketior.AI App supports multiple named agents and maintains conversation state across sessions through threads and checkpointing.
 ---
 
 import { Callout, Cards, Steps } from "nextra/components";
 
 # Agents and Threads
 
-DeerFlow App supports multiple named agents and maintains conversation state across sessions through threads and checkpointing.
+Marketior.AI App supports multiple named agents and maintains conversation state across sessions through threads and checkpointing.
 
 ## Agents
 
@@ -107,13 +107,13 @@ checkpointer:
 # PostgreSQL (multi-process, production)
 # checkpointer:
 #   type: postgres
-#   connection_string: postgresql://user:password@localhost:5432/deerflow
+#   connection_string: postgresql://user:password@localhost:5432/marketior
 ```
 
 <Callout type="info">
   The Gateway embedded runtime uses the <code>checkpointer</code> setting in
   <code>config.yaml</code>. The same setting is also used by
-  <code>DeerFlowClient</code> in direct Python integrations.
+  <code>Marketior.AIClient</code> in direct Python integrations.
 </Callout>
 
 ### Thread data storage

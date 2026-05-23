@@ -9,7 +9,7 @@ import { Callout, Cards, Tabs } from "nextra/components";
 
 <Callout type="info" emoji="📦">
   The sandbox is the isolated workspace where the agent does file and
-  command-based work. It is what makes DeerFlow capable of real action, not just
+  command-based work. It is what makes Marketior.AI capable of real action, not just
   conversation.
 </Callout>
 
@@ -17,7 +17,7 @@ The sandbox gives the Lead Agent a controlled environment where it can read file
 
 ## Sandbox modes
 
-DeerFlow supports three sandbox modes. Choose the one that fits your deployment:
+Marketior.AI supports three sandbox modes. Choose the one that fits your deployment:
 
 ### LocalSandbox (default)
 
@@ -28,7 +28,7 @@ Commands run directly on the host machine's filesystem. There is no container is
 
 ```yaml
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: marketior.sandbox.local:LocalSandboxProvider
   allow_host_bash: false # default; set to true only for fully trusted workflows
 ```
 
@@ -40,7 +40,7 @@ Commands run in an isolated container (Docker on Linux/Windows, or Apple Contain
 
 ```yaml
 sandbox:
-  use: deerflow.community.aio_sandbox:AioSandboxProvider
+  use: marketior.community.aio_sandbox:AioSandboxProvider
 
   # Optional: container image (default shown below)
   image: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
@@ -65,7 +65,7 @@ sandbox:
     API_KEY: $MY_API_KEY
 ```
 
-Install: `cd backend && uv add 'deerflow-harness[aio-sandbox]'`
+Install: `cd backend && uv add 'marketior-harness[aio-sandbox]'`
 
 ### Provisioner-managed Sandbox (Kubernetes)
 
@@ -73,7 +73,7 @@ Each sandbox gets a dedicated Pod in a Kubernetes cluster, managed by the provis
 
 ```yaml
 sandbox:
-  use: deerflow.community.aio_sandbox:AioSandboxProvider
+  use: marketior.community.aio_sandbox:AioSandboxProvider
   provisioner_url: http://provisioner:8002
 ```
 
@@ -96,7 +96,7 @@ You can add additional mounts for the local sandbox using the `mounts:` configur
 
 ```yaml
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: marketior.sandbox.local:LocalSandboxProvider
   mounts:
     - host_path: /home/user/my-project
       container_path: /mnt/my-project
@@ -114,7 +114,7 @@ The sandbox tools limit output size to keep the agent's context manageable. Thes
 
 ```yaml
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: marketior.sandbox.local:LocalSandboxProvider
 
   # bash uses middle-truncation (head + tail)
   bash_output_max_chars: 20000
