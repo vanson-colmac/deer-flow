@@ -164,9 +164,9 @@ export interface Translations {
   // Workspace
   workspace: {
     officialWebsite: string;
-    githubTooltip: string;
+    linkedinTooltip: string;
     settingsAndMore: string;
-    visitGithub: string;
+    visitLinkedin: string;
     reportIssue: string;
     contactUs: string;
     about: string;

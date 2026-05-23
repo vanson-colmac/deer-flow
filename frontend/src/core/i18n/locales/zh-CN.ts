@@ -1,4 +1,4 @@
-﻿import {
+import {
   CompassIcon,
   GraduationCapIcon,
   ImageIcon,
@@ -221,9 +221,9 @@ export const zhCN: Translations = {
   // Workspace
   workspace: {
     officialWebsite: "访问 Marketior.AI 官方网站",
-    githubTooltip: "访问 Marketior.AI 的 Github 仓库",
+    linkedinTooltip: "访问我的 LinkedIn 主页",
     settingsAndMore: "设置和更多",
-    visitGithub: "在 Github 上查看 Marketior.AI",
+    visitLinkedin: "在 LinkedIn 上联系我",
     reportIssue: "报告问题",
     contactUs: "联系我们",
     about: "关于 Marketior.AI",

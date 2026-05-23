@@ -233,9 +233,9 @@ export const enUS: Translations = {
   // Workspace
   workspace: {
     officialWebsite: "Marketior.AI's official website",
-    githubTooltip: "Marketior.AI on Github",
+    linkedinTooltip: "My LinkedIn Profile",
     settingsAndMore: "Settings and more",
-    visitGithub: "Marketior.AI on GitHub",
+    visitLinkedin: "Connect on LinkedIn",
     reportIssue: "Report a issue",
     contactUs: "Contact us",
     about: "About Marketior.AI",

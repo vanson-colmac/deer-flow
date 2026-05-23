@@ -1,6 +1,6 @@
 "use client";
 
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
 import { AuroraText } from "@/components/ui/aurora-text";
@@ -16,17 +16,17 @@ export function CommunitySection() {
           Join the Community
         </AuroraText>
       }
-      subtitle="Contribute brilliant ideas to shape the future of Marketior.AI. Collaborate, innovate, and make impacts."
+      subtitle="Connect with me on LinkedIn to shape the future of Marketior.AI. Collaborate, innovate, and make impacts."
     >
       <div className="flex justify-center">
         <Button className="text-xl" size="lg" asChild>
           <Link
-            href="https://marketior.com"
+            href="https://www.linkedin.com/in/evolvewithvansh/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <GitHubLogoIcon />
-            Contribute Now
+            <LinkedInLogoIcon />
+            Connect on LinkedIn
           </Link>
         </Button>
       </div>

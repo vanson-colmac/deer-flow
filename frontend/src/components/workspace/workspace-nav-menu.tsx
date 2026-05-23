@@ -8,6 +8,7 @@ import {
   MailIcon,
   Settings2Icon,
   SettingsIcon,
+  LinkedinIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -27,7 +28,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useI18n } from "@/core/i18n/hooks";
 
-import { GithubIcon } from "./github-icon";
 import { SettingsDialog } from "./settings";
 
 function NavMenuButtonContent({
@@ -109,13 +109,13 @@ export function WorkspaceNavMenu() {
                     </DropdownMenuItem>
                   </a>
                   <a
-                    href="https://marketior.com"
+                    href="https://www.linkedin.com/in/evolvewithvansh/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <DropdownMenuItem>
-                      <GithubIcon />
-                      {t.workspace.visitGithub}
+                      <LinkedinIcon className="mr-2 size-4" />
+                      {t.workspace.visitLinkedin}
                     </DropdownMenuItem>
                   </a>
                   <DropdownMenuSeparator />
