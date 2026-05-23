@@ -409,7 +409,7 @@ export default function ProgressiveSkillsAnimation() {
                       : item.active
                         ? "text-white"
                         : item.highlight
-                          ? "text-purple-400"
+                          ? "text-blue-400"
                           : "text-zinc-600"
                 }`}
                 style={{ paddingLeft: `${item.indent * 24}px` }}
@@ -429,7 +429,7 @@ export default function ProgressiveSkillsAnimation() {
                       item.done
                         ? "text-green-500"
                         : item.highlight
-                          ? "text-purple-400"
+                          ? "text-blue-400"
                           : ""
                     }
                   />
@@ -440,7 +440,7 @@ export default function ProgressiveSkillsAnimation() {
                       item.done
                         ? "text-green-500"
                         : item.highlight
-                          ? "text-purple-400"
+                          ? "text-blue-400"
                           : ""
                     }
                   />
@@ -448,7 +448,7 @@ export default function ProgressiveSkillsAnimation() {
                 <span>{item.name}</span>
                 {item.done && <Check size={16} className="text-green-500" />}
                 {item.highlight && !item.done && (
-                  <Sparkles size={16} className="text-purple-400" />
+                  <Sparkles size={16} className="text-blue-400" />
                 )}
               </motion.div>
             ))}
@@ -509,7 +509,7 @@ export default function ProgressiveSkillsAnimation() {
                     "done",
                   ].includes(phase) && (
                     <div className="text-base text-zinc-300">
-                      <span className="text-purple-400">✨</span> Found 3 skills
+                      <span className="text-blue-400">✨</span> Found 3 skills
                     </div>
                   )}
 
