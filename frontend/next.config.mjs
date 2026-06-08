@@ -5,7 +5,7 @@
 import "./src/env.js";
 
 function getInternalServiceURL(envKey, fallbackURL) {
-  const configured = process.env[envKey]?.trim();
+  const configured = process.env[envKey]?.trim() || process.env["DEER_FLOW_INTERNAL_GATEWAY_BASE_URL"]?.trim();
   return configured && configured.length > 0
     ? configured.replace(/\/+$/, "")
     : fallbackURL;

@@ -20,7 +20,7 @@ export async function getServerSideUser(): Promise<AuthResult> {
     };
   }
 
-  if (process.env.DEER_FLOW_AUTH_DISABLED === "1") {
+  if (process.env.MARKETIOR_AUTH_DISABLED === "1" || process.env.DEER_FLOW_AUTH_DISABLED === "1") {
     return {
       tag: "authenticated",
       user: {
