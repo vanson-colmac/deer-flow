@@ -25,11 +25,11 @@ except ImportError:  # pragma: no cover - Windows fallback
     fcntl = None  # type: ignore[assignment]
     import msvcrt
 
-from deerflow.config import get_app_config
-from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
-from deerflow.runtime.user_context import get_effective_user_id
-from deerflow.sandbox.sandbox import Sandbox
-from deerflow.sandbox.sandbox_provider import SandboxProvider
+from marketior.config import get_app_config
+from marketior.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+from marketior.runtime.user_context import get_effective_user_id
+from marketior.sandbox.sandbox import Sandbox
+from marketior.sandbox.sandbox_provider import SandboxProvider
 
 from .aio_sandbox import AioSandbox
 from .backend import SandboxBackend, wait_for_sandbox_ready
@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 # Default configuration
 DEFAULT_IMAGE = "enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest"
 DEFAULT_PORT = 8080
-DEFAULT_CONTAINER_PREFIX = "deer-flow-sandbox"
+DEFAULT_CONTAINER_PREFIX = "marketior-sandbox"
 DEFAULT_IDLE_TIMEOUT = 600  # 10 minutes in seconds
 DEFAULT_REPLICAS = 3  # Maximum concurrent sandbox containers
 IDLE_CHECK_INTERVAL = 60  # Check every 60 seconds
@@ -75,10 +75,10 @@ class AioSandboxProvider(SandboxProvider):
         - Remote/K8s mode (connect to pre-existing sandbox URL)
 
     Configuration options in config.yaml under sandbox:
-        use: deerflow.community.aio_sandbox:AioSandboxProvider
+        use: marketior.community.aio_sandbox:AioSandboxProvider
         image: <container image>
         port: 8080                      # Base port for local containers
-        container_prefix: deer-flow-sandbox
+        container_prefix: marketior-sandbox
         idle_timeout: 600               # Idle timeout in seconds (0 to disable)
         replicas: 3                     # Max concurrent sandbox containers (LRU eviction when exceeded)
         mounts:                         # Volume mounts for local containers
@@ -287,7 +287,7 @@ class AioSandboxProvider(SandboxProvider):
     def _get_skills_mount() -> tuple[str, str, bool] | None:
         """Get the skills directory mount configuration.
 
-        Mount source uses DEER_FLOW_HOST_SKILLS_PATH when running inside Docker (DooD)
+        Mount source uses MARKETIOR_HOST_SKILLS_PATH when running inside Docker (DooD)
         so the host Docker daemon can resolve the path.
         """
         try:
@@ -297,7 +297,7 @@ class AioSandboxProvider(SandboxProvider):
 
             if skills_path.exists():
                 # When running inside Docker with DooD, use host-side skills path.
-                host_skills = os.environ.get("DEER_FLOW_HOST_SKILLS_PATH") or str(skills_path)
+                host_skills = os.environ.get("MARKETIOR_HOST_SKILLS_PATH") or str(skills_path)
                 return (host_skills, container_path, True)  # Read-only for security
         except Exception as e:
             logger.warning(f"Could not setup skills mount: {e}")

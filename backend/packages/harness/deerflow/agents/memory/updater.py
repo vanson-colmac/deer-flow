@@ -11,17 +11,17 @@ import re
 import uuid
 from typing import Any
 
-from deerflow.agents.memory.prompt import (
+from marketior.agents.memory.prompt import (
     MEMORY_UPDATE_PROMPT,
     format_conversation_for_update,
 )
-from deerflow.agents.memory.storage import (
+from marketior.agents.memory.storage import (
     create_empty_memory,
     get_memory_storage,
     utc_now_iso_z,
 )
-from deerflow.config.memory_config import get_memory_config
-from deerflow.models import create_chat_model
+from marketior.config.memory_config import get_memory_config
+from marketior.models import create_chat_model
 
 logger = logging.getLogger(__name__)
 

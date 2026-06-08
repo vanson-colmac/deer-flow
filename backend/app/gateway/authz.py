@@ -1,4 +1,4 @@
-"""Authorization decorators and context for DeerFlow.
+"""Authorization decorators and context for Marketior.
 
 Inspired by LangGraph Auth system: https://github.com/langchain-ai/langgraph/blob/main/libs/sdk-py/langgraph_sdk/auth/__init__.py
 
@@ -125,7 +125,7 @@ def _make_test_request_stub() -> Any:
     Used when decorated route handlers are invoked without FastAPI's
     request injection. Includes fields accessed by auth helpers.
     """
-    return SimpleNamespace(state=SimpleNamespace(), cookies={}, _deerflow_test_bypass_auth=True)
+    return SimpleNamespace(state=SimpleNamespace(), cookies={}, _marketior_test_bypass_auth=True)
 
 
 async def _authenticate(request: Request) -> AuthContext:
@@ -179,7 +179,7 @@ def require_auth[**P, T](func: Callable[P, T]) -> Callable[P, T]:
                 raise ValueError("require_auth decorator requires 'request' parameter")
             request = kwargs["request"]
 
-        if getattr(request, "_deerflow_test_bypass_auth", False):
+        if getattr(request, "_marketior_test_bypass_auth", False):
             return await func(*args, **kwargs)
 
         # Authenticate and set context
@@ -248,7 +248,7 @@ def require_permission(
                     return await func(*args, **kwargs)
                 request = kwargs["request"]
 
-            if getattr(request, "_deerflow_test_bypass_auth", False):
+            if getattr(request, "_marketior_test_bypass_auth", False):
                 return await func(*args, **kwargs)
 
             auth: AuthContext = getattr(request.state, "auth", None)

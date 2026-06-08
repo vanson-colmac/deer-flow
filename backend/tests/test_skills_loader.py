@@ -3,8 +3,8 @@
 from pathlib import Path
 from types import SimpleNamespace
 
-from deerflow.config.skills_config import SkillsConfig
-from deerflow.skills.storage import get_or_new_skill_storage
+from marketior.config.skills_config import SkillsConfig
+from marketior.skills.storage import get_or_new_skill_storage
 
 
 def _write_skill(skill_dir: Path, name: str, description: str) -> None:
@@ -16,8 +16,8 @@ def _write_skill(skill_dir: Path, name: str, description: str) -> None:
 
 def test_get_skills_root_path_points_to_current_project_skills(tmp_path: Path, monkeypatch):
     """get_skills_root_path() should point to the caller project skills directory."""
-    monkeypatch.delenv("DEER_FLOW_SKILLS_PATH", raising=False)
-    monkeypatch.delenv("DEER_FLOW_PROJECT_ROOT", raising=False)
+    monkeypatch.delenv("MARKETIOR_SKILLS_PATH", raising=False)
+    monkeypatch.delenv("MARKETIOR_PROJECT_ROOT", raising=False)
     monkeypatch.chdir(tmp_path)
     (tmp_path / "skills").mkdir()
 
@@ -27,9 +27,9 @@ def test_get_skills_root_path_points_to_current_project_skills(tmp_path: Path, m
 
 
 def test_get_skills_root_path_honors_env_override(tmp_path: Path, monkeypatch):
-    """DEER_FLOW_SKILLS_PATH should override the caller project skills directory."""
+    """MARKETIOR_SKILLS_PATH should override the caller project skills directory."""
     skills_root = tmp_path / "team-skills"
-    monkeypatch.setenv("DEER_FLOW_SKILLS_PATH", str(skills_root))
+    monkeypatch.setenv("MARKETIOR_SKILLS_PATH", str(skills_root))
 
     app_config = SimpleNamespace(skills=SkillsConfig())
     path = get_or_new_skill_storage(app_config=app_config).get_skills_root_path()

@@ -9,20 +9,20 @@ from typing import TYPE_CHECKING, Annotated, Any, cast
 from langchain.tools import InjectedToolCallId, tool
 from langgraph.config import get_stream_writer
 
-from deerflow.config import get_app_config
-from deerflow.sandbox.security import LOCAL_BASH_SUBAGENT_DISABLED_MESSAGE, is_host_bash_allowed
-from deerflow.subagents import SubagentExecutor, get_available_subagent_names, get_subagent_config
-from deerflow.subagents.config import resolve_subagent_model_name
-from deerflow.subagents.executor import (
+from marketior.config import get_app_config
+from marketior.sandbox.security import LOCAL_BASH_SUBAGENT_DISABLED_MESSAGE, is_host_bash_allowed
+from marketior.subagents import SubagentExecutor, get_available_subagent_names, get_subagent_config
+from marketior.subagents.config import resolve_subagent_model_name
+from marketior.subagents.executor import (
     SubagentStatus,
     cleanup_background_task,
     get_background_task_result,
     request_cancel_background_task,
 )
-from deerflow.tools.types import Runtime
+from marketior.tools.types import Runtime
 
 if TYPE_CHECKING:
-    from deerflow.config.app_config import AppConfig
+    from marketior.config.app_config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -261,7 +261,7 @@ async def task_tool(
 
     # Get available tools (excluding task tool to prevent nesting)
     # Lazy import to avoid circular dependency
-    from deerflow.tools import get_available_tools
+    from marketior.tools import get_available_tools
 
     # Inherit parent agent's tool_groups so subagents respect the same restrictions
     parent_tool_groups = metadata.get("tool_groups")

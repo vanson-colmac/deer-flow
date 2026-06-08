@@ -19,7 +19,7 @@
 
 ```bash
 # 清除已有数据
-rm -f backend/.deer-flow/data/deerflow.db
+rm -f backend/.marketior/data/marketior.db
 
 # 选择模式启动
 make dev          # 标准模式
@@ -125,7 +125,7 @@ curl -s -X POST $BASE/api/v1/auth/change-password \
 ```bash
 cd backend
 python -m app.gateway.auth.reset_admin --email admin@example.com
-# 从 .deer-flow/admin_initial_credentials.txt 读取 reset 后密码
+# 从 .marketior/admin_initial_credentials.txt 读取 reset 后密码
 
 curl -s -X POST $BASE/api/v1/auth/login/local \
   -d "username=admin@example.com&password=<凭据文件密码>" \
@@ -521,7 +521,7 @@ curl -s -X POST $BASE/api/v1/auth/register \
 
 ```bash
 # 检查数据库
-sqlite3 backend/.deer-flow/data/deerflow.db "SELECT email, password_hash FROM users LIMIT 3;"
+sqlite3 backend/.marketior/data/marketior.db "SELECT email, password_hash FROM users LIMIT 3;"
 ```
 
 **预期：** `password_hash` 以 `$2b$` 开头（bcrypt 格式）
@@ -631,7 +631,7 @@ sqlite3 backend/.deer-flow/data/deerflow.db "SELECT email, password_hash FROM us
 #### TC-UI-15: reset_admin 后重新登录
 
 1. 执行 `cd backend && python -m app.gateway.auth.reset_admin`
-2. 从 `.deer-flow/admin_initial_credentials.txt` 读取新密码并登录
+2. 从 `.marketior/admin_initial_credentials.txt` 读取新密码并登录
 3. **预期：** 跳转到 `/setup` 页面（`needs_setup` 被重置为 true）
 4. 旧 session 已失效
 
@@ -745,19 +745,19 @@ curl -s -X POST http://localhost:2026/api/threads/search \
 
 ### 5.3 数据库 Schema 兼容
 
-#### TC-UPG-05: 无 deerflow.db 时创建 schema 但不创建默认用户
+#### TC-UPG-05: 无 marketior.db 时创建 schema 但不创建默认用户
 
 ```bash
-ls -la backend/.deer-flow/data/deerflow.db
-sqlite3 backend/.deer-flow/data/deerflow.db "SELECT COUNT(*) FROM users;"
+ls -la backend/.marketior/data/marketior.db
+sqlite3 backend/.marketior/data/marketior.db "SELECT COUNT(*) FROM users;"
 ```
 
 **预期：** 文件存在，`sqlite3` 可查到 `users` 表含 `needs_setup`、`token_version` 列；未调用 `/initialize` 前用户数为 0
 
-#### TC-UPG-06: deerflow.db WAL 模式
+#### TC-UPG-06: marketior.db WAL 模式
 
 ```bash
-sqlite3 backend/.deer-flow/data/deerflow.db "PRAGMA journal_mode;"
+sqlite3 backend/.marketior/data/marketior.db "PRAGMA journal_mode;"
 ```
 
 **预期：** 返回 `wal`
@@ -808,9 +808,9 @@ make dev
 ```
 
 **预期：**
-- [ ] 服务正常启动（忽略 `deerflow.db`，无 auth 相关代码不报错）
+- [ ] 服务正常启动（忽略 `marketior.db`，无 auth 相关代码不报错）
 - [ ] 旧对话数据仍然可访问
-- [ ] `deerflow.db` 文件残留但不影响运行
+- [ ] `marketior.db` 文件残留但不影响运行
 
 #### TC-UPG-12: 再次升级到 auth 分支
 
@@ -821,8 +821,8 @@ make dev
 ```
 
 **预期：**
-- [ ] 识别已有 `deerflow.db`，不重新创建 admin
-- [ ] 旧的 admin 账号仍可登录（如果回退期间未删 `deerflow.db`）
+- [ ] 识别已有 `marketior.db`，不重新创建 admin
+- [ ] 旧的 admin 账号仍可登录（如果回退期间未删 `marketior.db`）
 
 ### 5.7 Admin 初始化与 reset_admin
 
@@ -831,7 +831,7 @@ make dev
 #### TC-UPG-13: 未初始化 admin 时重启不创建默认账号
 
 ```bash
-rm -f backend/.deer-flow/data/deerflow.db
+rm -f backend/.marketior/data/marketior.db
 make dev
 make stop
 
@@ -848,8 +848,8 @@ curl -s $BASE/api/v1/auth/setup-status | jq .
 
 ```bash
 python -m app.gateway.auth.reset_admin --email admin@example.com
-ls -la backend/.deer-flow/admin_initial_credentials.txt
-cat backend/.deer-flow/admin_initial_credentials.txt
+ls -la backend/.marketior/admin_initial_credentials.txt
+cat backend/.marketior/admin_initial_credentials.txt
 ```
 
 **预期：**
@@ -945,7 +945,7 @@ for i in 1 2 3; do
 done
 
 # 检查 admin 数量
-sqlite3 backend/.deer-flow/data/deerflow.db \
+sqlite3 backend/.marketior/data/marketior.db \
   "SELECT COUNT(*) FROM users WHERE system_role='admin';"
 ```
 
@@ -1090,7 +1090,7 @@ curl -s -X POST $BASE/api/v1/auth/register \
 wait
 
 # 检查用户数
-sqlite3 backend/.deer-flow/data/deerflow.db \
+sqlite3 backend/.marketior/data/marketior.db \
   "SELECT COUNT(*) FROM users WHERE email='race@example.com';"
 ```
 
@@ -1200,16 +1200,16 @@ curl -s -w "%{http_code}" -X DELETE "$BASE/api/threads/$TID" \
 ```bash
 cd backend
 python -m app.gateway.auth.reset_admin
-cp .deer-flow/admin_initial_credentials.txt /tmp/deerflow-reset-p1.txt
-P1=$(awk -F': ' '/^password:/ {print $2}' /tmp/deerflow-reset-p1.txt)
+cp .marketior/admin_initial_credentials.txt /tmp/marketior-reset-p1.txt
+P1=$(awk -F': ' '/^password:/ {print $2}' /tmp/marketior-reset-p1.txt)
 
 python -m app.gateway.auth.reset_admin
-cp .deer-flow/admin_initial_credentials.txt /tmp/deerflow-reset-p2.txt
-P2=$(awk -F': ' '/^password:/ {print $2}' /tmp/deerflow-reset-p2.txt)
+cp .marketior/admin_initial_credentials.txt /tmp/marketior-reset-p2.txt
+P2=$(awk -F': ' '/^password:/ {print $2}' /tmp/marketior-reset-p2.txt)
 ```
 
 **预期：**
-- [ ] `.deer-flow/admin_initial_credentials.txt` 每次都会被重写，文件权限为 `0600`
+- [ ] `.marketior/admin_initial_credentials.txt` 每次都会被重写，文件权限为 `0600`
 - [ ] P1 ≠ P2（每次生成新随机密码）
 - [ ] P1 不可用，只有 P2 有效
 - [ ] `token_version` 递增了 2
@@ -1438,9 +1438,9 @@ done
 >
 > 前置条件：
 > - `.env` 中设置 `AUTH_JWT_SECRET`（否则每次容器重启 session 全部失效）
-> - `DEER_FLOW_HOME` 挂载到宿主机目录（持久化 `deerflow.db`）
+> - `MARKETIOR_HOME` 挂载到宿主机目录（持久化 `marketior.db`）
 
-#### TC-DOCKER-01: deerflow.db 通过 volume 持久化
+#### TC-DOCKER-01: marketior.db 通过 volume 持久化
 
 ```bash
 # 启动容器
@@ -1455,13 +1455,13 @@ curl -s -X POST $BASE/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"docker-test@example.com","password":"DockerTest1!"}' -w "\nHTTP %{http_code}"
 
-# 检查宿主机上的 deerflow.db
-ls -la ${DEER_FLOW_HOME:-backend/.deer-flow}/data/deerflow.db
-sqlite3 ${DEER_FLOW_HOME:-backend/.deer-flow}/data/deerflow.db \
+# 检查宿主机上的 marketior.db
+ls -la ${MARKETIOR_HOME:-backend/.marketior}/data/marketior.db
+sqlite3 ${MARKETIOR_HOME:-backend/.marketior}/data/marketior.db \
   "SELECT email FROM users WHERE email='docker-test@example.com';"
 ```
 
-**预期：** deerflow.db 在宿主机 `DEER_FLOW_HOME` 目录中，查询可见刚注册的用户。
+**预期：** marketior.db 在宿主机 `MARKETIOR_HOME` 目录中，查询可见刚注册的用户。
 
 #### TC-DOCKER-02: 重启容器后 session 保持
 
@@ -1512,7 +1512,7 @@ done
 # 请求携带 process-local internal auth header，并带匹配的 CSRF cookie/header
 
 # 验证方式：检查 gateway 日志中 channel manager 的请求不包含 auth 错误
-docker logs deer-flow-gateway 2>&1 | grep -E "ChannelManager|channel" | head -10
+docker logs marketior-gateway 2>&1 | grep -E "ChannelManager|channel" | head -10
 ```
 
 **预期：** 无 auth 相关错误。渠道不依赖浏览器 cookie；服务端通过内部认证头把请求归入 `default` 用户桶。
@@ -1520,25 +1520,25 @@ docker logs deer-flow-gateway 2>&1 | grep -E "ChannelManager|channel" | head -10
 #### TC-DOCKER-05: reset_admin 密码写入 0600 凭证文件（不再走日志）
 
 ```bash
-# 首次启动不会自动生成 admin 密码。先重置已有 admin，凭据文件写在挂载到宿主机的 DEER_FLOW_HOME 下。
-docker exec deer-flow-gateway python -m app.gateway.auth.reset_admin --email docker-test@example.com
+# 首次启动不会自动生成 admin 密码。先重置已有 admin，凭据文件写在挂载到宿主机的 MARKETIOR_HOME 下。
+docker exec marketior-gateway python -m app.gateway.auth.reset_admin --email docker-test@example.com
 
-ls -la ${DEER_FLOW_HOME:-backend/.deer-flow}/admin_initial_credentials.txt
+ls -la ${MARKETIOR_HOME:-backend/.marketior}/admin_initial_credentials.txt
 # 预期文件权限: -rw------- (0600)
 
-cat ${DEER_FLOW_HOME:-backend/.deer-flow}/admin_initial_credentials.txt
+cat ${MARKETIOR_HOME:-backend/.marketior}/admin_initial_credentials.txt
 # 预期内容: email + password 行
 
 # 容器日志只输出文件路径，不输出密码本身
-docker logs deer-flow-gateway 2>&1 | grep -E "Credentials written to|Admin account"
+docker logs marketior-gateway 2>&1 | grep -E "Credentials written to|Admin account"
 # 预期看到: "Credentials written to: /...../admin_initial_credentials.txt (mode 0600)"
 
 # 反向验证: 日志里 NEVER 出现明文密码
-docker logs deer-flow-gateway 2>&1 | grep -iE "Password: .{15,}" && echo "FAIL: leaked" || echo "OK: not leaked"
+docker logs marketior-gateway 2>&1 | grep -iE "Password: .{15,}" && echo "FAIL: leaked" || echo "OK: not leaked"
 ```
 
 **预期：**
-- 凭证文件存在于 `DEER_FLOW_HOME` 下，权限 `0600`
+- 凭证文件存在于 `MARKETIOR_HOME` 下，权限 `0600`
 - 容器日志输出**路径**（不是密码本身），符合 CodeQL `py/clear-text-logging-sensitive-data` 规则
 - `grep "Password:"` 在日志中**应当无匹配**（旧行为已废弃，simplify pass 移除了日志泄露路径）
 
@@ -1550,7 +1550,7 @@ docker logs deer-flow-gateway 2>&1 | grep -iE "Password: .{15,}" && echo "FAIL: 
 sleep 15
 
 # 确认 langgraph 容器不存在
-docker ps --filter name=deer-flow-langgraph --format '{{.Names}}' | wc -l
+docker ps --filter name=marketior-langgraph --format '{{.Names}}' | wc -l
 # 预期: 0
 
 # auth 流程正常：未登录受保护接口返回 401

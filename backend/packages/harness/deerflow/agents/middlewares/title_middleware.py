@@ -9,13 +9,13 @@ from langchain.agents.middleware import AgentMiddleware
 from langgraph.config import get_config
 from langgraph.runtime import Runtime
 
-from deerflow.agents.middlewares.dynamic_context_middleware import is_dynamic_context_reminder
-from deerflow.config.title_config import get_title_config
-from deerflow.models import create_chat_model
+from marketior.agents.middlewares.dynamic_context_middleware import is_dynamic_context_reminder
+from marketior.config.title_config import get_title_config
+from marketior.models import create_chat_model
 
 if TYPE_CHECKING:
-    from deerflow.config.app_config import AppConfig
-    from deerflow.config.title_config import TitleConfig
+    from marketior.config.app_config import AppConfig
+    from marketior.config.title_config import TitleConfig
 
 logger = logging.getLogger(__name__)
 

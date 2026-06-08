@@ -6,9 +6,9 @@ from langchain_core.messages import ToolMessage
 from langgraph.config import get_config
 from langgraph.types import Command
 
-from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
-from deerflow.runtime.user_context import get_effective_user_id
-from deerflow.tools.types import Runtime
+from marketior.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+from marketior.runtime.user_context import get_effective_user_id
+from marketior.tools.types import Runtime
 
 OUTPUTS_VIRTUAL_PREFIX = f"{VIRTUAL_PATH_PREFIX}/outputs"
 
@@ -39,7 +39,7 @@ def _normalize_presented_filepath(
     Accepts either:
     - A virtual sandbox path such as `/mnt/user-data/outputs/report.md`
     - A host-side thread outputs path such as
-      `/app/backend/.deer-flow/threads/<thread>/user-data/outputs/report.md`
+      `/app/backend/.marketior/threads/<thread>/user-data/outputs/report.md`
 
     Returns:
         The normalized virtual path.

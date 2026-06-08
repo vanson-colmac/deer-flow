@@ -1,4 +1,4 @@
-"""Live integration tests for DeerFlowClient with real API.
+"""Live integration tests for MarketiorClient with real API.
 
 These tests require a working config.yaml with valid API credentials.
 They are skipped in CI and must be run explicitly:
@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from deerflow.client import DeerFlowClient, StreamEvent
-from deerflow.sandbox.security import is_host_bash_allowed
-from deerflow.uploads.manager import PathTraversalError
+from marketior.client import MarketiorClient, StreamEvent
+from marketior.sandbox.security import is_host_bash_allowed
+from marketior.uploads.manager import PathTraversalError
 
 # Skip entire module in CI or when no config.yaml exists
 _skip_reason = None
@@ -33,8 +33,8 @@ if _skip_reason:
 
 @pytest.fixture(scope="module")
 def client():
-    """Create a real DeerFlowClient (no mocks)."""
-    return DeerFlowClient(thinking_enabled=False)
+    """Create a real MarketiorClient (no mocks)."""
+    return MarketiorClient(thinking_enabled=False)
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from deerflow.sandbox.search import should_ignore_name
+from marketior.sandbox.search import should_ignore_name
 
 
 def list_dir(path: str, max_depth: int = 2) -> list[str]:

@@ -20,7 +20,7 @@ from langchain.agents.middleware.types import (
 from langchain_core.messages import AIMessage
 from langgraph.errors import GraphBubbleUp
 
-from deerflow.config.app_config import AppConfig
+from marketior.config.app_config import AppConfig
 
 logger = logging.getLogger(__name__)
 

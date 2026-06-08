@@ -4,24 +4,24 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import AgentMiddleware
 from langchain_core.runnables import RunnableConfig
 
-from deerflow.agents.lead_agent.prompt import apply_prompt_template
-from deerflow.agents.memory.summarization_hook import memory_flush_hook
-from deerflow.agents.middlewares.clarification_middleware import ClarificationMiddleware
-from deerflow.agents.middlewares.loop_detection_middleware import LoopDetectionMiddleware
-from deerflow.agents.middlewares.memory_middleware import MemoryMiddleware
-from deerflow.agents.middlewares.subagent_limit_middleware import SubagentLimitMiddleware
-from deerflow.agents.middlewares.summarization_middleware import BeforeSummarizationHook, DeerFlowSummarizationMiddleware
-from deerflow.agents.middlewares.title_middleware import TitleMiddleware
-from deerflow.agents.middlewares.todo_middleware import TodoMiddleware
-from deerflow.agents.middlewares.token_usage_middleware import TokenUsageMiddleware
-from deerflow.agents.middlewares.tool_error_handling_middleware import build_lead_runtime_middlewares
-from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
-from deerflow.agents.thread_state import ThreadState
-from deerflow.config.agents_config import load_agent_config, validate_agent_name
-from deerflow.config.app_config import AppConfig, get_app_config
-from deerflow.models import create_chat_model
-from deerflow.skills.tool_policy import filter_tools_by_skill_allowed_tools
-from deerflow.skills.types import Skill
+from marketior.agents.lead_agent.prompt import apply_prompt_template
+from marketior.agents.memory.summarization_hook import memory_flush_hook
+from marketior.agents.middlewares.clarification_middleware import ClarificationMiddleware
+from marketior.agents.middlewares.loop_detection_middleware import LoopDetectionMiddleware
+from marketior.agents.middlewares.memory_middleware import MemoryMiddleware
+from marketior.agents.middlewares.subagent_limit_middleware import SubagentLimitMiddleware
+from marketior.agents.middlewares.summarization_middleware import BeforeSummarizationHook, MarketiorSummarizationMiddleware
+from marketior.agents.middlewares.title_middleware import TitleMiddleware
+from marketior.agents.middlewares.todo_middleware import TodoMiddleware
+from marketior.agents.middlewares.token_usage_middleware import TokenUsageMiddleware
+from marketior.agents.middlewares.tool_error_handling_middleware import build_lead_runtime_middlewares
+from marketior.agents.middlewares.view_image_middleware import ViewImageMiddleware
+from marketior.agents.thread_state import ThreadState
+from marketior.config.agents_config import load_agent_config, validate_agent_name
+from marketior.config.app_config import AppConfig, get_app_config
+from marketior.models import create_chat_model
+from marketior.skills.tool_policy import filter_tools_by_skill_allowed_tools
+from marketior.skills.types import Skill
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ def _resolve_model_name(requested_model_name: str | None = None, *, app_config: 
     return default_model_name
 
 
-def _create_summarization_middleware(*, app_config: AppConfig | None = None) -> DeerFlowSummarizationMiddleware | None:
+def _create_summarization_middleware(*, app_config: AppConfig | None = None) -> MarketiorSummarizationMiddleware | None:
     """Create and configure the summarization middleware from config."""
     resolved_app_config = app_config or get_app_config()
     config = resolved_app_config.summarization
@@ -97,11 +97,11 @@ def _create_summarization_middleware(*, app_config: AppConfig | None = None) -> 
         hooks.append(memory_flush_hook)
 
     # The logic below relies on two assumptions holding true: this factory is
-    # the sole entry point for DeerFlowSummarizationMiddleware, and the runtime
+    # the sole entry point for MarketiorSummarizationMiddleware, and the runtime
     # config is not expected to change after startup.
     skills_container_path = resolved_app_config.skills.container_path or "/mnt/skills"
 
-    return DeerFlowSummarizationMiddleware(
+    return MarketiorSummarizationMiddleware(
         **kwargs,
         skills_container_path=skills_container_path,
         skill_file_read_tool_names=config.skill_file_read_tool_names,
@@ -124,7 +124,7 @@ def _create_todo_list_middleware(is_plan_mode: bool) -> TodoMiddleware | None:
     if not is_plan_mode:
         return None
 
-    # Custom prompts matching DeerFlow's style
+    # Custom prompts matching Marketior's style
     system_prompt = """
 <todo_list_system>
 You have access to the `write_todos` tool to help you manage and track complex multi-step objectives.
@@ -260,7 +260,7 @@ def _build_middlewares(
 
     # Always inject current date (and optionally memory) as <system-reminder> into the
     # first HumanMessage to keep the system prompt fully static for prefix-cache reuse.
-    from deerflow.agents.middlewares.dynamic_context_middleware import DynamicContextMiddleware
+    from marketior.agents.middlewares.dynamic_context_middleware import DynamicContextMiddleware
 
     middlewares.append(DynamicContextMiddleware(agent_name=agent_name, app_config=resolved_app_config))
 
@@ -294,7 +294,7 @@ def _build_middlewares(
 
     # Add DeferredToolFilterMiddleware to hide deferred tool schemas from model binding
     if resolved_app_config.tool_search.enabled:
-        from deerflow.agents.middlewares.deferred_tool_filter_middleware import DeferredToolFilterMiddleware
+        from marketior.agents.middlewares.deferred_tool_filter_middleware import DeferredToolFilterMiddleware
 
         middlewares.append(DeferredToolFilterMiddleware())
 
@@ -328,7 +328,7 @@ def _available_skill_names(agent_config, is_bootstrap: bool) -> set[str] | None:
 
 def _load_enabled_skills_for_tool_policy(available_skills: set[str] | None, *, app_config: AppConfig) -> list[Skill]:
     try:
-        from deerflow.agents.lead_agent.prompt import get_enabled_skills_for_config
+        from marketior.agents.lead_agent.prompt import get_enabled_skills_for_config
 
         skills = get_enabled_skills_for_config(app_config)
     except Exception:
@@ -349,8 +349,8 @@ def make_lead_agent(config: RunnableConfig):
 
 def _make_lead_agent(config: RunnableConfig, *, app_config: AppConfig):
     # Lazy import to avoid circular dependency
-    from deerflow.tools import get_available_tools
-    from deerflow.tools.builtins import setup_agent, update_agent
+    from marketior.tools import get_available_tools
+    from marketior.tools.builtins import setup_agent, update_agent
 
     cfg = _get_runtime_config(config)
     resolved_app_config = app_config

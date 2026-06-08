@@ -80,6 +80,6 @@ def test_frontend_rewrites_langgraph_prefix_to_gateway():
     next_config = _read("frontend/next.config.js")
     api_client = _read("frontend/src/core/api/api-client.ts")
 
-    assert "DEER_FLOW_INTERNAL_LANGGRAPH_BASE_URL" not in next_config
+    assert "MARKETIOR_INTERNAL_LANGGRAPH_BASE_URL" not in next_config
     assert "http://127.0.0.1:2024" not in next_config
     assert "langgraph-compat" not in api_client

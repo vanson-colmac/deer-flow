@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# deploy.sh - Build, start, or stop DeerFlow production services
+# deploy.sh - Build, start, or stop Marketior production services
 #
 # Commands:
 #   deploy.sh                    — build + start
@@ -43,7 +43,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 DOCKER_DIR="$REPO_ROOT/docker"
-COMPOSE_CMD=(docker compose -p deer-flow -f "$DOCKER_DIR/docker-compose.yaml")
+COMPOSE_CMD=(docker compose -p marketior -f "$DOCKER_DIR/docker-compose.yaml")
 
 # ── Colors ────────────────────────────────────────────────────────────────────
 
@@ -53,31 +53,31 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# ── DEER_FLOW_HOME ────────────────────────────────────────────────────────────
+# ── MARKETIOR_HOME ────────────────────────────────────────────────────────────
 
-if [ -z "$DEER_FLOW_HOME" ]; then
-    export DEER_FLOW_HOME="$REPO_ROOT/backend/.deer-flow"
+if [ -z "$MARKETIOR_HOME" ]; then
+    export MARKETIOR_HOME="$REPO_ROOT/backend/.marketior"
 fi
-echo -e "${BLUE}DEER_FLOW_HOME=$DEER_FLOW_HOME${NC}"
-mkdir -p "$DEER_FLOW_HOME"
+echo -e "${BLUE}MARKETIOR_HOME=$MARKETIOR_HOME${NC}"
+mkdir -p "$MARKETIOR_HOME"
 
-# ── DEER_FLOW_REPO_ROOT (for skills host path in DooD) ───────────────────────
+# ── MARKETIOR_REPO_ROOT (for skills host path in DooD) ───────────────────────
 
-export DEER_FLOW_REPO_ROOT="$REPO_ROOT"
+export MARKETIOR_REPO_ROOT="$REPO_ROOT"
 
 # ── config.yaml ───────────────────────────────────────────────────────────────
 
-if [ -z "$DEER_FLOW_CONFIG_PATH" ]; then
-    export DEER_FLOW_CONFIG_PATH="$REPO_ROOT/config.yaml"
+if [ -z "$MARKETIOR_CONFIG_PATH" ]; then
+    export MARKETIOR_CONFIG_PATH="$REPO_ROOT/config.yaml"
 fi
 
-if [ ! -f "$DEER_FLOW_CONFIG_PATH" ]; then
+if [ ! -f "$MARKETIOR_CONFIG_PATH" ]; then
     # Try to seed from repo (config.example.yaml is the canonical template)
     if [ -f "$REPO_ROOT/config.example.yaml" ]; then
-        cp "$REPO_ROOT/config.example.yaml" "$DEER_FLOW_CONFIG_PATH"
-        echo -e "${GREEN}✓ Seeded config.example.yaml → $DEER_FLOW_CONFIG_PATH${NC}"
+        cp "$REPO_ROOT/config.example.yaml" "$MARKETIOR_CONFIG_PATH"
+        echo -e "${GREEN}✓ Seeded config.example.yaml → $MARKETIOR_CONFIG_PATH${NC}"
         echo -e "${YELLOW}⚠ config.yaml was seeded from the example template.${NC}"
-        echo "  Run 'make setup' to generate a minimal config, or edit $DEER_FLOW_CONFIG_PATH manually before use."
+        echo "  Run 'make setup' to generate a minimal config, or edit $MARKETIOR_CONFIG_PATH manually before use."
     else
         echo -e "${RED}✗ No config.yaml found.${NC}"
         echo "  Run 'make setup' from the repo root (recommended),"
@@ -85,26 +85,26 @@ if [ ! -f "$DEER_FLOW_CONFIG_PATH" ]; then
         exit 1
     fi
 else
-    echo -e "${GREEN}✓ config.yaml: $DEER_FLOW_CONFIG_PATH${NC}"
+    echo -e "${GREEN}✓ config.yaml: $MARKETIOR_CONFIG_PATH${NC}"
 fi
 
 # ── extensions_config.json ───────────────────────────────────────────────────
 
-if [ -z "$DEER_FLOW_EXTENSIONS_CONFIG_PATH" ]; then
-    export DEER_FLOW_EXTENSIONS_CONFIG_PATH="$REPO_ROOT/extensions_config.json"
+if [ -z "$MARKETIOR_EXTENSIONS_CONFIG_PATH" ]; then
+    export MARKETIOR_EXTENSIONS_CONFIG_PATH="$REPO_ROOT/extensions_config.json"
 fi
 
-if [ ! -f "$DEER_FLOW_EXTENSIONS_CONFIG_PATH" ]; then
+if [ ! -f "$MARKETIOR_EXTENSIONS_CONFIG_PATH" ]; then
     if [ -f "$REPO_ROOT/extensions_config.json" ]; then
-        cp "$REPO_ROOT/extensions_config.json" "$DEER_FLOW_EXTENSIONS_CONFIG_PATH"
-        echo -e "${GREEN}✓ Seeded extensions_config.json → $DEER_FLOW_EXTENSIONS_CONFIG_PATH${NC}"
+        cp "$REPO_ROOT/extensions_config.json" "$MARKETIOR_EXTENSIONS_CONFIG_PATH"
+        echo -e "${GREEN}✓ Seeded extensions_config.json → $MARKETIOR_EXTENSIONS_CONFIG_PATH${NC}"
     else
         # Create a minimal empty config so the gateway doesn't fail on startup
-        echo '{"mcpServers":{},"skills":{}}' > "$DEER_FLOW_EXTENSIONS_CONFIG_PATH"
-        echo -e "${YELLOW}⚠ extensions_config.json not found, created empty config at $DEER_FLOW_EXTENSIONS_CONFIG_PATH${NC}"
+        echo '{"mcpServers":{},"skills":{}}' > "$MARKETIOR_EXTENSIONS_CONFIG_PATH"
+        echo -e "${YELLOW}⚠ extensions_config.json not found, created empty config at $MARKETIOR_EXTENSIONS_CONFIG_PATH${NC}"
     fi
 else
-    echo -e "${GREEN}✓ extensions_config.json: $DEER_FLOW_EXTENSIONS_CONFIG_PATH${NC}"
+    echo -e "${GREEN}✓ extensions_config.json: $MARKETIOR_EXTENSIONS_CONFIG_PATH${NC}"
 fi
 
 
@@ -112,7 +112,7 @@ fi
 # Required by Next.js in production. Generated once and persisted so auth
 # sessions survive container restarts.
 
-_secret_file="$DEER_FLOW_HOME/.better-auth-secret"
+_secret_file="$MARKETIOR_HOME/.better-auth-secret"
 if [ -z "$BETTER_AUTH_SECRET" ]; then
     if [ -f "$_secret_file" ]; then
         export BETTER_AUTH_SECRET
@@ -133,7 +133,7 @@ detect_sandbox_mode() {
     local sandbox_use=""
     local provisioner_url=""
 
-    [ -f "$DEER_FLOW_CONFIG_PATH" ] || { echo "local"; return; }
+    [ -f "$MARKETIOR_CONFIG_PATH" ] || { echo "local"; return; }
 
     sandbox_use=$(awk '
         /^[[:space:]]*sandbox:[[:space:]]*$/ { in_sandbox=1; next }
@@ -141,7 +141,7 @@ detect_sandbox_mode() {
         in_sandbox && /^[[:space:]]*use:[[:space:]]*/ {
             line=$0; sub(/^[[:space:]]*use:[[:space:]]*/, "", line); print line; exit
         }
-    ' "$DEER_FLOW_CONFIG_PATH")
+    ' "$MARKETIOR_CONFIG_PATH")
 
     provisioner_url=$(awk '
         /^[[:space:]]*sandbox:[[:space:]]*$/ { in_sandbox=1; next }
@@ -149,9 +149,9 @@ detect_sandbox_mode() {
         in_sandbox && /^[[:space:]]*provisioner_url:[[:space:]]*/ {
             line=$0; sub(/^[[:space:]]*provisioner_url:[[:space:]]*/, "", line); print line; exit
         }
-    ' "$DEER_FLOW_CONFIG_PATH")
+    ' "$MARKETIOR_CONFIG_PATH")
 
-    if [[ "$sandbox_use" == *"deerflow.community.aio_sandbox:AioSandboxProvider"* ]]; then
+    if [[ "$sandbox_use" == *"marketior.community.aio_sandbox:AioSandboxProvider"* ]]; then
         if [ -n "$provisioner_url" ]; then
             echo "provisioner"
         else
@@ -167,11 +167,11 @@ detect_sandbox_mode() {
 if [ "$CMD" = "down" ]; then
     # Set minimal env var defaults so docker compose can parse the file without
     # warning about unset variables that appear in volume specs.
-    export DEER_FLOW_HOME="${DEER_FLOW_HOME:-$REPO_ROOT/backend/.deer-flow}"
-    export DEER_FLOW_CONFIG_PATH="${DEER_FLOW_CONFIG_PATH:-$DEER_FLOW_HOME/config.yaml}"
-    export DEER_FLOW_EXTENSIONS_CONFIG_PATH="${DEER_FLOW_EXTENSIONS_CONFIG_PATH:-$DEER_FLOW_HOME/extensions_config.json}"
-    export DEER_FLOW_DOCKER_SOCKET="${DEER_FLOW_DOCKER_SOCKET:-/var/run/docker.sock}"
-    export DEER_FLOW_REPO_ROOT="${DEER_FLOW_REPO_ROOT:-$REPO_ROOT}"
+    export MARKETIOR_HOME="${MARKETIOR_HOME:-$REPO_ROOT/backend/.marketior}"
+    export MARKETIOR_CONFIG_PATH="${MARKETIOR_CONFIG_PATH:-$MARKETIOR_HOME/config.yaml}"
+    export MARKETIOR_EXTENSIONS_CONFIG_PATH="${MARKETIOR_EXTENSIONS_CONFIG_PATH:-$MARKETIOR_HOME/extensions_config.json}"
+    export MARKETIOR_DOCKER_SOCKET="${MARKETIOR_DOCKER_SOCKET:-/var/run/docker.sock}"
+    export MARKETIOR_REPO_ROOT="${MARKETIOR_REPO_ROOT:-$REPO_ROOT}"
     export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-placeholder}"
     "${COMPOSE_CMD[@]}" down
     exit 0
@@ -182,13 +182,13 @@ fi
 
 if [ "$CMD" = "build" ]; then
     echo "=========================================="
-    echo "  DeerFlow — Building Images"
+    echo "  Marketior — Building Images"
     echo "=========================================="
     echo ""
 
     # Docker socket is needed for compose to parse volume specs
-    if [ -z "$DEER_FLOW_DOCKER_SOCKET" ]; then
-        export DEER_FLOW_DOCKER_SOCKET="/var/run/docker.sock"
+    if [ -z "$MARKETIOR_DOCKER_SOCKET" ]; then
+        export MARKETIOR_DOCKER_SOCKET="/var/run/docker.sock"
     fi
 
     "${COMPOSE_CMD[@]}" build
@@ -206,7 +206,7 @@ fi
 # ── Banner ────────────────────────────────────────────────────────────────────
 
 echo "=========================================="
-echo "  DeerFlow Production Deployment"
+echo "  Marketior Production Deployment"
 echo "=========================================="
 echo ""
 
@@ -224,19 +224,19 @@ if [ "$sandbox_mode" = "provisioner" ]; then
     services="$services provisioner"
 fi
 
-# ── DEER_FLOW_DOCKER_SOCKET ───────────────────────────────────────────────────
+# ── MARKETIOR_DOCKER_SOCKET ───────────────────────────────────────────────────
 
-if [ -z "$DEER_FLOW_DOCKER_SOCKET" ]; then
-    export DEER_FLOW_DOCKER_SOCKET="/var/run/docker.sock"
+if [ -z "$MARKETIOR_DOCKER_SOCKET" ]; then
+    export MARKETIOR_DOCKER_SOCKET="/var/run/docker.sock"
 fi
 
 if [ "$sandbox_mode" != "local" ]; then
-    if [ ! -S "$DEER_FLOW_DOCKER_SOCKET" ]; then
-        echo -e "${RED}⚠ Docker socket not found at $DEER_FLOW_DOCKER_SOCKET${NC}"
+    if [ ! -S "$MARKETIOR_DOCKER_SOCKET" ]; then
+        echo -e "${RED}⚠ Docker socket not found at $MARKETIOR_DOCKER_SOCKET${NC}"
         echo "  AioSandboxProvider (DooD) will not work."
         exit 1
     else
-        echo -e "${GREEN}✓ Docker socket: $DEER_FLOW_DOCKER_SOCKET${NC}"
+        echo -e "${GREEN}✓ Docker socket: $MARKETIOR_DOCKER_SOCKET${NC}"
     fi
 fi
 
@@ -259,7 +259,7 @@ fi
 
 echo ""
 echo "=========================================="
-echo "  DeerFlow is running!"
+echo "  Marketior is running!"
 echo "=========================================="
 echo ""
 echo "  🌐 Application: http://localhost:${PORT:-2026}"

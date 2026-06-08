@@ -3,7 +3,7 @@ import re
 import shutil
 from pathlib import Path, PureWindowsPath
 
-from deerflow.config.runtime_paths import runtime_home
+from marketior.config.runtime_paths import runtime_home
 
 # Virtual path prefix seen by agents inside the sandbox
 VIRTUAL_PATH_PREFIX = "/mnt/user-data"
@@ -13,7 +13,7 @@ _SAFE_USER_ID_RE = re.compile(r"^[A-Za-z0-9_\-]+$")
 
 
 def _default_local_base_dir() -> Path:
-    """Return the caller project's writable DeerFlow state directory."""
+    """Return the caller project's writable Marketior state directory."""
     return runtime_home()
 
 
@@ -35,7 +35,7 @@ def _join_host_path(base: str, *parts: str) -> str:
     """Join host filesystem path segments while preserving native style.
 
     Docker Desktop on Windows expects bind mount sources to stay in Windows
-    path form (for example ``C:\\repo\\backend\\.deer-flow``).  Using
+    path form (for example ``C:\\repo\\backend\\.marketior``).  Using
     ``Path(base) / ...`` on a POSIX host can accidentally rewrite those paths
     with mixed separators, so this helper preserves the original style.
     """
@@ -61,7 +61,7 @@ def join_host_path(base: str, *parts: str) -> str:
 
 class Paths:
     """
-    Centralized path configuration for DeerFlow application data.
+    Centralized path configuration for Marketior application data.
 
     Directory layout (host side):
         {base_dir}/
@@ -81,8 +81,8 @@ class Paths:
 
     BaseDir resolution (in priority order):
         1. Constructor argument `base_dir`
-        2. DEER_FLOW_HOME environment variable
-        3. Caller project fallback: `{project_root}/.deer-flow`
+        2. MARKETIOR_HOME environment variable
+        3. Caller project fallback: `{project_root}/.marketior`
     """
 
     def __init__(self, base_dir: str | Path | None = None) -> None:
@@ -94,18 +94,18 @@ class Paths:
 
         When running inside Docker with a mounted Docker socket (DooD), the Docker
         daemon runs on the host and resolves mount paths against the host filesystem.
-        Set DEER_FLOW_HOST_BASE_DIR to the host-side path that corresponds to this
+        Set MARKETIOR_HOST_BASE_DIR to the host-side path that corresponds to this
         container's base_dir so that sandbox container volume mounts work correctly.
 
         Falls back to base_dir when the env var is not set (native/local execution).
         """
-        if env := os.getenv("DEER_FLOW_HOST_BASE_DIR"):
+        if env := os.getenv("MARKETIOR_HOST_BASE_DIR"):
             return Path(env)
         return self.base_dir
 
     def _host_base_dir_str(self) -> str:
         """Return the host base dir as a raw string for bind mounts."""
-        if env := os.getenv("DEER_FLOW_HOST_BASE_DIR"):
+        if env := os.getenv("MARKETIOR_HOST_BASE_DIR"):
             return env
         return str(self.base_dir)
 
@@ -115,7 +115,7 @@ class Paths:
         if self._base_dir is not None:
             return self._base_dir
 
-        if env_home := os.getenv("DEER_FLOW_HOME"):
+        if env_home := os.getenv("MARKETIOR_HOME"):
             return Path(env_home).resolve()
 
         return _default_local_base_dir()

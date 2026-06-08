@@ -1,0 +1,25 @@
+[Unit]
+Description=Marketior AI Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=market
+WorkingDirectory=/home/market/marketior
+ExecStart=/home/market/marketior/backend/.venv/bin/python -m uvicorn app.gateway.app:app --host 127.0.0.1 --port 8001 --workers 1 --timeout-keep-alive 600
+Restart=always
+RestartSec=5
+
+# RAM LIMITS (hard cap)
+MemoryMax=250M
+MemoryHigh=200M
+
+# CPU LIMITS
+CPUQuota=15%
+
+# Environment
+Environment=PYTHONPATH=/home/market/marketior/backend/packages/harness:/home/market/marketior/backend
+EnvironmentFile=/home/market/marketior/.env
+
+[Install]
+WantedBy=multi-user.target

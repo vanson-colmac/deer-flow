@@ -135,16 +135,16 @@ async def init_engine(
     _session_factory = async_sessionmaker(_engine, expire_on_commit=False)
 
     # Auto-create tables (dev convenience). Production should use Alembic.
-    from deerflow.persistence.base import Base
+    from marketior.persistence.base import Base
 
     # Import all models so Base.metadata discovers them.
     # When no models exist yet (scaffolding phase), this is a no-op.
     try:
-        import deerflow.persistence.models  # noqa: F401
+        import marketior.persistence.models  # noqa: F401
     except ImportError:
         # Models package not yet available — tables won't be auto-created.
         # This is expected during initial scaffolding or minimal installs.
-        logger.debug("deerflow.persistence.models not found; skipping auto-create tables")
+        logger.debug("marketior.persistence.models not found; skipping auto-create tables")
 
     try:
         async with _engine.begin() as conn:

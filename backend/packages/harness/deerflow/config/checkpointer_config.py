@@ -14,14 +14,14 @@ class CheckpointerConfig(BaseModel):
         description="Checkpointer backend type. "
         "'memory' is in-process only (lost on restart). "
         "'sqlite' persists to a local file (requires langgraph-checkpoint-sqlite). "
-        "'postgres' persists to PostgreSQL (install with deerflow-harness[postgres])."
+        "'postgres' persists to PostgreSQL (install with marketior-harness[postgres])."
     )
     connection_string: str | None = Field(
         default=None,
         description="Connection string for sqlite (file path) or postgres (DSN). "
         "Optional for sqlite and defaults to 'store.db' when omitted. "
         "Required for postgres. "
-        "For sqlite, use a file path like '.deer-flow/checkpoints.db' or ':memory:' for in-memory. "
+        "For sqlite, use a file path like '.marketior/checkpoints.db' or ':memory:' for in-memory. "
         "For postgres, use a DSN like 'postgresql://user:pass@localhost:5432/db'.",
     )
 

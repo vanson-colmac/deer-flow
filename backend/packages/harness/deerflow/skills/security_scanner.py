@@ -7,10 +7,10 @@ import logging
 import re
 from dataclasses import dataclass
 
-from deerflow.config import get_app_config
-from deerflow.config.app_config import AppConfig
-from deerflow.models import create_chat_model
-from deerflow.skills.types import SKILL_MD_FILE
+from marketior.config import get_app_config
+from marketior.config.app_config import AppConfig
+from marketior.models import create_chat_model
+from marketior.skills.types import SKILL_MD_FILE
 
 logger = logging.getLogger(__name__)
 

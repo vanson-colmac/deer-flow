@@ -1,4 +1,4 @@
-# DeerFlow docker image cache
+# Marketior docker image cache
 docker/.cache/
 # oh-my-claudecode state
 .omc/
@@ -35,7 +35,7 @@ extensions_config.json
 # Coverage report
 coverage.xml
 coverage/
-.deer-flow/
+.marketior/
 .claude/
 skills/custom/*
 logs/

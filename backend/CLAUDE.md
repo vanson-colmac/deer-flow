@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-DeerFlow is a LangGraph-based AI super agent system with a full-stack architecture. The backend provides a "super agent" with sandbox execution, persistent memory, subagent delegation, and extensible tool integration - all operating in per-thread isolated environments.
+Marketior is a LangGraph-based AI super agent system with a full-stack architecture. The backend provides a "super agent" with sandbox execution, persistent memory, subagent delegation, and extensible tool integration - all operating in per-thread isolated environments.
 
 **Architecture**:
 - **Gateway API** (port 8001): REST API plus embedded LangGraph-compatible agent runtime
@@ -13,11 +13,11 @@ DeerFlow is a LangGraph-based AI super agent system with a full-stack architectu
 - **Provisioner** (port 8002, optional in Docker dev): Started only when sandbox is configured for provisioner/Kubernetes mode
 
 **Runtime**:
-- `make dev`, Docker dev, and production all run the agent runtime in Gateway via `RunManager` + `run_agent()` + `StreamBridge` (`packages/harness/deerflow/runtime/`). Nginx exposes that runtime at `/api/langgraph/*` and rewrites it to Gateway's native `/api/*` routers.
+- `make dev`, Docker dev, and production all run the agent runtime in Gateway via `RunManager` + `run_agent()` + `StreamBridge` (`packages/harness/marketior/runtime/`). Nginx exposes that runtime at `/api/langgraph/*` and rewrites it to Gateway's native `/api/*` routers.
 
 **Project Structure**:
 ```
-deer-flow/
+marketior/
 ├── Makefile                    # Root commands (check, install, dev, stop)
 ├── config.yaml                 # Main application configuration
 ├── extensions_config.json      # MCP servers and skills configuration
@@ -25,9 +25,9 @@ deer-flow/
 │   ├── Makefile               # Backend-only commands (dev, gateway, lint)
 │   ├── langgraph.json         # LangGraph Studio graph configuration
 │   ├── packages/
-│   │   └── harness/           # deerflow-harness package (import: deerflow.*)
+│   │   └── harness/           # marketior-harness package (import: marketior.*)
 │   │       ├── pyproject.toml
-│   │       └── deerflow/
+│   │       └── marketior/
 │   │           ├── agents/            # LangGraph agent system
 │   │           │   ├── lead_agent/    # Main agent (factory + system prompt)
 │   │           │   ├── middlewares/   # 10 middleware components
@@ -50,7 +50,7 @@ deer-flow/
 │   │           ├── community/         # Community tools (tavily, jina_ai, firecrawl, image_search, aio_sandbox)
 │   │           ├── reflection/        # Dynamic module loading (resolve_variable, resolve_class)
 │   │           ├── utils/             # Utilities (network, readability)
-│   │           └── client.py          # Embedded Python client (DeerFlowClient)
+│   │           └── client.py          # Embedded Python client (MarketiorClient)
 │   ├── app/                   # Application layer (import: app.*)
 │   │   ├── gateway/           # FastAPI Gateway API
 │   │   │   ├── app.py         # FastAPI application
@@ -101,7 +101,7 @@ Regression tests related to Docker/provisioner behavior:
 - `tests/test_provisioner_kubeconfig.py` (kubeconfig file/directory handling)
 
 Boundary check (harness → app import firewall):
-- `tests/test_harness_boundary.py` — ensures `packages/harness/deerflow/` never imports from `app.*`
+- `tests/test_harness_boundary.py` — ensures `packages/harness/marketior/` never imports from `app.*`
 
 CI runs these regression tests for every pull request via [.github/workflows/backend-unit-tests.yml](../.github/workflows/backend-unit-tests.yml).
 
@@ -111,23 +111,23 @@ CI runs these regression tests for every pull request via [.github/workflows/bac
 
 The backend is split into two layers with a strict dependency direction:
 
-- **Harness** (`packages/harness/deerflow/`): Publishable agent framework package (`deerflow-harness`). Import prefix: `deerflow.*`. Contains agent orchestration, tools, sandbox, models, MCP, skills, config — everything needed to build and run agents.
+- **Harness** (`packages/harness/marketior/`): Publishable agent framework package (`marketior-harness`). Import prefix: `marketior.*`. Contains agent orchestration, tools, sandbox, models, MCP, skills, config — everything needed to build and run agents.
 - **App** (`app/`): Unpublished application code. Import prefix: `app.*`. Contains the FastAPI Gateway API and IM channel integrations (Feishu, Slack, Telegram, DingTalk).
 
-**Dependency rule**: App imports deerflow, but deerflow never imports app. This boundary is enforced by `tests/test_harness_boundary.py` which runs in CI.
+**Dependency rule**: App imports marketior, but marketior never imports app. This boundary is enforced by `tests/test_harness_boundary.py` which runs in CI.
 
 **Import conventions**:
 ```python
 # Harness internal
-from deerflow.agents import make_lead_agent
-from deerflow.models import create_chat_model
+from marketior.agents import make_lead_agent
+from marketior.models import create_chat_model
 
 # App internal
 from app.gateway.app import app
 from app.channels.service import start_channel_service
 
 # App → Harness (allowed)
-from deerflow.config import get_app_config
+from marketior.config import get_app_config
 
 # Harness → App (FORBIDDEN — enforced by test_harness_boundary.py)
 # from app.gateway.routers.uploads import ...  # ← will fail CI
@@ -135,13 +135,13 @@ from deerflow.config import get_app_config
 
 ### Agent System
 
-**Lead Agent** (`packages/harness/deerflow/agents/lead_agent/agent.py`):
+**Lead Agent** (`packages/harness/marketior/agents/lead_agent/agent.py`):
 - Entry point: `make_lead_agent(config: RunnableConfig)` registered in `langgraph.json`
 - Dynamic model selection via `create_chat_model()` with thinking/vision support
 - Tools loaded via `get_available_tools()` - combines sandbox, built-in, MCP, community, and subagent tools
 - System prompt generated by `apply_prompt_template()` with skills, memory, and subagent instructions
 
-**ThreadState** (`packages/harness/deerflow/agents/thread_state.py`):
+**ThreadState** (`packages/harness/marketior/agents/thread_state.py`):
 - Extends `AgentState` with: `sandbox`, `thread_data`, `title`, `artifacts`, `todos`, `uploaded_files`, `viewed_images`
 - Uses custom reducers: `merge_artifacts` (deduplicate), `merge_viewed_images` (merge/clear)
 
@@ -153,9 +153,9 @@ from deerflow.config import get_app_config
 
 ### Middleware Chain
 
-Lead-agent middlewares are assembled in strict append order across `packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py` (`build_lead_runtime_middlewares`) and `packages/harness/deerflow/agents/lead_agent/agent.py` (`_build_middlewares`):
+Lead-agent middlewares are assembled in strict append order across `packages/harness/marketior/agents/middlewares/tool_error_handling_middleware.py` (`build_lead_runtime_middlewares`) and `packages/harness/marketior/agents/lead_agent/agent.py` (`_build_middlewares`):
 
-1. **ThreadDataMiddleware** - Creates per-thread directories under the user's isolation scope (`backend/.deer-flow/users/{user_id}/threads/{thread_id}/user-data/{workspace,uploads,outputs}`); resolves `user_id` via `get_effective_user_id()` (falls back to `"default"` in no-auth mode); Web UI thread deletion now follows LangGraph thread removal with Gateway cleanup of the local thread directory
+1. **ThreadDataMiddleware** - Creates per-thread directories under the user's isolation scope (`backend/.marketior/users/{user_id}/threads/{thread_id}/user-data/{workspace,uploads,outputs}`); resolves `user_id` via `get_effective_user_id()` (falls back to `"default"` in no-auth mode); Web UI thread deletion now follows LangGraph thread removal with Gateway cleanup of the local thread directory
 2. **UploadsMiddleware** - Tracks and injects newly uploaded files into conversation
 3. **SandboxMiddleware** - Acquires sandbox, stores `sandbox_id` in state
 4. **DanglingToolCallMiddleware** - Injects placeholder ToolMessages for AIMessage tool_calls that lack responses (e.g., due to user interruption), including raw provider tool-call payloads preserved only in `additional_kwargs["tool_calls"]`
@@ -186,7 +186,7 @@ Setup: Copy `config.example.yaml` to `config.yaml` in the **project root** direc
 
 Configuration priority:
 1. Explicit `config_path` argument
-2. `DEER_FLOW_CONFIG_PATH` environment variable
+2. `MARKETIOR_CONFIG_PATH` environment variable
 3. `config.yaml` in current directory (backend/)
 4. `config.yaml` in parent directory (project root - **recommended location**)
 
@@ -199,7 +199,7 @@ MCP servers and skills are configured together in `extensions_config.json` in pr
 
 Configuration priority:
 1. Explicit `config_path` argument
-2. `DEER_FLOW_EXTENSIONS_CONFIG_PATH` environment variable
+2. `MARKETIOR_EXTENSIONS_CONFIG_PATH` environment variable
 3. `extensions_config.json` in current directory (backend/)
 4. `extensions_config.json` in parent directory (project root - **recommended location**)
 
@@ -218,7 +218,7 @@ CORS is same-origin by default when requests enter through nginx on port 2026. S
 | **Skills** (`/api/skills`) | `GET /` - list skills; `GET /{name}` - details; `PUT /{name}` - update enabled; `POST /install` - install from .skill archive (accepts standard optional frontmatter like `version`, `author`, `compatibility`) |
 | **Memory** (`/api/memory`) | `GET /` - memory data; `POST /reload` - force reload; `GET /config` - config; `GET /status` - config + data |
 | **Uploads** (`/api/threads/{id}/uploads`) | `POST /` - upload files (auto-converts PDF/PPT/Excel/Word); `GET /list` - list; `DELETE /{filename}` - delete |
-| **Threads** (`/api/threads/{id}`) | `DELETE /` - remove DeerFlow-managed local thread data after LangGraph thread deletion; unexpected failures are logged server-side and return a generic 500 detail |
+| **Threads** (`/api/threads/{id}`) | `DELETE /` - remove Marketior-managed local thread data after LangGraph thread deletion; unexpected failures are logged server-side and return a generic 500 detail |
 | **Artifacts** (`/api/threads/{id}/artifacts`) | `GET /{path}` - serve artifacts; active content types (`text/html`, `application/xhtml+xml`, `image/svg+xml`) are always forced as download attachments to reduce XSS risk; `?download=true` still forces download for other file types |
 | **Suggestions** (`/api/threads/{id}/suggestions`) | `POST /` - generate follow-up questions; rich list/block model content is normalized before JSON parsing |
 | **Thread Runs** (`/api/threads/{id}/runs`) | `POST /` - create background run; `POST /stream` - create + SSE stream; `POST /wait` - create + block; `GET /` - list runs; `GET /{rid}` - run details; `POST /{rid}/cancel` - cancel; `GET /{rid}/join` - join SSE; `GET /{rid}/messages` - paginated messages `{data, has_more}`; `GET /{rid}/events` - full event stream; `GET /../messages` - thread messages with feedback; `GET /../token-usage` - aggregate tokens |
@@ -233,28 +233,28 @@ CORS is same-origin by default when requests enter through nginx on port 2026. S
 
 Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runtime, all other `/api/*` → Gateway REST APIs.
 
-### Sandbox System (`packages/harness/deerflow/sandbox/`)
+### Sandbox System (`packages/harness/marketior/sandbox/`)
 
 **Interface**: Abstract `Sandbox` with `execute_command`, `read_file`, `write_file`, `list_dir`
 **Provider Pattern**: `SandboxProvider` with `acquire`, `get`, `release` lifecycle
 **Implementations**:
 - `LocalSandboxProvider` - Local filesystem execution. `acquire(thread_id)` returns a per-thread `LocalSandbox` (id `local:{thread_id}`) whose `path_mappings` resolve `/mnt/user-data/{workspace,uploads,outputs}` and `/mnt/acp-workspace` to that thread's host directories, so the public `Sandbox` API honours the `/mnt/user-data` contract uniformly with AIO. `acquire()` / `acquire(None)` keeps the legacy generic singleton (id `local`) for callers without a thread context. Per-thread sandboxes are held in an LRU cache (default 256 entries) guarded by a `threading.Lock`.
-- `AioSandboxProvider` (`packages/harness/deerflow/community/`) - Docker-based isolation
+- `AioSandboxProvider` (`packages/harness/marketior/community/`) - Docker-based isolation
 
 **Virtual Path System**:
 - Agent sees: `/mnt/user-data/{workspace,uploads,outputs}`, `/mnt/skills`
-- Physical: `backend/.deer-flow/users/{user_id}/threads/{thread_id}/user-data/...`, `deer-flow/skills/`
+- Physical: `backend/.marketior/users/{user_id}/threads/{thread_id}/user-data/...`, `marketior/skills/`
 - Translation: `LocalSandboxProvider` builds per-thread `PathMapping`s for the user-data prefixes at acquire time; `tools.py` keeps `replace_virtual_path()` / `replace_virtual_paths_in_command()` as a defense-in-depth layer (and for path validation). AIO has the directories volume-mounted at the same virtual paths inside its container, so both implementations accept `/mnt/user-data/...` natively.
 - Detection: `is_local_sandbox()` accepts both `sandbox_id == "local"` (legacy / no-thread) and `sandbox_id.startswith("local:")` (per-thread)
 
-**Sandbox Tools** (in `packages/harness/deerflow/sandbox/tools.py`):
+**Sandbox Tools** (in `packages/harness/marketior/sandbox/tools.py`):
 - `bash` - Execute commands with path translation and error handling
 - `ls` - Directory listing (tree format, max 2 levels)
 - `read_file` - Read file contents with optional line range
 - `write_file` - Write/append to files, creates directories; overwrites by default and exposes the `append` argument in the model-facing schema for end-of-file writes
 - `str_replace` - Substring replacement (single or all occurrences); same-path serialization is scoped to `(sandbox.id, path)` so isolated sandboxes do not contend on identical virtual paths inside one process
 
-### Subagent System (`packages/harness/deerflow/subagents/`)
+### Subagent System (`packages/harness/marketior/subagents/`)
 
 **Built-in Agents**: `general-purpose` (all tools except `task`) and `bash` (command specialist)
 **Execution**: Dual thread pool - `_scheduler_pool` (3 workers) + `_execution_pool` (3 workers)
@@ -262,7 +262,7 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 **Flow**: `task()` tool → `SubagentExecutor` → background thread → poll 5s → SSE events → result
 **Events**: `task_started`, `task_running`, `task_completed`/`task_failed`/`task_timed_out`
 
-### Tool System (`packages/harness/deerflow/tools/`)
+### Tool System (`packages/harness/marketior/tools/`)
 
 `get_available_tools(groups, include_mcp, model_name, subagent_enabled)` assembles:
 1. **Config-defined tools** - Resolved from `config.yaml` via `resolve_variable()`
@@ -276,7 +276,7 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 4. **Subagent tool** (if enabled):
    - `task` - Delegate to subagent (description, prompt, subagent_type)
 
-**Community tools** (`packages/harness/deerflow/community/`):
+**Community tools** (`packages/harness/marketior/community/`):
 - `tavily/` - Web search (5 results default) and web fetch (4KB limit)
 - `jina_ai/` - Web fetch via Jina reader API with readability extraction
 - `firecrawl/` - Web scraping via Firecrawl API
@@ -288,7 +288,7 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 - Each ACP agent uses a per-thread workspace at `{base_dir}/users/{user_id}/threads/{thread_id}/acp-workspace/`. The workspace is accessible to the lead agent via the virtual path `/mnt/acp-workspace/` (read-only). In docker sandbox mode, the directory is volume-mounted into the container at `/mnt/acp-workspace` (read-only); in local sandbox mode, path translation is handled by `tools.py`
 - `image_search/` - Image search via DuckDuckGo
 
-### MCP System (`packages/harness/deerflow/mcp/`)
+### MCP System (`packages/harness/marketior/mcp/`)
 
 - Uses `langchain-mcp-adapters` `MultiServerMCPClient` for multi-server management
 - **Lazy initialization**: Tools loaded on first use via `get_cached_mcp_tools()`
@@ -297,15 +297,15 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 - **OAuth (HTTP/SSE)**: Supports token endpoint flows (`client_credentials`, `refresh_token`) with automatic token refresh + Authorization header injection
 - **Runtime updates**: Gateway API saves to extensions_config.json; LangGraph detects via mtime
 
-### Skills System (`packages/harness/deerflow/skills/`)
+### Skills System (`packages/harness/marketior/skills/`)
 
-- **Location**: `deer-flow/skills/{public,custom}/`
+- **Location**: `marketior/skills/{public,custom}/`
 - **Format**: Directory with `SKILL.md` (YAML frontmatter: name, description, license, allowed-tools)
 - **Loading**: `load_skills()` recursively scans `skills/{public,custom}` for `SKILL.md`, parses metadata, and reads enabled state from extensions_config.json
 - **Injection**: Enabled skills listed in agent system prompt with container paths
 - **Installation**: `POST /api/skills/install` extracts .skill ZIP archive to custom/ directory
 
-### Model Factory (`packages/harness/deerflow/models/factory.py`)
+### Model Factory (`packages/harness/marketior/models/factory.py`)
 
 - `create_chat_model(name, thinking_enabled)` instantiates LLM from config via reflection
 - Supports `thinking_enabled` flag with per-model `when_thinking_enabled` overrides
@@ -314,7 +314,7 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 - Config values starting with `$` resolved as environment variables
 - Missing provider modules surface actionable install hints from reflection resolvers (for example `uv add langchain-google-genai`)
 
-### vLLM Provider (`packages/harness/deerflow/models/vllm_provider.py`)
+### vLLM Provider (`packages/harness/marketior/models/vllm_provider.py`)
 
 - `VllmChatModel` subclasses `langchain_openai:ChatOpenAI` for vLLM 0.19.0 OpenAI-compatible endpoints
 - Preserves vLLM's non-standard assistant `reasoning` field on full responses, streaming deltas, and follow-up tool-call turns
@@ -322,7 +322,7 @@ Proxied through nginx: `/api/langgraph/*` → Gateway LangGraph-compatible runti
 
 ### IM Channels System (`app/channels/`)
 
-Bridges external messaging platforms (Feishu, Slack, Telegram, DingTalk) to the DeerFlow agent via the LangGraph Server.
+Bridges external messaging platforms (Feishu, Slack, Telegram, DingTalk) to the Marketior agent via the LangGraph Server.
 
 
 **Architecture**: Channels communicate with Gateway through the `langgraph-sdk` HTTP client (same as the frontend), ensuring threads are created and managed server-side. The internal SDK client injects process-local internal auth plus a matching CSRF cookie/header pair so Gateway accepts state-changing thread/run requests from channel workers without relying on browser session cookies.
@@ -349,11 +349,11 @@ Bridges external messaging platforms (Feishu, Slack, Telegram, DingTalk) to the 
 **Configuration** (`config.yaml` -> `channels`):
 - `langgraph_url` - LangGraph-compatible Gateway API base URL (default: `http://localhost:8001/api`)
 - `gateway_url` - Gateway API URL for auxiliary commands (default: `http://localhost:8001`)
-- In Docker Compose, IM channels run inside the `gateway` container, so `localhost` points back to that container. Use `http://gateway:8001/api` for `langgraph_url` and `http://gateway:8001` for `gateway_url`, or set `DEER_FLOW_CHANNELS_LANGGRAPH_URL` / `DEER_FLOW_CHANNELS_GATEWAY_URL`.
+- In Docker Compose, IM channels run inside the `gateway` container, so `localhost` points back to that container. Use `http://gateway:8001/api` for `langgraph_url` and `http://gateway:8001` for `gateway_url`, or set `MARKETIOR_CHANNELS_LANGGRAPH_URL` / `MARKETIOR_CHANNELS_GATEWAY_URL`.
 - Per-channel configs: `feishu` (app_id, app_secret), `slack` (bot_token, app_token), `telegram` (bot_token), `dingtalk` (client_id, client_secret, optional `card_template_id` for AI Card streaming)
 
 
-### Memory System (`packages/harness/deerflow/agents/memory/`)
+### Memory System (`packages/harness/marketior/agents/memory/`)
 
 **Components**:
 - `updater.py` - LLM-based memory updates with fact extraction, whitespace-normalized fact deduplication (trims leading/trailing whitespace before comparing), and atomic file I/O
@@ -365,7 +365,7 @@ Bridges external messaging platforms (Feishu, Slack, Telegram, DingTalk) to the 
 - Memory is stored per-user at `{base_dir}/users/{user_id}/memory.json`
 - Per-agent per-user memory at `{base_dir}/users/{user_id}/agents/{agent_name}/memory.json`
 - Custom agent definitions (`SOUL.md` + `config.yaml`) are also per-user at `{base_dir}/users/{user_id}/agents/{agent_name}/`. The legacy shared layout `{base_dir}/agents/{agent_name}/` remains read-only fallback for unmigrated installations
-- `user_id` is resolved via `get_effective_user_id()` from `deerflow.runtime.user_context`
+- `user_id` is resolved via `get_effective_user_id()` from `marketior.runtime.user_context`
 - In no-auth mode, `user_id` defaults to `"default"` (constant `DEFAULT_USER_ID`)
 - Absolute `storage_path` in config opts out of per-user isolation
 - **Migration**: Run `PYTHONPATH=. python scripts/migrate_user_isolation.py` to move legacy `memory.json`, `threads/`, and `agents/` into per-user layout. Supports `--dry-run` (preview changes) and `--user-id USER_ID` (assign unowned legacy data to a user, defaults to `default`).
@@ -392,7 +392,7 @@ Focused regression coverage for the updater lives in `backend/tests/test_memory_
 - `max_facts` / `fact_confidence_threshold` - Fact storage limits (100 / 0.7)
 - `max_injection_tokens` - Token limit for prompt injection (2000)
 
-### Reflection System (`packages/harness/deerflow/reflection/`)
+### Reflection System (`packages/harness/marketior/reflection/`)
 
 - `resolve_variable(path)` - Import module and return variable (e.g., `module.path:variable_name`)
 - `resolve_class(path, base_class)` - Import and validate class against base class
@@ -401,7 +401,7 @@ Focused regression coverage for the updater lives in `backend/tests/test_memory_
 
 **`config.yaml`** key sections:
 - `models[]` - LLM configs with `use` class path, `supports_thinking`, `supports_vision`, provider-specific fields
-- vLLM reasoning models should use `deerflow.models.vllm_provider:VllmChatModel`; for Qwen-style parsers prefer `when_thinking_enabled.extra_body.chat_template_kwargs.enable_thinking`, and DeerFlow will also normalize the older `thinking` alias
+- vLLM reasoning models should use `marketior.models.vllm_provider:VllmChatModel`; for Qwen-style parsers prefer `when_thinking_enabled.extra_body.chat_template_kwargs.enable_thinking`, and Marketior will also normalize the older `thinking` alias
 - `tools[]` - Tool configs with `use` variable path and `group`
 - `tool_groups[]` - Logical groupings for tools
 - `sandbox.use` - Sandbox provider class path
@@ -415,13 +415,13 @@ Focused regression coverage for the updater lives in `backend/tests/test_memory_
 - `mcpServers` - Map of server name → config (enabled, type, command, args, env, url, headers, oauth, description)
 - `skills` - Map of skill name → state (enabled)
 
-Both can be modified at runtime via Gateway API endpoints or `DeerFlowClient` methods.
+Both can be modified at runtime via Gateway API endpoints or `MarketiorClient` methods.
 
-### Embedded Client (`packages/harness/deerflow/client.py`)
+### Embedded Client (`packages/harness/marketior/client.py`)
 
-`DeerFlowClient` provides direct in-process access to all DeerFlow capabilities without HTTP services. All return types align with the Gateway API response schemas, so consumer code works identically in HTTP and embedded modes.
+`MarketiorClient` provides direct in-process access to all Marketior capabilities without HTTP services. All return types align with the Gateway API response schemas, so consumer code works identically in HTTP and embedded modes.
 
-**Architecture**: Imports the same `deerflow` modules that Gateway API uses. Shares the same config files and data directories. No FastAPI dependency.
+**Architecture**: Imports the same `marketior` modules that Gateway API uses. Shares the same config files and data directories. No FastAPI dependency.
 
 **Agent Conversation**:
 - `chat(message, thread_id)` — synchronous, accumulates streaming deltas per message-id and returns the final AI text
@@ -433,7 +433,7 @@ Both can be modified at runtime via Gateway API endpoints or `DeerFlowClient` me
 - Agent created lazily via `create_agent()` + `_build_middlewares()`, same as `make_lead_agent`
 - Supports `checkpointer` parameter for state persistence across turns
 - `reset_agent()` forces agent recreation (e.g. after memory or skill changes)
-- See [docs/STREAMING.md](docs/STREAMING.md) for the full design: why Gateway and DeerFlowClient are parallel paths, LangGraph's `stream_mode` semantics, the per-id dedup invariants, and regression testing strategy
+- See [docs/STREAMING.md](docs/STREAMING.md) for the full design: why Gateway and MarketiorClient are parallel paths, LangGraph's `stream_mode` semantics, the per-id dedup invariants, and regression testing strategy
 
 **Gateway Equivalent Methods** (replaces Gateway API):
 
@@ -446,7 +446,7 @@ Both can be modified at runtime via Gateway API endpoints or `DeerFlowClient` me
 | Uploads | `upload_files(thread_id, files)`, `list_uploads(thread_id)`, `delete_upload(thread_id, filename)` | `{"success": true, "files": [...]}`, `{"files": [...], "count": N}` |
 | Artifacts | `get_artifact(thread_id, path)` → `(bytes, mime_type)` | tuple |
 
-**Key difference from Gateway**: Upload accepts local `Path` objects instead of HTTP `UploadFile`, rejects directory paths before copying, and reuses a single worker when document conversion must run inside an active event loop. Artifact returns `(bytes, mime_type)` instead of HTTP Response. The new Gateway-only thread cleanup route deletes `.deer-flow/threads/{thread_id}` after LangGraph thread deletion; there is no matching `DeerFlowClient` method yet. `update_mcp_config()` and `update_skill()` automatically invalidate the cached agent.
+**Key difference from Gateway**: Upload accepts local `Path` objects instead of HTTP `UploadFile`, rejects directory paths before copying, and reuses a single worker when document conversion must run inside an active event loop. Artifact returns `(bytes, mime_type)` instead of HTTP Response. The new Gateway-only thread cleanup route deletes `.marketior/threads/{thread_id}` after LangGraph thread deletion; there is no matching `MarketiorClient` method yet. `update_mcp_config()` and `update_skill()` automatically invalidate the cached agent.
 
 **Tests**: `tests/test_client.py` (77 unit tests including `TestGatewayConformance`), `tests/test_client_live.py` (live integration tests, requires config.yaml)
 
@@ -462,7 +462,7 @@ Both can be modified at runtime via Gateway API endpoints or `DeerFlowClient` me
 - Run the full suite before and after your change: `make test`
 - Tests must pass before a feature is considered complete
 - For lightweight config/utility modules, prefer pure unit tests with no external dependencies
-- If a module causes circular import issues in tests, add a `sys.modules` mock in `tests/conftest.py` (see existing example for `deerflow.subagents.executor`)
+- If a module causes circular import issues in tests, add a `sys.modules` mock in `tests/conftest.py` (see existing example for `marketior.subagents.executor`)
 
 ```bash
 # Run all tests

@@ -14,7 +14,7 @@ from app.channels.store import ChannelStore
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from deerflow.config.app_config import AppConfig
+    from marketior.config.app_config import AppConfig
 
 # Channel name → import path for lazy loading
 _CHANNEL_REGISTRY: dict[str, str] = {
@@ -38,8 +38,8 @@ _CHANNEL_CREDENTIAL_KEYS: dict[str, list[str]] = {
     "wechat": ["bot_token"],
 }
 
-_CHANNELS_LANGGRAPH_URL_ENV = "DEER_FLOW_CHANNELS_LANGGRAPH_URL"
-_CHANNELS_GATEWAY_URL_ENV = "DEER_FLOW_CHANNELS_GATEWAY_URL"
+_CHANNELS_LANGGRAPH_URL_ENV = "MARKETIOR_CHANNELS_LANGGRAPH_URL"
+_CHANNELS_GATEWAY_URL_ENV = "MARKETIOR_CHANNELS_GATEWAY_URL"
 
 
 def _resolve_service_url(config: dict[str, Any], config_key: str, env_key: str, default: str) -> str:
@@ -83,7 +83,7 @@ class ChannelService:
     def from_app_config(cls, app_config: AppConfig | None = None) -> ChannelService:
         """Create a ChannelService from the application config."""
         if app_config is None:
-            from deerflow.config.app_config import get_app_config
+            from marketior.config.app_config import get_app_config
 
             app_config = get_app_config()
         channels_config = {}
@@ -159,7 +159,7 @@ class ChannelService:
             return False
 
         try:
-            from deerflow.reflection import resolve_class
+            from marketior.reflection import resolve_class
 
             channel_cls = resolve_class(import_path, base_class=None)
         except Exception:

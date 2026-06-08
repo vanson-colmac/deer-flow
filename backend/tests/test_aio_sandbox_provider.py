@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from deerflow.config.paths import Paths, join_host_path
-from deerflow.runtime.user_context import reset_current_user, set_current_user
+from marketior.config.paths import Paths, join_host_path
+from marketior.runtime.user_context import reset_current_user, set_current_user
 
 # ── ensure_thread_dirs ───────────────────────────────────────────────────────
 
@@ -45,7 +45,7 @@ def test_host_thread_dir_rejects_invalid_thread_id(tmp_path):
 
 def _make_provider(tmp_path):
     """Build a minimal AioSandboxProvider instance without starting the idle checker."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
     with patch.object(aio_mod.AioSandboxProvider, "_start_idle_checker"):
         provider = aio_mod.AioSandboxProvider.__new__(aio_mod.AioSandboxProvider)
         provider._config = {}
@@ -57,7 +57,7 @@ def _make_provider(tmp_path):
 
 def test_get_thread_mounts_includes_acp_workspace(tmp_path, monkeypatch):
     """_get_thread_mounts must include /mnt/acp-workspace (read-only) for docker sandbox."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
     monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
     monkeypatch.setattr(aio_mod, "get_effective_user_id", lambda: None)
 
@@ -74,7 +74,7 @@ def test_get_thread_mounts_includes_acp_workspace(tmp_path, monkeypatch):
 
 def test_get_thread_mounts_includes_user_data_dirs(tmp_path, monkeypatch):
     """Baseline: user-data mounts must still be present after the ACP workspace change."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
     monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
 
     mounts = aio_mod.AioSandboxProvider._get_thread_mounts("thread-4")
@@ -86,17 +86,17 @@ def test_get_thread_mounts_includes_user_data_dirs(tmp_path, monkeypatch):
 
 
 def test_join_host_path_preserves_windows_drive_letter_style():
-    base = r"C:\Users\demo\deer-flow\backend\.deer-flow"
+    base = r"C:\Users\demo\marketior\backend\.marketior"
 
     joined = join_host_path(base, "threads", "thread-9", "user-data", "outputs")
 
-    assert joined == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-9\user-data\outputs"
+    assert joined == r"C:\Users\demo\marketior\backend\.marketior\threads\thread-9\user-data\outputs"
 
 
 def test_get_thread_mounts_preserves_windows_host_path_style(tmp_path, monkeypatch):
     """Docker bind mount sources must keep Windows-style paths intact."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
-    monkeypatch.setenv("DEER_FLOW_HOST_BASE_DIR", r"C:\Users\demo\deer-flow\backend\.deer-flow")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
+    monkeypatch.setenv("MARKETIOR_HOST_BASE_DIR", r"C:\Users\demo\marketior\backend\.marketior")
     monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
     monkeypatch.setattr(aio_mod, "get_effective_user_id", lambda: None)
 
@@ -104,15 +104,15 @@ def test_get_thread_mounts_preserves_windows_host_path_style(tmp_path, monkeypat
 
     container_paths = {container_path: host_path for host_path, container_path, _ in mounts}
 
-    assert container_paths["/mnt/user-data/workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\workspace"
-    assert container_paths["/mnt/user-data/uploads"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\uploads"
-    assert container_paths["/mnt/user-data/outputs"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\outputs"
-    assert container_paths["/mnt/acp-workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\acp-workspace"
+    assert container_paths["/mnt/user-data/workspace"] == r"C:\Users\demo\marketior\backend\.marketior\threads\thread-10\user-data\workspace"
+    assert container_paths["/mnt/user-data/uploads"] == r"C:\Users\demo\marketior\backend\.marketior\threads\thread-10\user-data\uploads"
+    assert container_paths["/mnt/user-data/outputs"] == r"C:\Users\demo\marketior\backend\.marketior\threads\thread-10\user-data\outputs"
+    assert container_paths["/mnt/acp-workspace"] == r"C:\Users\demo\marketior\backend\.marketior\threads\thread-10\acp-workspace"
 
 
 def test_discover_or_create_only_unlocks_when_lock_succeeds(tmp_path, monkeypatch):
     """Unlock should not run if exclusive locking itself fails."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
     provider = _make_provider(tmp_path)
     provider._discover_or_create_with_lock = aio_mod.AioSandboxProvider._discover_or_create_with_lock.__get__(
         provider,
@@ -142,7 +142,7 @@ def test_discover_or_create_only_unlocks_when_lock_succeeds(tmp_path, monkeypatc
 
 def test_remote_backend_create_forwards_effective_user_id(monkeypatch):
     """Provisioner mode must receive user_id so PVC subPath matches user isolation."""
-    remote_mod = importlib.import_module("deerflow.community.aio_sandbox.remote_backend")
+    remote_mod = importlib.import_module("marketior.community.aio_sandbox.remote_backend")
     backend = remote_mod.RemoteSandboxBackend("http://provisioner:8002")
     token = set_current_user(SimpleNamespace(id="user-7"))
     posted: dict = {}

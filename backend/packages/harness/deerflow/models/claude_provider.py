@@ -46,7 +46,7 @@ class ClaudeChatModel(ChatAnthropic):
 
     Config example:
         - name: claude-sonnet-4.6
-          use: deerflow.models.claude_provider:ClaudeChatModel
+          use: marketior.models.claude_provider:ClaudeChatModel
           model: claude-sonnet-4-6
           max_tokens: 16384
           enable_prompt_caching: true
@@ -70,7 +70,7 @@ class ClaudeChatModel(ChatAnthropic):
         """Auto-load credentials and configure OAuth if needed."""
         from pydantic import SecretStr
 
-        from deerflow.models.credential_loader import (
+        from marketior.models.credential_loader import (
             OAUTH_ANTHROPIC_BETAS,
             is_oauth_token,
             load_claude_code_credential,
@@ -179,12 +179,12 @@ class ClaudeChatModel(ChatAnthropic):
         if "user_id" not in payload["metadata"]:
             # Generate a stable device_id from the machine's hostname
             hostname = socket.gethostname()
-            device_id = hashlib.sha256(f"deerflow-{hostname}".encode()).hexdigest()
+            device_id = hashlib.sha256(f"marketior-{hostname}".encode()).hexdigest()
             session_id = str(uuid.uuid4())
             payload["metadata"]["user_id"] = json.dumps(
                 {
                     "device_id": device_id,
-                    "account_uuid": "deerflow",
+                    "account_uuid": "marketior",
                     "session_id": session_id,
                 }
             )

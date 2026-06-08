@@ -5,7 +5,7 @@ Run this file directly in VS Code with breakpoints.
 
 Requirements:
     Run with `uv run` from the backend/ directory so that the uv workspace
-    resolves deerflow-harness and app packages correctly:
+    resolves marketior-harness and app packages correctly:
 
         cd backend && PYTHONPATH=. uv run python debug.py
 
@@ -65,23 +65,23 @@ async def main():
     # leak onto the interactive terminal via Python's lastResort handler.
     _setup_logging()
 
-    from deerflow.config import get_app_config
-    from deerflow.config.app_config import apply_logging_level
+    from marketior.config import get_app_config
+    from marketior.config.app_config import apply_logging_level
 
     app_config = get_app_config()
     apply_logging_level(app_config.log_level)
 
-    # Delay the rest of the deerflow imports until *after* logging is installed
-    # so that any import-time side effects (e.g. deerflow.agents starts a
+    # Delay the rest of the marketior imports until *after* logging is installed
+    # so that any import-time side effects (e.g. marketior.agents starts a
     # background skill-loader thread on import) emit logs to debug.log instead
     # of leaking onto the interactive terminal via Python's lastResort handler.
     from langchain_core.messages import HumanMessage
     from langgraph.runtime import Runtime
 
-    from deerflow.agents import make_lead_agent
-    from deerflow.config.paths import get_paths
-    from deerflow.mcp import initialize_mcp_tools
-    from deerflow.runtime.user_context import get_effective_user_id
+    from marketior.agents import make_lead_agent
+    from marketior.config.paths import get_paths
+    from marketior.mcp import initialize_mcp_tools
+    from marketior.runtime.user_context import get_effective_user_id
 
     # Initialize MCP tools at startup
     try:

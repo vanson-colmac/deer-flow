@@ -27,7 +27,7 @@ from langchain.agents.middleware import AgentMiddleware
 from langgraph.runtime import Runtime
 
 if TYPE_CHECKING:
-    from deerflow.config.loop_detection_config import LoopDetectionConfig
+    from marketior.config.loop_detection_config import LoopDetectionConfig
 
 logger = logging.getLogger(__name__)
 

@@ -4,16 +4,16 @@ import logging
 from dataclasses import replace
 from typing import Any
 
-from deerflow.sandbox.security import is_host_bash_allowed
-from deerflow.subagents.builtins import BUILTIN_SUBAGENTS
-from deerflow.subagents.config import SubagentConfig
+from marketior.sandbox.security import is_host_bash_allowed
+from marketior.subagents.builtins import BUILTIN_SUBAGENTS
+from marketior.subagents.config import SubagentConfig
 
 logger = logging.getLogger(__name__)
 
 
 def _resolve_subagents_app_config(app_config: Any | None = None):
     if app_config is None:
-        from deerflow.config.subagents_config import get_subagents_app_config
+        from marketior.config.subagents_config import get_subagents_app_config
 
         return get_subagents_app_config()
     return getattr(app_config, "subagents", app_config)

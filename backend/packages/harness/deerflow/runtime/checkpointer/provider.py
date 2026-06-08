@@ -7,7 +7,7 @@ Supported backends: memory, sqlite, postgres.
 
 Usage::
 
-    from deerflow.runtime.checkpointer.provider import get_checkpointer, checkpointer_context
+    from marketior.runtime.checkpointer.provider import get_checkpointer, checkpointer_context
 
     # Singleton — reused across calls, closed on process exit
     cp = get_checkpointer()
@@ -25,9 +25,9 @@ from collections.abc import Iterator
 
 from langgraph.types import Checkpointer
 
-from deerflow.config.app_config import get_app_config
-from deerflow.config.checkpointer_config import CheckpointerConfig
-from deerflow.runtime.store._sqlite_utils import ensure_sqlite_parent_dir, resolve_sqlite_conn_str
+from marketior.config.app_config import get_app_config
+from marketior.config.checkpointer_config import CheckpointerConfig
+from marketior.runtime.store._sqlite_utils import ensure_sqlite_parent_dir, resolve_sqlite_conn_str
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 SQLITE_INSTALL = "langgraph-checkpoint-sqlite is required for the SQLite checkpointer. Install it with: uv add langgraph-checkpoint-sqlite"
 POSTGRES_INSTALL = (
-    "langgraph-checkpoint-postgres is required for the PostgreSQL checkpointer. Install the package extra with: pip install 'deerflow-harness[postgres]' (or use: uv sync --all-packages --extra postgres when developing locally)"
+    "langgraph-checkpoint-postgres is required for the PostgreSQL checkpointer. Install the package extra with: pip install 'marketior-harness[postgres]' (or use: uv sync --all-packages --extra postgres when developing locally)"
 )
 POSTGRES_CONN_REQUIRED = "checkpointer.connection_string is required for the postgres backend"
 
@@ -119,8 +119,8 @@ def get_checkpointer() -> Checkpointer:
     # Ensure app config is loaded before checking checkpointer config
     # This prevents returning InMemorySaver when config.yaml actually has a checkpointer section
     # but hasn't been loaded yet
-    from deerflow.config.app_config import _app_config
-    from deerflow.config.checkpointer_config import get_checkpointer_config
+    from marketior.config.app_config import _app_config
+    from marketior.config.checkpointer_config import get_checkpointer_config
 
     config = get_checkpointer_config()
 

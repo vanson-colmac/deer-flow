@@ -4,8 +4,8 @@ from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 
 from app.gateway.deps import get_config
-from deerflow.config.app_config import AppConfig
-from deerflow.config.sandbox_config import SandboxConfig
+from marketior.config.app_config import AppConfig
+from marketior.config.sandbox_config import SandboxConfig
 
 
 def test_get_config_returns_app_state_config():

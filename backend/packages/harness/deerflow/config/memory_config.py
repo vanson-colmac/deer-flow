@@ -19,13 +19,13 @@ class MemoryConfig(BaseModel):
             "(all users share the same file). "
             "Relative paths are resolved against `Paths.base_dir` "
             "(not the backend working directory). "
-            "Note: if you previously set this to `.deer-flow/memory.json`, "
-            "the file will now be resolved as `{base_dir}/.deer-flow/memory.json`; "
+            "Note: if you previously set this to `.marketior/memory.json`, "
+            "the file will now be resolved as `{base_dir}/.marketior/memory.json`; "
             "migrate existing data or use an absolute path to preserve the old location."
         ),
     )
     storage_class: str = Field(
-        default="deerflow.agents.memory.storage.FileMemoryStorage",
+        default="marketior.agents.memory.storage.FileMemoryStorage",
         description="The class path for memory storage provider",
     )
     debounce_seconds: int = Field(

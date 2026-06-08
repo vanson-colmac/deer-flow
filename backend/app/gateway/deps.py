@@ -15,16 +15,16 @@ from typing import TYPE_CHECKING, TypeVar, cast
 from fastapi import FastAPI, HTTPException, Request
 from langgraph.types import Checkpointer
 
-from deerflow.config.app_config import AppConfig
-from deerflow.persistence.feedback import FeedbackRepository
-from deerflow.runtime import RunContext, RunManager, StreamBridge
-from deerflow.runtime.events.store.base import RunEventStore
-from deerflow.runtime.runs.store.base import RunStore
+from marketior.config.app_config import AppConfig
+from marketior.persistence.feedback import FeedbackRepository
+from marketior.runtime import RunContext, RunManager, StreamBridge
+from marketior.runtime.events.store.base import RunEventStore
+from marketior.runtime.runs.store.base import RunStore
 
 if TYPE_CHECKING:
     from app.gateway.auth.local_provider import LocalAuthProvider
     from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
-    from deerflow.persistence.thread_meta.base import ThreadMetaStore
+    from marketior.persistence.thread_meta.base import ThreadMetaStore
 
 
 T = TypeVar("T")
@@ -47,10 +47,10 @@ async def langgraph_runtime(app: FastAPI) -> AsyncGenerator[None, None]:
         async with langgraph_runtime(app):
             yield
     """
-    from deerflow.persistence.engine import close_engine, get_session_factory, init_engine_from_config
-    from deerflow.runtime import make_store, make_stream_bridge
-    from deerflow.runtime.checkpointer.async_provider import make_checkpointer
-    from deerflow.runtime.events.store import make_run_event_store
+    from marketior.persistence.engine import close_engine, get_session_factory, init_engine_from_config
+    from marketior.runtime import make_store, make_stream_bridge
+    from marketior.runtime.checkpointer.async_provider import make_checkpointer
+    from marketior.runtime.events.store import make_run_event_store
 
     async with AsyncExitStack() as stack:
         config = getattr(app.state, "config", None)
@@ -69,18 +69,18 @@ async def langgraph_runtime(app: FastAPI) -> AsyncGenerator[None, None]:
         # Initialize repositories — one get_session_factory() call for all.
         sf = get_session_factory()
         if sf is not None:
-            from deerflow.persistence.feedback import FeedbackRepository
-            from deerflow.persistence.run import RunRepository
+            from marketior.persistence.feedback import FeedbackRepository
+            from marketior.persistence.run import RunRepository
 
             app.state.run_store = RunRepository(sf)
             app.state.feedback_repo = FeedbackRepository(sf)
         else:
-            from deerflow.runtime.runs.store.memory import MemoryRunStore
+            from marketior.runtime.runs.store.memory import MemoryRunStore
 
             app.state.run_store = MemoryRunStore()
             app.state.feedback_repo = None
 
-        from deerflow.persistence.thread_meta import make_thread_store
+        from marketior.persistence.thread_meta import make_thread_store
 
         app.state.thread_store = make_thread_store(sf, app.state.store)
 
@@ -170,7 +170,7 @@ def get_local_provider() -> LocalAuthProvider:
     global _cached_local_provider, _cached_repo
     if _cached_repo is None:
         from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
-        from deerflow.persistence.engine import get_session_factory
+        from marketior.persistence.engine import get_session_factory
 
         sf = get_session_factory()
         if sf is None:

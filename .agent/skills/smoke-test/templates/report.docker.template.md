@@ -1,4 +1,4 @@
-# DeerFlow Smoke Test Report
+# Marketior Smoke Test Report
 
 **Test Date**: {{test_date}}  
 **Test Environment**: {{test_environment}}  
@@ -144,17 +144,17 @@ Commit Message: {{git_commit_message}}
 
 | Container Name | Status | Uptime |
 |----------|------|----------|
-| deer-flow-nginx | {{nginx_status}} | {{nginx_uptime}} |
-| deer-flow-frontend | {{frontend_status}} | {{frontend_uptime}} |
-| deer-flow-gateway | {{gateway_status}} | {{gateway_uptime}} |
-| deer-flow-langgraph | {{langgraph_status}} | {{langgraph_uptime}} |
+| marketior-nginx | {{nginx_status}} | {{nginx_uptime}} |
+| marketior-frontend | {{frontend_status}} | {{frontend_uptime}} |
+| marketior-gateway | {{gateway_status}} | {{gateway_uptime}} |
+| marketior-langgraph | {{langgraph_status}} | {{langgraph_uptime}} |
 
 ---
 
 ## Recommendations and Next Steps
 
 ### If the Test Passes
-1. [ ] Visit http://localhost:2026 to start using DeerFlow
+1. [ ] Visit http://localhost:2026 to start using Marketior
 2. [ ] Configure your preferred model if it is not configured yet
 3. [ ] Explore available skills
 4. [ ] Refer to the documentation to learn more features

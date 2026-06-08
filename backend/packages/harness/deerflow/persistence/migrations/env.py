@@ -1,6 +1,6 @@
-"""Alembic environment for DeerFlow application tables.
+"""Alembic environment for Marketior application tables.
 
-ONLY manages DeerFlow's tables (runs, threads_meta, cron_jobs, users).
+ONLY manages Marketior's tables (runs, threads_meta, cron_jobs, users).
 LangGraph's checkpointer tables are managed by LangGraph itself -- they
 have their own schema lifecycle and must not be touched by Alembic.
 """
@@ -14,16 +14,16 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from deerflow.persistence.base import Base
+from marketior.persistence.base import Base
 
 # Import all models so metadata is populated.
 try:
-    import deerflow.persistence.models as models  # register ORM models with Base.metadata
+    import marketior.persistence.models as models  # register ORM models with Base.metadata
 
     _ = models
 except ImportError:
     # Models not available — migration will work with existing metadata only.
-    logging.getLogger(__name__).warning("Could not import deerflow.persistence.models; Alembic may not detect all tables")
+    logging.getLogger(__name__).warning("Could not import marketior.persistence.models; Alembic may not detect all tables")
 
 config = context.config
 if config.config_file_name is not None:

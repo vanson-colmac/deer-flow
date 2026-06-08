@@ -28,9 +28,9 @@ from langgraph.checkpoint.base import empty_checkpoint
 if TYPE_CHECKING:
     from langchain_core.messages import HumanMessage
 
-from deerflow.config.app_config import AppConfig
-from deerflow.runtime.serialization import serialize
-from deerflow.runtime.stream_bridge import StreamBridge
+from marketior.config.app_config import AppConfig
+from marketior.runtime.serialization import serialize
+from marketior.runtime.stream_bridge import StreamBridge
 
 from .manager import RunManager, RunRecord
 from .schemas import RunStatus
@@ -166,7 +166,7 @@ async def run_agent(
         # otherwise a failure here would leave the stream hanging
         # with no terminator.
         if event_store is not None:
-            from deerflow.runtime.journal import RunJournal
+            from marketior.runtime.journal import RunJournal
 
             journal = RunJournal(
                 run_id=run_id,

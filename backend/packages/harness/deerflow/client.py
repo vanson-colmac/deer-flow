@@ -1,12 +1,12 @@
-"""DeerFlowClient — Embedded Python client for DeerFlow agent system.
+"""MarketiorClient — Embedded Python client for Marketior agent system.
 
-Provides direct programmatic access to DeerFlow's agent capabilities
+Provides direct programmatic access to Marketior's agent capabilities
 without requiring LangGraph Server or Gateway API processes.
 
 Usage:
-    from deerflow.client import DeerFlowClient
+    from marketior.client import MarketiorClient
 
-    client = DeerFlowClient()
+    client = MarketiorClient()
     response = client.chat("Analyze this paper for me", thread_id="my-thread")
     print(response)
 
@@ -32,17 +32,17 @@ from langchain.agents.middleware import AgentMiddleware
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 
-from deerflow.agents.lead_agent.agent import _build_middlewares
-from deerflow.agents.lead_agent.prompt import apply_prompt_template
-from deerflow.agents.thread_state import ThreadState
-from deerflow.config.agents_config import AGENT_NAME_PATTERN
-from deerflow.config.app_config import get_app_config, reload_app_config
-from deerflow.config.extensions_config import ExtensionsConfig, SkillStateConfig, get_extensions_config, reload_extensions_config
-from deerflow.config.paths import get_paths
-from deerflow.models import create_chat_model
-from deerflow.runtime.user_context import get_effective_user_id
-from deerflow.skills.storage import get_or_new_skill_storage
-from deerflow.uploads.manager import (
+from marketior.agents.lead_agent.agent import _build_middlewares
+from marketior.agents.lead_agent.prompt import apply_prompt_template
+from marketior.agents.thread_state import ThreadState
+from marketior.config.agents_config import AGENT_NAME_PATTERN
+from marketior.config.app_config import get_app_config, reload_app_config
+from marketior.config.extensions_config import ExtensionsConfig, SkillStateConfig, get_extensions_config, reload_extensions_config
+from marketior.config.paths import get_paths
+from marketior.models import create_chat_model
+from marketior.runtime.user_context import get_effective_user_id
+from marketior.skills.storage import get_or_new_skill_storage
+from marketior.uploads.manager import (
     claim_unique_filename,
     delete_file_safe,
     enrich_file_listing,
@@ -77,10 +77,10 @@ class StreamEvent:
     data: dict[str, Any] = field(default_factory=dict)
 
 
-class DeerFlowClient:
-    """Embedded Python client for DeerFlow agent system.
+class MarketiorClient:
+    """Embedded Python client for Marketior agent system.
 
-    Provides direct programmatic access to DeerFlow's agent capabilities
+    Provides direct programmatic access to Marketior's agent capabilities
     without requiring LangGraph Server or Gateway API processes.
 
     Note:
@@ -95,9 +95,9 @@ class DeerFlowClient:
 
     Example::
 
-        from deerflow.client import DeerFlowClient
+        from marketior.client import MarketiorClient
 
-        client = DeerFlowClient()
+        client = MarketiorClient()
 
         # Simple one-shot
         print(client.chat("hello"))
@@ -241,7 +241,7 @@ class DeerFlowClient:
         }
         checkpointer = self._checkpointer
         if checkpointer is None:
-            from deerflow.runtime.checkpointer import get_checkpointer
+            from marketior.runtime.checkpointer import get_checkpointer
 
             checkpointer = get_checkpointer()
         if checkpointer is not None:
@@ -254,7 +254,7 @@ class DeerFlowClient:
     @staticmethod
     def _get_tools(*, model_name: str | None, subagent_enabled: bool):
         """Lazy import to avoid circular dependency at module level."""
-        from deerflow.tools import get_available_tools
+        from marketior.tools import get_available_tools
 
         return get_available_tools(model_name=model_name, subagent_enabled=subagent_enabled)
 
@@ -288,7 +288,7 @@ class DeerFlowClient:
             "type": "ai",
             "content": "",
             "id": msg_id,
-            "tool_calls": DeerFlowClient._serialize_tool_calls(tool_calls),
+            "tool_calls": MarketiorClient._serialize_tool_calls(tool_calls),
         }
         if additional_kwargs:
             data["additional_kwargs"] = additional_kwargs
@@ -301,7 +301,7 @@ class DeerFlowClient:
             type="messages-tuple",
             data={
                 "type": "tool",
-                "content": DeerFlowClient._extract_text(msg.content),
+                "content": MarketiorClient._extract_text(msg.content),
                 "name": msg.name,
                 "tool_call_id": msg.tool_call_id,
                 "id": msg.id,
@@ -314,31 +314,31 @@ class DeerFlowClient:
         if isinstance(msg, AIMessage):
             d: dict[str, Any] = {"type": "ai", "content": msg.content, "id": getattr(msg, "id", None)}
             if msg.tool_calls:
-                d["tool_calls"] = DeerFlowClient._serialize_tool_calls(msg.tool_calls)
+                d["tool_calls"] = MarketiorClient._serialize_tool_calls(msg.tool_calls)
             if getattr(msg, "usage_metadata", None):
                 d["usage_metadata"] = msg.usage_metadata
-            if additional_kwargs := DeerFlowClient._serialize_additional_kwargs(msg):
+            if additional_kwargs := MarketiorClient._serialize_additional_kwargs(msg):
                 d["additional_kwargs"] = additional_kwargs
             return d
         if isinstance(msg, ToolMessage):
             d = {
                 "type": "tool",
-                "content": DeerFlowClient._extract_text(msg.content),
+                "content": MarketiorClient._extract_text(msg.content),
                 "name": getattr(msg, "name", None),
                 "tool_call_id": getattr(msg, "tool_call_id", None),
                 "id": getattr(msg, "id", None),
             }
-            if additional_kwargs := DeerFlowClient._serialize_additional_kwargs(msg):
+            if additional_kwargs := MarketiorClient._serialize_additional_kwargs(msg):
                 d["additional_kwargs"] = additional_kwargs
             return d
         if isinstance(msg, HumanMessage):
             d = {"type": "human", "content": msg.content, "id": getattr(msg, "id", None)}
-            if additional_kwargs := DeerFlowClient._serialize_additional_kwargs(msg):
+            if additional_kwargs := MarketiorClient._serialize_additional_kwargs(msg):
                 d["additional_kwargs"] = additional_kwargs
             return d
         if isinstance(msg, SystemMessage):
             d = {"type": "system", "content": msg.content, "id": getattr(msg, "id", None)}
-            if additional_kwargs := DeerFlowClient._serialize_additional_kwargs(msg):
+            if additional_kwargs := MarketiorClient._serialize_additional_kwargs(msg):
                 d["additional_kwargs"] = additional_kwargs
             return d
         return {"type": "unknown", "content": str(msg), "id": getattr(msg, "id", None)}
@@ -396,7 +396,7 @@ class DeerFlowClient:
         """
         checkpointer = self._checkpointer
         if checkpointer is None:
-            from deerflow.runtime.checkpointer.provider import get_checkpointer
+            from marketior.runtime.checkpointer.provider import get_checkpointer
 
             checkpointer = get_checkpointer()
 
@@ -451,7 +451,7 @@ class DeerFlowClient:
         """
         checkpointer = self._checkpointer
         if checkpointer is None:
-            from deerflow.runtime.checkpointer.provider import get_checkpointer
+            from marketior.runtime.checkpointer.provider import get_checkpointer
 
             checkpointer = get_checkpointer()
 
@@ -540,7 +540,7 @@ class DeerFlowClient:
           heartbeats, multi-subscriber fan-out).  A single in-process
           caller with a direct iterator needs none of that.
 
-        So ``DeerFlowClient.stream()`` is a parallel, sync, in-process
+        So ``MarketiorClient.stream()`` is a parallel, sync, in-process
         consumer of the same ``create_agent()`` factory — not a wrapper
         around Gateway.  The two paths **should** stay in sync on which
         LangGraph stream modes they subscribe to; that invariant is
@@ -850,19 +850,19 @@ class DeerFlowClient:
         Returns:
             Memory data dict (see src/agents/memory/updater.py for structure).
         """
-        from deerflow.agents.memory.updater import get_memory_data
+        from marketior.agents.memory.updater import get_memory_data
 
         return get_memory_data(user_id=get_effective_user_id())
 
     def export_memory(self) -> dict:
         """Export current memory data for backup or transfer."""
-        from deerflow.agents.memory.updater import get_memory_data
+        from marketior.agents.memory.updater import get_memory_data
 
         return get_memory_data(user_id=get_effective_user_id())
 
     def import_memory(self, memory_data: dict) -> dict:
         """Import and persist full memory data."""
-        from deerflow.agents.memory.updater import import_memory_data
+        from marketior.agents.memory.updater import import_memory_data
 
         return import_memory_data(memory_data, user_id=get_effective_user_id())
 
@@ -920,7 +920,7 @@ class DeerFlowClient:
         """
         config_path = ExtensionsConfig.resolve_config_path()
         if config_path is None:
-            raise FileNotFoundError("Cannot locate extensions_config.json. Set DEER_FLOW_EXTENSIONS_CONFIG_PATH or ensure it exists in the project root.")
+            raise FileNotFoundError("Cannot locate extensions_config.json. Set MARKETIOR_EXTENSIONS_CONFIG_PATH or ensure it exists in the project root.")
 
         current_config = get_extensions_config()
 
@@ -949,7 +949,7 @@ class DeerFlowClient:
         Returns:
             Skill info dict, or None if not found.
         """
-        from deerflow.skills.storage import get_or_new_skill_storage
+        from marketior.skills.storage import get_or_new_skill_storage
 
         skill = next((s for s in get_or_new_skill_storage().load_skills(enabled_only=False) if s.name == name), None)
         if skill is None:
@@ -976,7 +976,7 @@ class DeerFlowClient:
             ValueError: If the skill is not found.
             OSError: If the config file cannot be written.
         """
-        from deerflow.skills.storage import get_or_new_skill_storage
+        from marketior.skills.storage import get_or_new_skill_storage
 
         skills = get_or_new_skill_storage().load_skills(enabled_only=False)
         skill = next((s for s in skills if s.name == name), None)
@@ -985,7 +985,7 @@ class DeerFlowClient:
 
         config_path = ExtensionsConfig.resolve_config_path()
         if config_path is None:
-            raise FileNotFoundError("Cannot locate extensions_config.json. Set DEER_FLOW_EXTENSIONS_CONFIG_PATH or ensure it exists in the project root.")
+            raise FileNotFoundError("Cannot locate extensions_config.json. Set MARKETIOR_EXTENSIONS_CONFIG_PATH or ensure it exists in the project root.")
 
         extensions_config = get_extensions_config()
         extensions_config.skills[name] = SkillStateConfig(enabled=enabled)
@@ -1037,25 +1037,25 @@ class DeerFlowClient:
         Returns:
             The reloaded memory data dict.
         """
-        from deerflow.agents.memory.updater import reload_memory_data
+        from marketior.agents.memory.updater import reload_memory_data
 
         return reload_memory_data(user_id=get_effective_user_id())
 
     def clear_memory(self) -> dict:
         """Clear all persisted memory data."""
-        from deerflow.agents.memory.updater import clear_memory_data
+        from marketior.agents.memory.updater import clear_memory_data
 
         return clear_memory_data(user_id=get_effective_user_id())
 
     def create_memory_fact(self, content: str, category: str = "context", confidence: float = 0.5) -> dict:
         """Create a single fact manually."""
-        from deerflow.agents.memory.updater import create_memory_fact
+        from marketior.agents.memory.updater import create_memory_fact
 
         return create_memory_fact(content=content, category=category, confidence=confidence)
 
     def delete_memory_fact(self, fact_id: str) -> dict:
         """Delete a single fact from memory by fact id."""
-        from deerflow.agents.memory.updater import delete_memory_fact
+        from marketior.agents.memory.updater import delete_memory_fact
 
         return delete_memory_fact(fact_id)
 
@@ -1067,7 +1067,7 @@ class DeerFlowClient:
         confidence: float | None = None,
     ) -> dict:
         """Update a single fact manually, preserving omitted fields."""
-        from deerflow.agents.memory.updater import update_memory_fact
+        from marketior.agents.memory.updater import update_memory_fact
 
         return update_memory_fact(
             fact_id=fact_id,
@@ -1082,7 +1082,7 @@ class DeerFlowClient:
         Returns:
             Memory config dict.
         """
-        from deerflow.config.memory_config import get_memory_config
+        from marketior.config.memory_config import get_memory_config
 
         config = get_memory_config()
         return {
@@ -1127,7 +1127,7 @@ class DeerFlowClient:
             FileNotFoundError: If any file does not exist.
             ValueError: If any supplied path exists but is not a regular file.
         """
-        from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_to_markdown
+        from marketior.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_to_markdown
 
         # Validate all files upfront to avoid partial uploads.
         resolved_files = []
@@ -1238,7 +1238,7 @@ class DeerFlowClient:
             FileNotFoundError: If the file does not exist.
             PermissionError: If path traversal is detected.
         """
-        from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS
+        from marketior.utils.file_conversion import CONVERTIBLE_EXTENSIONS
 
         uploads_dir = get_uploads_dir(thread_id)
         return delete_file_safe(uploads_dir, filename, convertible_extensions=CONVERTIBLE_EXTENSIONS)
@@ -1265,7 +1265,7 @@ class DeerFlowClient:
             actual = get_paths().resolve_virtual_path(thread_id, path, user_id=get_effective_user_id())
         except ValueError as exc:
             if "traversal" in str(exc):
-                from deerflow.uploads.manager import PathTraversalError
+                from marketior.uploads.manager import PathTraversalError
 
                 raise PathTraversalError("Path traversal detected") from exc
             raise

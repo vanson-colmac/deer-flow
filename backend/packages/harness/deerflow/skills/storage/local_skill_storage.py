@@ -12,9 +12,9 @@ from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 
-from deerflow.config.runtime_paths import resolve_path
-from deerflow.skills.storage.skill_storage import SKILL_MD_FILE, SkillStorage
-from deerflow.skills.types import SkillCategory
+from marketior.config.runtime_paths import resolve_path
+from marketior.skills.storage.skill_storage import SKILL_MD_FILE, SkillStorage
+from marketior.skills.types import SkillCategory
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class LocalSkillStorage(SkillStorage):
     ) -> None:
         super().__init__(container_path=container_path)
         if host_path is None:
-            from deerflow.config import get_app_config
+            from marketior.config import get_app_config
 
             config = app_config or get_app_config()
             self._host_root: Path = config.skills.get_skills_path()
@@ -94,14 +94,14 @@ class LocalSkillStorage(SkillStorage):
     async def ainstall_skill_from_archive(self, archive_path: str | Path) -> dict:
         import zipfile
 
-        from deerflow.skills.installer import (
+        from marketior.skills.installer import (
             SkillAlreadyExistsError,
             _move_staged_skill_into_reserved_target,
             _scan_skill_archive_contents_or_raise,
             resolve_skill_dir_from_archive,
             safe_extract_skill_archive,
         )
-        from deerflow.skills.validation import _validate_skill_frontmatter
+        from marketior.skills.validation import _validate_skill_frontmatter
 
         logger.info("Installing skill from %s", archive_path)
         path = Path(archive_path)

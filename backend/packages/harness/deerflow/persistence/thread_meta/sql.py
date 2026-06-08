@@ -9,10 +9,10 @@ from typing import Any
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from deerflow.persistence.json_compat import json_match
-from deerflow.persistence.thread_meta.base import InvalidMetadataFilterError, ThreadMetaStore
-from deerflow.persistence.thread_meta.model import ThreadMetaRow
-from deerflow.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
+from marketior.persistence.json_compat import json_match
+from marketior.persistence.thread_meta.base import InvalidMetadataFilterError, ThreadMetaStore
+from marketior.persistence.thread_meta.model import ThreadMetaRow
+from marketior.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
 
 logger = logging.getLogger(__name__)
 

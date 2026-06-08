@@ -99,7 +99,7 @@ class TestBuildMinimalConfig:
             display_name="OpenAI",
             api_key_field="api_key",
             env_var="OPENAI_API_KEY",
-            search_use="deerflow.community.tavily.tools:web_search_tool",
+            search_use="marketior.community.tavily.tools:web_search_tool",
             search_extra_config={"max_results": 5},
         )
         data = yaml.safe_load(content)
@@ -136,7 +136,7 @@ class TestBuildMinimalConfig:
             display_name="OpenAI",
             api_key_field="api_key",
             env_var="OPENAI_API_KEY",
-            web_fetch_use="deerflow.community.jina_ai.tools:web_fetch_tool",
+            web_fetch_use="marketior.community.jina_ai.tools:web_fetch_tool",
             web_fetch_extra_config={"timeout": 10},
         )
         data = yaml.safe_load(content)
@@ -167,7 +167,7 @@ class TestBuildMinimalConfig:
         data = yaml.safe_load(content)
         assert "sandbox" in data
         assert "use" in data["sandbox"]
-        assert data["sandbox"]["use"] == "deerflow.sandbox.local:LocalSandboxProvider"
+        assert data["sandbox"]["use"] == "marketior.sandbox.local:LocalSandboxProvider"
         assert data["sandbox"]["allow_host_bash"] is False
 
     def test_bash_tool_disabled_by_default(self):
@@ -189,11 +189,11 @@ class TestBuildMinimalConfig:
             display_name="OpenAI",
             api_key_field="api_key",
             env_var="OPENAI_API_KEY",
-            sandbox_use="deerflow.community.aio_sandbox:AioSandboxProvider",
+            sandbox_use="marketior.community.aio_sandbox:AioSandboxProvider",
             include_bash_tool=True,
         )
         data = yaml.safe_load(content)
-        assert data["sandbox"]["use"] == "deerflow.community.aio_sandbox:AioSandboxProvider"
+        assert data["sandbox"]["use"] == "marketior.community.aio_sandbox:AioSandboxProvider"
         assert "allow_host_bash" not in data["sandbox"]
         tool_names = [t["name"] for t in data.get("tools", [])]
         assert "bash" in tool_names
@@ -226,7 +226,7 @@ class TestBuildMinimalConfig:
 
     def test_cli_provider_does_not_emit_fake_api_key(self):
         content = build_minimal_config(
-            provider_use="deerflow.models.openai_codex_provider:CodexChatModel",
+            provider_use="marketior.models.openai_codex_provider:CodexChatModel",
             model_name="gpt-5.4",
             display_name="Codex CLI",
             api_key_field="api_key",
@@ -319,27 +319,27 @@ class TestWriteConfigYaml:
                         {
                             "name": "web_search",
                             "group": "web",
-                            "use": "deerflow.community.ddg_search.tools:web_search_tool",
+                            "use": "marketior.community.ddg_search.tools:web_search_tool",
                             "max_results": 5,
                         },
                         {
                             "name": "web_fetch",
                             "group": "web",
-                            "use": "deerflow.community.jina_ai.tools:web_fetch_tool",
+                            "use": "marketior.community.jina_ai.tools:web_fetch_tool",
                             "timeout": 10,
                         },
                         {
                             "name": "image_search",
                             "group": "web",
-                            "use": "deerflow.community.image_search.tools:image_search_tool",
+                            "use": "marketior.community.image_search.tools:image_search_tool",
                             "max_results": 5,
                         },
-                        {"name": "ls", "group": "file:read", "use": "deerflow.sandbox.tools:ls_tool"},
-                        {"name": "write_file", "group": "file:write", "use": "deerflow.sandbox.tools:write_file_tool"},
-                        {"name": "bash", "group": "bash", "use": "deerflow.sandbox.tools:bash_tool"},
+                        {"name": "ls", "group": "file:read", "use": "marketior.sandbox.tools:ls_tool"},
+                        {"name": "write_file", "group": "file:write", "use": "marketior.sandbox.tools:write_file_tool"},
+                        {"name": "bash", "group": "bash", "use": "marketior.sandbox.tools:bash_tool"},
                     ],
                     "sandbox": {
-                        "use": "deerflow.sandbox.local:LocalSandboxProvider",
+                        "use": "marketior.sandbox.local:LocalSandboxProvider",
                         "allow_host_bash": False,
                     },
                     "summarization": {"max_tokens": 2048},

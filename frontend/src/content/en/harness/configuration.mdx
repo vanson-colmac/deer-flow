@@ -20,7 +20,7 @@ Marketior.AI's configuration system is designed around one goal: every meaningfu
 Marketior.AI resolves `config.yaml` using the following priority order:
 
 1. The path passed to `AppConfig.from_file(config_path)` explicitly.
-2. The `DEER_FLOW_CONFIG_PATH` environment variable.
+2. The `MARKETIOR_CONFIG_PATH` environment variable.
 3. `backend/config.yaml` (relative to the backend directory).
 4. `config.yaml` in the repository root.
 
@@ -29,7 +29,7 @@ If none of these paths exist, the application raises an error at startup.
 To use a custom location:
 
 ```bash
-export DEER_FLOW_CONFIG_PATH=/path/to/my-config.yaml
+export MARKETIOR_CONFIG_PATH=/path/to/my-config.yaml
 ```
 
 ## Environment variable interpolation

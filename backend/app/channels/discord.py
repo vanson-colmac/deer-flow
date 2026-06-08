@@ -48,7 +48,7 @@ class DiscordChannel(Channel):
 
         # Session tracking: channel_id -> Discord thread_id (in-memory, persisted to JSON).
         # Uses a dedicated JSON file separate from ChannelStore, which maps IM
-        # conversations to DeerFlow thread IDs — a different concern.
+        # conversations to Marketior thread IDs — a different concern.
         self._active_threads: dict[str, str] = {}
         # Reverse-lookup set for O(1) thread ID checks (avoids O(n) scan of _active_threads.values()).
         self._active_thread_ids: set[str] = set()
@@ -59,7 +59,7 @@ class DiscordChannel(Channel):
         if store is not None:
             self._thread_store_path = store._path.parent / "discord_threads.json"
         else:
-            self._thread_store_path = Path.home() / ".deer-flow" / "channels" / "discord_threads.json"
+            self._thread_store_path = Path.home() / ".marketior" / "channels" / "discord_threads.json"
 
         # Typing indicator management
         self._typing_tasks: dict[str, asyncio.Task] = {}
@@ -468,7 +468,7 @@ class DiscordChannel(Channel):
                 )
                 return None
 
-            thread_name = f"deerflow-{message.author.display_name}-{message.id}"[:100]
+            thread_name = f"marketior-{message.author.display_name}-{message.id}"[:100]
             return await message.create_thread(name=thread_name)
         except self._discord_module.errors.HTTPException as exc:
             if exc.code == 50024:

@@ -11,8 +11,8 @@ from datetime import UTC, datetime
 from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from deerflow.persistence.feedback.model import FeedbackRow
-from deerflow.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
+from marketior.persistence.feedback.model import FeedbackRow
+from marketior.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
 
 
 class FeedbackRepository:

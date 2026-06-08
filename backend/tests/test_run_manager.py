@@ -4,8 +4,8 @@ import re
 
 import pytest
 
-from deerflow.runtime import DisconnectMode, RunManager, RunStatus
-from deerflow.runtime.runs.store.memory import MemoryRunStore
+from marketior.runtime import DisconnectMode, RunManager, RunStatus
+from marketior.runtime.runs.store.memory import MemoryRunStore
 
 ISO_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
@@ -107,7 +107,7 @@ async def test_list_by_thread(manager: RunManager):
 @pytest.mark.anyio
 async def test_list_by_thread_is_stable_when_timestamps_tie(manager: RunManager, monkeypatch: pytest.MonkeyPatch):
     """Ordering should be stable (insertion order) even when timestamps tie."""
-    monkeypatch.setattr("deerflow.runtime.runs.manager._now_iso", lambda: "2026-01-01T00:00:00+00:00")
+    monkeypatch.setattr("marketior.runtime.runs.manager._now_iso", lambda: "2026-01-01T00:00:00+00:00")
 
     r1 = await manager.create("thread-1")
     r2 = await manager.create("thread-1")
@@ -273,7 +273,7 @@ async def test_create_defaults(manager: RunManager):
 @pytest.mark.anyio
 async def test_model_name_create_or_reject():
     """create_or_reject should accept and persist model_name."""
-    from deerflow.runtime.runs.schemas import DisconnectMode
+    from marketior.runtime.runs.schemas import DisconnectMode
 
     store = MemoryRunStore()
     mgr = RunManager(store=store)
@@ -338,7 +338,7 @@ async def test_create_or_reject_rollback_persists_interrupted_status_to_store():
 @pytest.mark.anyio
 async def test_model_name_default_is_none():
     """create_or_reject without model_name should default to None."""
-    from deerflow.runtime.runs.schemas import DisconnectMode
+    from marketior.runtime.runs.schemas import DisconnectMode
 
     store = MemoryRunStore()
     mgr = RunManager(store=store)

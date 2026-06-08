@@ -1,6 +1,6 @@
 # Architecture Overview
 
-This document provides a comprehensive overview of the DeerFlow backend architecture.
+This document provides a comprehensive overview of the Marketior backend architecture.
 
 ## System Architecture
 
@@ -54,7 +54,7 @@ This document provides a comprehensive overview of the DeerFlow backend architec
 
 The agent runtime is embedded in the FastAPI Gateway and built on LangGraph for robust multi-agent workflow orchestration. Nginx rewrites `/api/langgraph/*` to Gateway's native `/api/*` routes, so the public API remains compatible with LangGraph SDK clients without running a separate LangGraph server.
 
-**Entry Point**: `packages/harness/deerflow/agents/lead_agent/agent.py:make_lead_agent`
+**Entry Point**: `packages/harness/marketior/agents/lead_agent/agent.py:make_lead_agent`
 
 **Key Responsibilities**:
 - Agent creation and configuration
@@ -70,7 +70,7 @@ It is not the default service entrypoint; scripts and Docker deployments run the
 {
   "agent": {
     "type": "agent",
-    "path": "deerflow.agents:make_lead_agent"
+    "path": "marketior.agents:make_lead_agent"
   }
 }
 ```
@@ -87,11 +87,11 @@ FastAPI application providing REST endpoints plus the public LangGraph-compatibl
 - `mcp.py` - `/api/mcp` - MCP server configuration
 - `skills.py` - `/api/skills` - Skills management
 - `uploads.py` - `/api/threads/{id}/uploads` - File upload
-- `threads.py` - `/api/threads/{id}` - Local DeerFlow thread data cleanup after LangGraph deletion
+- `threads.py` - `/api/threads/{id}` - Local Marketior thread data cleanup after LangGraph deletion
 - `artifacts.py` - `/api/threads/{id}/artifacts` - Artifact serving
 - `suggestions.py` - `/api/threads/{id}/suggestions` - Follow-up suggestion generation
 
-The web conversation delete flow first deletes Gateway-managed thread state through the LangGraph-compatible route, then the Gateway `threads.py` router removes DeerFlow-managed filesystem data via `Paths.delete_thread_dir()`.
+The web conversation delete flow first deletes Gateway-managed thread state through the LangGraph-compatible route, then the Gateway `threads.py` router removes Marketior-managed filesystem data via `Paths.delete_thread_dir()`.
 
 ### Agent Architecture
 
@@ -135,7 +135,7 @@ class ThreadState(AgentState):
     # Core state from AgentState
     messages: list[BaseMessage]
 
-    # DeerFlow extensions
+    # Marketior extensions
     sandbox: dict             # Sandbox environment info
     artifacts: list[str]      # Generated file paths
     thread_data: dict         # {workspace, uploads, outputs} paths
@@ -163,7 +163,7 @@ class ThreadState(AgentState):
               ▼                                         ▼
 ┌─────────────────────────┐              ┌─────────────────────────┐
 │  LocalSandboxProvider   │              │  AioSandboxProvider     │
-│  (packages/harness/deerflow/sandbox/local.py) │              │  (packages/harness/deerflow/community/)       │
+│  (packages/harness/marketior/sandbox/local.py) │              │  (packages/harness/marketior/community/)       │
 │                         │              │                         │
 │  - Singleton instance   │              │  - Docker-based         │
 │  - Direct execution     │              │  - Isolated containers  │
@@ -183,10 +183,10 @@ class ThreadState(AgentState):
 
 | Virtual Path | Physical Path |
 |-------------|---------------|
-| `/mnt/user-data/workspace` | `backend/.deer-flow/threads/{thread_id}/user-data/workspace` |
-| `/mnt/user-data/uploads` | `backend/.deer-flow/threads/{thread_id}/user-data/uploads` |
-| `/mnt/user-data/outputs` | `backend/.deer-flow/threads/{thread_id}/user-data/outputs` |
-| `/mnt/skills` | `deer-flow/skills/` |
+| `/mnt/user-data/workspace` | `backend/.marketior/threads/{thread_id}/user-data/workspace` |
+| `/mnt/user-data/uploads` | `backend/.marketior/threads/{thread_id}/user-data/uploads` |
+| `/mnt/user-data/outputs` | `backend/.marketior/threads/{thread_id}/user-data/outputs` |
+| `/mnt/skills` | `marketior/skills/` |
 
 ### Tool System
 
@@ -197,7 +197,7 @@ class ThreadState(AgentState):
 
 ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
 │   Built-in Tools    │  │  Configured Tools   │  │     MCP Tools       │
-│  (packages/harness/deerflow/tools/)       │  │  (config.yaml)      │  │  (extensions.json)  │
+│  (packages/harness/marketior/tools/)       │  │  (config.yaml)      │  │  (extensions.json)  │
 ├─────────────────────┤  ├─────────────────────┤  ├─────────────────────┤
 │ - present_files     │  │ - web_search        │  │ - github            │
 │ - ask_clarification │  │ - web_fetch         │  │ - filesystem        │
@@ -213,7 +213,7 @@ class ThreadState(AgentState):
                                    ▼
                       ┌─────────────────────────┐
                       │   get_available_tools() │
-                      │   (packages/harness/deerflow/tools/__init__)  │
+                      │   (packages/harness/marketior/tools/__init__)  │
                       └─────────────────────────┘
 ```
 
@@ -222,7 +222,7 @@ class ThreadState(AgentState):
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          Model Factory                                   │
-│                     (packages/harness/deerflow/models/factory.py)                              │
+│                     (packages/harness/marketior/models/factory.py)                              │
 └─────────────────────────────────────────────────────────────────────────┘
 
 config.yaml:
@@ -269,7 +269,7 @@ config.yaml:
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          MCP Integration                                 │
-│                        (packages/harness/deerflow/mcp/manager.py)                              │
+│                        (packages/harness/marketior/mcp/manager.py)                              │
 └─────────────────────────────────────────────────────────────────────────┘
 
 extensions_config.json:
@@ -307,7 +307,7 @@ extensions_config.json:
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                          Skills System                                   │
-│                       (packages/harness/deerflow/skills/loader.py)                             │
+│                       (packages/harness/marketior/skills/loader.py)                             │
 └─────────────────────────────────────────────────────────────────────────┘
 
 Directory Structure:
@@ -390,14 +390,14 @@ SKILL.md Format:
 
 2. Gateway receives file
    - Validates file
-   - Stores in .deer-flow/threads/{thread_id}/user-data/uploads/
+   - Stores in .marketior/threads/{thread_id}/user-data/uploads/
    - If document: converts to Markdown via markitdown
 
 3. Returns response
    {
      "files": [{
        "filename": "doc.pdf",
-       "path": ".deer-flow/.../uploads/doc.pdf",
+       "path": ".marketior/.../uploads/doc.pdf",
        "virtual_path": "/mnt/user-data/uploads/doc.pdf",
        "artifact_url": "/api/threads/.../artifacts/mnt/.../doc.pdf"
      }]
@@ -418,8 +418,8 @@ SKILL.md Format:
 2. Web UI follows up with Gateway cleanup
    DELETE /api/threads/{thread_id}
 
-3. Gateway removes local DeerFlow-managed files
-   - Deletes .deer-flow/threads/{thread_id}/ recursively
+3. Gateway removes local Marketior-managed files
+   - Deletes .marketior/threads/{thread_id}/ recursively
    - Missing directories are treated as a no-op
    - Invalid thread IDs are rejected before filesystem access
 ```

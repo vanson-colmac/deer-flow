@@ -1,6 +1,6 @@
-"""Pure-argument factory for DeerFlow agents.
+"""Pure-argument factory for Marketior agents.
 
-``create_deerflow_agent`` accepts plain Python arguments — no YAML files, no
+``create_marketior_agent`` accepts plain Python arguments — no YAML files, no
 global singletons.  It is the SDK-level entry point sitting between the raw
 ``langchain.agents.create_agent`` primitive and the config-driven
 ``make_lead_agent`` application factory.
@@ -18,12 +18,12 @@ from typing import TYPE_CHECKING
 from langchain.agents import create_agent
 from langchain.agents.middleware import AgentMiddleware
 
-from deerflow.agents.features import RuntimeFeatures
-from deerflow.agents.middlewares.clarification_middleware import ClarificationMiddleware
-from deerflow.agents.middlewares.dangling_tool_call_middleware import DanglingToolCallMiddleware
-from deerflow.agents.middlewares.tool_error_handling_middleware import ToolErrorHandlingMiddleware
-from deerflow.agents.thread_state import ThreadState
-from deerflow.tools.builtins import ask_clarification_tool
+from marketior.agents.features import RuntimeFeatures
+from marketior.agents.middlewares.clarification_middleware import ClarificationMiddleware
+from marketior.agents.middlewares.dangling_tool_call_middleware import DanglingToolCallMiddleware
+from marketior.agents.middlewares.tool_error_handling_middleware import ToolErrorHandlingMiddleware
+from marketior.agents.thread_state import ThreadState
+from marketior.tools.builtins import ask_clarification_tool
 
 if TYPE_CHECKING:
     from langchain_core.language_models import BaseChatModel
@@ -58,7 +58,7 @@ _TODO_TOOL_DESCRIPTION = "Use this tool to create and manage a structured task l
 # ---------------------------------------------------------------------------
 
 
-def create_deerflow_agent(
+def create_marketior_agent(
     model: BaseChatModel,
     tools: list[BaseTool] | None = None,
     *,
@@ -71,7 +71,7 @@ def create_deerflow_agent(
     checkpointer: BaseCheckpointSaver | None = None,
     name: str = "default",
 ) -> CompiledStateGraph:
-    """Create a DeerFlow agent from plain Python arguments.
+    """Create a Marketior agent from plain Python arguments.
 
     The factory assembly itself reads no config files.  Some injected runtime
     components (e.g. ``task_tool``) may still depend on global config at
@@ -194,9 +194,9 @@ def _assemble_from_features(
         if isinstance(feat.sandbox, AgentMiddleware):
             chain.append(feat.sandbox)
         else:
-            from deerflow.agents.middlewares.thread_data_middleware import ThreadDataMiddleware
-            from deerflow.agents.middlewares.uploads_middleware import UploadsMiddleware
-            from deerflow.sandbox.middleware import SandboxMiddleware
+            from marketior.agents.middlewares.thread_data_middleware import ThreadDataMiddleware
+            from marketior.agents.middlewares.uploads_middleware import UploadsMiddleware
+            from marketior.sandbox.middleware import SandboxMiddleware
 
             chain.append(ThreadDataMiddleware(lazy_init=True))
             chain.append(UploadsMiddleware())
@@ -224,7 +224,7 @@ def _assemble_from_features(
 
     # --- [7] TodoMiddleware (plan_mode) ---
     if plan_mode:
-        from deerflow.agents.middlewares.todo_middleware import TodoMiddleware
+        from marketior.agents.middlewares.todo_middleware import TodoMiddleware
 
         chain.append(TodoMiddleware(system_prompt=_TODO_SYSTEM_PROMPT, tool_description=_TODO_TOOL_DESCRIPTION))
 
@@ -233,7 +233,7 @@ def _assemble_from_features(
         if isinstance(feat.auto_title, AgentMiddleware):
             chain.append(feat.auto_title)
         else:
-            from deerflow.agents.middlewares.title_middleware import TitleMiddleware
+            from marketior.agents.middlewares.title_middleware import TitleMiddleware
 
             chain.append(TitleMiddleware())
 
@@ -242,7 +242,7 @@ def _assemble_from_features(
         if isinstance(feat.memory, AgentMiddleware):
             chain.append(feat.memory)
         else:
-            from deerflow.agents.middlewares.memory_middleware import MemoryMiddleware
+            from marketior.agents.middlewares.memory_middleware import MemoryMiddleware
 
             chain.append(MemoryMiddleware(agent_name=name))
 
@@ -251,12 +251,12 @@ def _assemble_from_features(
         if isinstance(feat.vision, AgentMiddleware):
             chain.append(feat.vision)
         else:
-            from deerflow.agents.middlewares.view_image_middleware import ViewImageMiddleware
+            from marketior.agents.middlewares.view_image_middleware import ViewImageMiddleware
 
             chain.append(ViewImageMiddleware())
 
         if feat.sandbox is not False:
-            from deerflow.tools.builtins import view_image_tool
+            from marketior.tools.builtins import view_image_tool
 
             extra_tools.append(view_image_tool)
 
@@ -265,10 +265,10 @@ def _assemble_from_features(
         if isinstance(feat.subagent, AgentMiddleware):
             chain.append(feat.subagent)
         else:
-            from deerflow.agents.middlewares.subagent_limit_middleware import SubagentLimitMiddleware
+            from marketior.agents.middlewares.subagent_limit_middleware import SubagentLimitMiddleware
 
             chain.append(SubagentLimitMiddleware())
-        from deerflow.tools.builtins import task_tool
+        from marketior.tools.builtins import task_tool
 
         extra_tools.append(task_tool)
 
@@ -277,8 +277,8 @@ def _assemble_from_features(
         if isinstance(feat.loop_detection, AgentMiddleware):
             chain.append(feat.loop_detection)
         else:
-            from deerflow.agents.middlewares.loop_detection_middleware import LoopDetectionMiddleware
-            from deerflow.config.loop_detection_config import LoopDetectionConfig
+            from marketior.agents.middlewares.loop_detection_middleware import LoopDetectionMiddleware
+            from marketior.config.loop_detection_config import LoopDetectionConfig
 
             chain.append(LoopDetectionMiddleware.from_config(LoopDetectionConfig()))
 

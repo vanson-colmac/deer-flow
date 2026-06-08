@@ -11,8 +11,8 @@ import stat
 from pathlib import Path
 from urllib.parse import quote
 
-from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
-from deerflow.runtime.user_context import get_effective_user_id
+from marketior.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+from marketior.runtime.user_context import get_effective_user_id
 
 
 class PathTraversalError(ValueError):

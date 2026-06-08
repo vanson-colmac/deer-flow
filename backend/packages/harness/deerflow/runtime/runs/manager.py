@@ -8,12 +8,12 @@ import uuid
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from deerflow.utils.time import now_iso as _now_iso
+from marketior.utils.time import now_iso as _now_iso
 
 from .schemas import DisconnectMode, RunStatus
 
 if TYPE_CHECKING:
-    from deerflow.runtime.runs.store.base import RunStore
+    from marketior.runtime.runs.store.base import RunStore
 
 logger = logging.getLogger(__name__)
 

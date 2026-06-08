@@ -6,13 +6,13 @@ import threading
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from deerflow.config.agents_config import load_agent_soul
-from deerflow.skills.storage import get_or_new_skill_storage
-from deerflow.skills.types import Skill, SkillCategory
-from deerflow.subagents import get_available_subagent_names
+from marketior.config.agents_config import load_agent_soul
+from marketior.skills.storage import get_or_new_skill_storage
+from marketior.skills.types import Skill, SkillCategory
+from marketior.subagents import get_available_subagent_names
 
 if TYPE_CHECKING:
-    from deerflow.config.app_config import AppConfig
+    from marketior.config.app_config import AppConfig
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ def _load_enabled_skills_sync() -> list[Skill]:
 def _start_enabled_skills_refresh_thread() -> None:
     threading.Thread(
         target=_refresh_enabled_skills_cache_worker,
-        name="deerflow-enabled-skills-loader",
+        name="marketior-enabled-skills-loader",
         daemon=True,
     ).start()
 
@@ -195,7 +195,7 @@ def _build_available_subagents_description(available_names: list[str], bash_avai
     }
 
     # Lazy import moved outside loop to avoid repeated import overhead
-    from deerflow.subagents.registry import get_subagent_config
+    from marketior.subagents.registry import get_subagent_config
 
     lines = []
     for name in available_names:
@@ -494,10 +494,10 @@ Recent breakthroughs in language models have also accelerated progress
 ```markdown
 ## Executive Summary
 
-DeerFlow is an open-source AI agent framework that gained significant traction in early 2026
-[citation:GitHub Repository](https://github.com/bytedance/deer-flow). The project focuses on
+Marketior is an open-source AI agent framework that gained significant traction in early 2026
+[citation:GitHub Repository](https://github.com/bytedance/marketior). The project focuses on
 providing a production-ready agent system with sandbox execution and memory management
-[citation:DeerFlow Documentation](https://deer-flow.dev/docs).
+[citation:Marketior Documentation](https://marketior.dev/docs).
 
 ## Key Analysis
 
@@ -509,8 +509,8 @@ combined with a FastAPI gateway for REST API access [citation:FastAPI](https://f
 ## Sources
 
 ### Primary Sources
-- [GitHub Repository](https://github.com/bytedance/deer-flow) - Official source code and documentation
-- [DeerFlow Documentation](https://deer-flow.dev/docs) - Technical specifications
+- [GitHub Repository](https://github.com/bytedance/marketior) - Official source code and documentation
+- [Marketior Documentation](https://marketior.dev/docs) - Technical specifications
 
 ### Media Coverage
 - [AI Trends 2026](https://techcrunch.com/ai-trends) - Industry analysis
@@ -522,7 +522,7 @@ combined with a FastAPI gateway for REST API access [citation:FastAPI](https://f
 - The `[citation:Title](URL)` format is ONLY for inline citations within the report body
 - ❌ WRONG: `GitHub 仓库 - 官方源代码和文档` (no URL!)
 - ❌ WRONG in Sources: `[citation:GitHub Repository](url)` (citation prefix is for inline only!)
-- ✅ RIGHT in Sources: `[GitHub Repository](https://github.com/bytedance/deer-flow) - 官方源代码和文档`
+- ✅ RIGHT in Sources: `[GitHub Repository](https://github.com/bytedance/marketior) - 官方源代码和文档`
 
 **WORKFLOW for Research Tasks:**
 1. Use web_search to find sources → Extract {{title, url, snippet}} from results
@@ -563,11 +563,11 @@ def _get_memory_context(agent_name: str | None = None, *, app_config: AppConfig 
         Formatted memory context string wrapped in XML tags, or empty string if disabled.
     """
     try:
-        from deerflow.agents.memory import format_memory_for_injection, get_memory_data
-        from deerflow.runtime.user_context import get_effective_user_id
+        from marketior.agents.memory import format_memory_for_injection, get_memory_data
+        from marketior.runtime.user_context import get_effective_user_id
 
         if app_config is None:
-            from deerflow.config.memory_config import get_memory_config
+            from marketior.config.memory_config import get_memory_config
 
             config = get_memory_config()
         else:
@@ -629,7 +629,7 @@ def get_skills_prompt_section(available_skills: set[str] | None = None, *, app_c
 
     if app_config is None:
         try:
-            from deerflow.config import get_app_config
+            from marketior.config import get_app_config
 
             config = get_app_config()
             container_base_path = config.skills.container_path
@@ -691,11 +691,11 @@ def get_deferred_tools_prompt_section(*, app_config: AppConfig | None = None) ->
     and can use tool_search to load them.
     Returns empty string when tool_search is disabled or no tools are deferred.
     """
-    from deerflow.tools.builtins.tool_search import get_deferred_registry
+    from marketior.tools.builtins.tool_search import get_deferred_registry
 
     if app_config is None:
         try:
-            from deerflow.config import get_app_config
+            from marketior.config import get_app_config
 
             config = get_app_config()
         except Exception:
@@ -718,7 +718,7 @@ def _build_acp_section(*, app_config: AppConfig | None = None) -> str:
     """Build the ACP agent prompt section, only if ACP agents are configured."""
     if app_config is None:
         try:
-            from deerflow.config.acp_config import get_acp_agents
+            from marketior.config.acp_config import get_acp_agents
 
             agents = get_acp_agents()
         except Exception:
@@ -742,7 +742,7 @@ def _build_custom_mounts_section(*, app_config: AppConfig | None = None) -> str:
     """Build a prompt section for explicitly configured sandbox mounts."""
     if app_config is None:
         try:
-            from deerflow.config import get_app_config
+            from marketior.config import get_app_config
 
             config = get_app_config()
         except Exception:
@@ -811,7 +811,7 @@ def apply_prompt_template(
     # as a <system-reminder> in the first HumanMessage, keeping this prompt
     # identical across users and sessions for maximum prefix-cache reuse.
     return SYSTEM_PROMPT_TEMPLATE.format(
-        agent_name=agent_name or "DeerFlow 2.0",
+        agent_name=agent_name or "Marketior 2.0",
         soul=get_agent_soul(agent_name),
         self_update_section=_build_self_update_section(agent_name),
         skills_section=skills_section,

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Load the Memory Settings review sample into a local DeerFlow runtime."""
+"""Load the Memory Settings review sample into a local Marketior runtime."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def default_source(repo_root: Path) -> Path:
 
 
 def default_target(repo_root: Path) -> Path:
-    return repo_root / "backend" / ".deer-flow" / "memory.json"
+    return repo_root / "backend" / ".marketior" / "memory.json"
 
 
 def parse_args(repo_root: Path) -> argparse.Namespace:

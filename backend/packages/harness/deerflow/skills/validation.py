@@ -8,8 +8,8 @@ from pathlib import Path
 
 import yaml
 
-from deerflow.skills.parser import parse_allowed_tools
-from deerflow.skills.types import SKILL_MD_FILE
+from marketior.skills.parser import parse_allowed_tools
+from marketior.skills.types import SKILL_MD_FILE
 
 # Allowed properties in SKILL.md frontmatter
 ALLOWED_FRONTMATTER_PROPERTIES = {"name", "description", "license", "allowed-tools", "metadata", "compatibility", "version", "author"}

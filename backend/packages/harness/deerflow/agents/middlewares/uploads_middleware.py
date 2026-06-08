@@ -9,9 +9,9 @@ from langchain.agents.middleware import AgentMiddleware
 from langchain_core.messages import HumanMessage
 from langgraph.runtime import Runtime
 
-from deerflow.config.paths import Paths, get_paths
-from deerflow.runtime.user_context import get_effective_user_id
-from deerflow.utils.file_conversion import extract_outline
+from marketior.config.paths import Paths, get_paths
+from marketior.runtime.user_context import get_effective_user_id
+from marketior.utils.file_conversion import extract_outline
 
 logger = logging.getLogger(__name__)
 

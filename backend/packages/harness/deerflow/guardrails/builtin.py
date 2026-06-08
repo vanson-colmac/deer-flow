@@ -1,6 +1,6 @@
-"""Built-in guardrail providers that ship with DeerFlow."""
+"""Built-in guardrail providers that ship with Marketior."""
 
-from deerflow.guardrails.provider import GuardrailDecision, GuardrailReason, GuardrailRequest
+from marketior.guardrails.provider import GuardrailDecision, GuardrailReason, GuardrailRequest
 
 
 class AllowlistProvider:

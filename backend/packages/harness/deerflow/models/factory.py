@@ -2,10 +2,10 @@ import logging
 
 from langchain.chat_models import BaseChatModel
 
-from deerflow.config import get_app_config
-from deerflow.config.app_config import AppConfig
-from deerflow.reflection import resolve_class
-from deerflow.tracing import build_tracing_callbacks
+from marketior.config import get_app_config
+from marketior.config.app_config import AppConfig
+from marketior.reflection import resolve_class
+from marketior.tracing import build_tracing_callbacks
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def _enable_stream_usage_by_default(model_use_path: str, model_settings_from_con
     """Enable stream usage for OpenAI-compatible models unless explicitly configured.
 
     LangChain only auto-enables ``stream_usage`` for OpenAI models when no custom
-    base URL or client is configured. DeerFlow frequently uses OpenAI-compatible
+    base URL or client is configured. Marketior frequently uses OpenAI-compatible
     gateways, so token usage tracking would otherwise stay empty and the
     TokenUsageMiddleware would have nothing to log.
     """
@@ -117,7 +117,7 @@ def create_chat_model(name: str | None = None, thinking_enabled: bool = False, *
     _enable_stream_usage_by_default(model_config.use, model_settings_from_config)
 
     # For Codex Responses API models: map thinking mode to reasoning_effort
-    from deerflow.models.openai_codex_provider import CodexChatModel
+    from marketior.models.openai_codex_provider import CodexChatModel
 
     if issubclass(model_class, CodexChatModel):
         # The ChatGPT Codex endpoint currently rejects max_tokens/max_output_tokens.

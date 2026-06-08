@@ -15,7 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DETECT_SCRIPT_PATH = REPO_ROOT / "scripts" / "detect_uv_extras.py"
 
 
-spec = importlib.util.spec_from_file_location("deerflow_detect_uv_extras", DETECT_SCRIPT_PATH)
+spec = importlib.util.spec_from_file_location("marketior_detect_uv_extras", DETECT_SCRIPT_PATH)
 assert spec is not None and spec.loader is not None
 detect = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(detect)
@@ -26,7 +26,7 @@ def isolated_cwd(tmp_path, monkeypatch):
     """Isolate `find_config_file()` from the real repo by chdir + clearing env."""
     monkeypatch.chdir(tmp_path)
     monkeypatch.delenv("UV_EXTRAS", raising=False)
-    monkeypatch.delenv("DEER_FLOW_CONFIG_PATH", raising=False)
+    monkeypatch.delenv("MARKETIOR_CONFIG_PATH", raising=False)
     return tmp_path
 
 
@@ -138,7 +138,7 @@ def test_detect_from_config_postgres_via_checkpointer(tmp_path):
 
 def test_detect_from_config_sqlite_returns_no_extras(tmp_path):
     cfg = tmp_path / "config.yaml"
-    cfg.write_text("database:\n  backend: sqlite\n  sqlite_dir: .deer-flow/data\n")
+    cfg.write_text("database:\n  backend: sqlite\n  sqlite_dir: .marketior/data\n")
     assert detect.detect_from_config(cfg) == []
 
 
@@ -176,7 +176,7 @@ def test_resolve_extras_respects_explicit_config_path(tmp_path, monkeypatch):
     elsewhere = tmp_path / "elsewhere.yaml"
     elsewhere.write_text("database:\n  backend: postgres\n")
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("DEER_FLOW_CONFIG_PATH", str(elsewhere))
+    monkeypatch.setenv("MARKETIOR_CONFIG_PATH", str(elsewhere))
 
     assert detect.resolve_extras() == ["postgres"]
 

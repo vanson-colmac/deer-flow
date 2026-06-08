@@ -44,7 +44,7 @@ def _stop_container(container_name: str) -> None:
 
 # Use a lightweight image for testing to avoid pulling the heavy sandbox image
 E2E_TEST_IMAGE = "busybox:latest"
-E2E_PREFIX = "deer-flow-sandbox-e2e-test"
+E2E_PREFIX = "marketior-sandbox-e2e-test"
 
 
 @pytest.fixture(autouse=True)
@@ -92,7 +92,7 @@ class TestOrphanReconciliationE2E:
             assert _container_running(container_name), "Test container should be running"
 
             # Step 2: Create backend and list running containers
-            from deerflow.community.aio_sandbox.local_backend import LocalContainerBackend
+            from marketior.community.aio_sandbox.local_backend import LocalContainerBackend
 
             backend = LocalContainerBackend(
                 image=E2E_TEST_IMAGE,
@@ -141,7 +141,7 @@ class TestOrphanReconciliationE2E:
                 assert result.returncode == 0, f"Failed to start {name}: {result.stderr}"
                 containers.append(name)
 
-            from deerflow.community.aio_sandbox.local_backend import LocalContainerBackend
+            from marketior.community.aio_sandbox.local_backend import LocalContainerBackend
 
             backend = LocalContainerBackend(
                 image=E2E_TEST_IMAGE,
@@ -191,7 +191,7 @@ class TestOrphanReconciliationE2E:
                 timeout=30,
             )
 
-            from deerflow.community.aio_sandbox.local_backend import LocalContainerBackend
+            from marketior.community.aio_sandbox.local_backend import LocalContainerBackend
 
             backend = LocalContainerBackend(
                 image=E2E_TEST_IMAGE,
@@ -206,7 +206,7 @@ class TestOrphanReconciliationE2E:
 
             # Should find ours but not unrelated
             assert "ours001" in found_ids
-            # "unrelated-test-container" doesn't match "deer-flow-sandbox-e2e-test-" prefix
+            # "unrelated-test-container" doesn't match "marketior-sandbox-e2e-test-" prefix
             for info in running:
                 assert not info.sandbox_id.startswith("unrelated")
 

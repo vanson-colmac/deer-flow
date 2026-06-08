@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 import pytest
 from support.detectors.blocking_io import BlockingIOProbe, detect_blocking_io
 
-# Make 'app' and 'deerflow' importable from any working directory
+# Make 'app' and 'marketior' importable from any working directory
 sys.path.insert(0, str(Path(__file__).parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 
@@ -24,15 +24,15 @@ _blocking_io_probe = BlockingIOProbe(_BACKEND_ROOT)
 _BLOCKING_IO_DETECTOR_ATTR = "_blocking_io_detector"
 
 # Break the circular import chain that exists in production code:
-#   deerflow.subagents.__init__
+#   marketior.subagents.__init__
 #     -> .executor (SubagentExecutor, SubagentResult)
-#       -> deerflow.agents.thread_state
-#         -> deerflow.agents.__init__
+#       -> marketior.agents.thread_state
+#         -> marketior.agents.__init__
 #           -> lead_agent.agent
 #             -> subagent_limit_middleware
-#               -> deerflow.subagents.executor  <-- circular!
+#               -> marketior.subagents.executor  <-- circular!
 #
-# By injecting a mock for deerflow.subagents.executor *before* any test module
+# By injecting a mock for marketior.subagents.executor *before* any test module
 # triggers the import, __init__.py's "from .executor import ..." succeeds
 # immediately without running the real executor module.
 _executor_mock = MagicMock()
@@ -42,7 +42,7 @@ _executor_mock.SubagentStatus = MagicMock
 _executor_mock.MAX_CONCURRENT_SUBAGENTS = 3
 _executor_mock.get_background_task_result = MagicMock()
 
-sys.modules["deerflow.subagents.executor"] = _executor_mock
+sys.modules["marketior.subagents.executor"] = _executor_mock
 
 
 @pytest.fixture()
@@ -154,7 +154,7 @@ def _blocking_io_probe_skipped(item: pytest.Item) -> bool:
 # ---------------------------------------------------------------------------
 #
 # Repository methods read ``user_id`` from a contextvar by default
-# (see ``deerflow.runtime.user_context``). Without this fixture, every
+# (see ``marketior.runtime.user_context``). Without this fixture, every
 # pre-existing persistence test would raise RuntimeError because the
 # contextvar is unset. The fixture sets a default test user on every
 # test; tests that explicitly want to verify behaviour *without* a user
@@ -165,7 +165,7 @@ def _blocking_io_probe_skipped(item: pytest.Item) -> bool:
 def _reset_skill_storage_singleton():
     """Reset the SkillStorage singleton between tests to prevent cross-test contamination."""
     try:
-        from deerflow.skills.storage import reset_skill_storage
+        from marketior.skills.storage import reset_skill_storage
     except ImportError:
         yield
         return
@@ -189,7 +189,7 @@ def _auto_user_context(request):
         return
 
     try:
-        from deerflow.runtime.user_context import (
+        from marketior.runtime.user_context import (
             reset_current_user,
             set_current_user,
         )

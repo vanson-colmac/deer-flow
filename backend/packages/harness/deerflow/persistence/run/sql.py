@@ -14,9 +14,9 @@ from typing import Any
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from deerflow.persistence.run.model import RunRow
-from deerflow.runtime.runs.store.base import RunStore
-from deerflow.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
+from marketior.persistence.run.model import RunRow
+from marketior.runtime.runs.store.base import RunStore
+from marketior.runtime.user_context import AUTO, _AutoSentinel, resolve_user_id
 
 
 class RunRepository(RunStore):

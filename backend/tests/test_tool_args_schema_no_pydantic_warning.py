@@ -1,12 +1,12 @@
 """Regression test: tool args schemas must not emit Pydantic serialization warnings.
 
-DeerFlow tools annotate their runtime parameter as ``Runtime``
-(``deerflow.tools.types.Runtime`` = ``ToolRuntime[dict[str, Any], ThreadState]``)
+Marketior tools annotate their runtime parameter as ``Runtime``
+(``marketior.tools.types.Runtime`` = ``ToolRuntime[dict[str, Any], ThreadState]``)
 so the LangChain tool framework injects the runtime automatically.
 When the inner ``Runtime.context`` field is left as the unbound ``ContextT``
 TypeVar (default ``None``), Pydantic's ``model_dump()`` on the auto-generated
 args schema emits a ``PydanticSerializationUnexpectedValue`` warning on every
-tool call because the actual context DeerFlow installs is a dict. Using the
+tool call because the actual context Marketior installs is a dict. Using the
 ``Runtime`` alias (which binds the context to ``dict[str, Any]``) keeps
 Pydantic's serialization expectations aligned with reality.
 """
@@ -18,7 +18,7 @@ import warnings
 import pytest
 from langchain.tools import ToolRuntime
 
-from deerflow.sandbox.tools import (
+from marketior.sandbox.tools import (
     bash_tool,
     glob_tool,
     grep_tool,
@@ -27,12 +27,12 @@ from deerflow.sandbox.tools import (
     str_replace_tool,
     write_file_tool,
 )
-from deerflow.tools.builtins.present_file_tool import present_file_tool
-from deerflow.tools.builtins.setup_agent_tool import setup_agent
-from deerflow.tools.builtins.task_tool import task_tool
-from deerflow.tools.builtins.update_agent_tool import update_agent
-from deerflow.tools.builtins.view_image_tool import view_image_tool
-from deerflow.tools.skill_manage_tool import skill_manage_tool
+from marketior.tools.builtins.present_file_tool import present_file_tool
+from marketior.tools.builtins.setup_agent_tool import setup_agent
+from marketior.tools.builtins.task_tool import task_tool
+from marketior.tools.builtins.update_agent_tool import update_agent
+from marketior.tools.builtins.view_image_tool import view_image_tool
+from marketior.tools.skill_manage_tool import skill_manage_tool
 
 
 def _make_runtime(context: dict) -> ToolRuntime:

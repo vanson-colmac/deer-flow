@@ -15,8 +15,8 @@ from typing import Any
 import yaml
 from pydantic import BaseModel
 
-from deerflow.config.paths import get_paths
-from deerflow.runtime.user_context import get_effective_user_id
+from marketior.config.paths import get_paths
+from marketior.runtime.user_context import get_effective_user_id
 
 logger = logging.getLogger(__name__)
 

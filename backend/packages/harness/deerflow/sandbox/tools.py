@@ -5,20 +5,20 @@ from pathlib import Path
 
 from langchain.tools import tool
 
-from deerflow.agents.thread_state import ThreadDataState
-from deerflow.config import get_app_config
-from deerflow.config.paths import VIRTUAL_PATH_PREFIX
-from deerflow.sandbox.exceptions import (
+from marketior.agents.thread_state import ThreadDataState
+from marketior.config import get_app_config
+from marketior.config.paths import VIRTUAL_PATH_PREFIX
+from marketior.sandbox.exceptions import (
     SandboxError,
     SandboxNotFoundError,
     SandboxRuntimeError,
 )
-from deerflow.sandbox.file_operation_lock import get_file_operation_lock
-from deerflow.sandbox.sandbox import Sandbox
-from deerflow.sandbox.sandbox_provider import get_sandbox_provider
-from deerflow.sandbox.search import GrepMatch
-from deerflow.sandbox.security import LOCAL_HOST_BASH_DISABLED_MESSAGE, is_host_bash_allowed
-from deerflow.tools.types import Runtime
+from marketior.sandbox.file_operation_lock import get_file_operation_lock
+from marketior.sandbox.sandbox import Sandbox
+from marketior.sandbox.sandbox_provider import get_sandbox_provider
+from marketior.sandbox.search import GrepMatch
+from marketior.sandbox.security import LOCAL_HOST_BASH_DISABLED_MESSAGE, is_host_bash_allowed
+from marketior.tools.types import Runtime
 
 _ABSOLUTE_PATH_PATTERN = re.compile(r"(?<![:\w])(?<!:/)/(?:[^\s\"'`;&|<>()]+)")
 _FILE_URL_PATTERN = re.compile(r"\bfile://\S+", re.IGNORECASE)
@@ -89,7 +89,7 @@ def _get_skills_container_path() -> str:
     if cached is not None:
         return cached
     try:
-        from deerflow.config import get_app_config
+        from marketior.config import get_app_config
 
         value = get_app_config().skills.container_path
         _get_skills_container_path._cached = value  # type: ignore[attr-defined]
@@ -110,7 +110,7 @@ def _get_skills_host_path() -> str | None:
     if cached is not None:
         return cached
     try:
-        from deerflow.config import get_app_config
+        from marketior.config import get_app_config
 
         config = get_app_config()
         skills_path = config.skills.get_skills_path()
@@ -171,7 +171,7 @@ def _get_custom_mounts():
     try:
         from pathlib import Path
 
-        from deerflow.config import get_app_config
+        from marketior.config import get_app_config
 
         config = get_app_config()
         mounts = []
@@ -238,8 +238,8 @@ def _get_acp_workspace_host_path(thread_id: str | None = None) -> str | None:
     """
     if thread_id is not None:
         try:
-            from deerflow.config.paths import get_paths
-            from deerflow.runtime.user_context import get_effective_user_id
+            from marketior.config.paths import get_paths
+            from marketior.runtime.user_context import get_effective_user_id
 
             host_path = get_paths().acp_workspace_dir(thread_id, user_id=get_effective_user_id())
             if host_path.exists():
@@ -252,7 +252,7 @@ def _get_acp_workspace_host_path(thread_id: str | None = None) -> str | None:
     if cached is not None:
         return cached
     try:
-        from deerflow.config.paths import get_paths
+        from marketior.config.paths import get_paths
 
         host_path = get_paths().base_dir / "acp-workspace"
         if host_path.exists():
@@ -314,7 +314,7 @@ def _get_mcp_allowed_paths() -> list[str]:
     """Get the list of allowed paths from MCP config for file system server."""
     allowed_paths = []
     try:
-        from deerflow.config.extensions_config import get_extensions_config
+        from marketior.config.extensions_config import get_extensions_config
 
         extensions_config = get_extensions_config()
 
@@ -1249,7 +1249,7 @@ def bash_tool(runtime: Runtime, description: str, command: str) -> str:
             command = _apply_cwd_prefix(command, thread_data)
             output = sandbox.execute_command(command)
             try:
-                from deerflow.config.app_config import get_app_config
+                from marketior.config.app_config import get_app_config
 
                 sandbox_cfg = get_app_config().sandbox
                 max_chars = sandbox_cfg.bash_output_max_chars if sandbox_cfg else 20000
@@ -1258,7 +1258,7 @@ def bash_tool(runtime: Runtime, description: str, command: str) -> str:
             return _truncate_bash_output(mask_local_paths_in_output(output, thread_data), max_chars)
         ensure_thread_directories_exist(runtime)
         try:
-            from deerflow.config.app_config import get_app_config
+            from marketior.config.app_config import get_app_config
 
             sandbox_cfg = get_app_config().sandbox
             max_chars = sandbox_cfg.bash_output_max_chars if sandbox_cfg else 20000
@@ -1303,7 +1303,7 @@ def ls_tool(runtime: Runtime, description: str, path: str) -> str:
         if thread_data is not None:
             output = mask_local_paths_in_output(output, thread_data)
         try:
-            from deerflow.config.app_config import get_app_config
+            from marketior.config.app_config import get_app_config
 
             sandbox_cfg = get_app_config().sandbox
             max_chars = sandbox_cfg.ls_output_max_chars if sandbox_cfg else 20000
@@ -1476,7 +1476,7 @@ def read_file_tool(
         if start_line is not None and end_line is not None:
             content = "\n".join(content.splitlines()[start_line - 1 : end_line])
         try:
-            from deerflow.config.app_config import get_app_config
+            from marketior.config.app_config import get_app_config
 
             sandbox_cfg = get_app_config().sandbox
             max_chars = sandbox_cfg.read_file_output_max_chars if sandbox_cfg else 50000

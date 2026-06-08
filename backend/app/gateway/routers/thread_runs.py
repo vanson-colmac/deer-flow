@@ -1,8 +1,8 @@
 """Runs endpoints — create, stream, wait, cancel.
 
 Implements the LangGraph Platform runs API on top of
-:class:`deerflow.agents.runs.RunManager` and
-:class:`deerflow.agents.stream_bridge.StreamBridge`.
+:class:`marketior.agents.runs.RunManager` and
+:class:`marketior.agents.stream_bridge.StreamBridge`.
 
 SSE format is aligned with the LangGraph Platform protocol so that
 the ``useStream`` React hook from ``@langchain/langgraph-sdk/react``
@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 from app.gateway.authz import require_permission
 from app.gateway.deps import get_checkpointer, get_current_user, get_feedback_repo, get_run_event_store, get_run_manager, get_run_store, get_stream_bridge
 from app.gateway.services import sse_consumer, start_run
-from deerflow.runtime import RunRecord, RunStatus, serialize_channel_values
+from marketior.runtime import RunRecord, RunStatus, serialize_channel_values
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/threads", tags=["runs"])
@@ -39,7 +39,7 @@ class RunCreateRequest(BaseModel):
     command: dict[str, Any] | None = Field(default=None, description="LangGraph Command")
     metadata: dict[str, Any] | None = Field(default=None, description="Run metadata")
     config: dict[str, Any] | None = Field(default=None, description="RunnableConfig overrides")
-    context: dict[str, Any] | None = Field(default=None, description="DeerFlow context overrides (model_name, thinking_enabled, etc.)")
+    context: dict[str, Any] | None = Field(default=None, description="Marketior context overrides (model_name, thinking_enabled, etc.)")
     webhook: str | None = Field(default=None, description="Completion callback URL")
     checkpoint_id: str | None = Field(default=None, description="Resume from checkpoint")
     checkpoint: dict[str, Any] | None = Field(default=None, description="Full checkpoint object")

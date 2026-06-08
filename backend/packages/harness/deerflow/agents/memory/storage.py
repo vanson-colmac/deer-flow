@@ -9,9 +9,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from deerflow.config.agents_config import AGENT_NAME_PATTERN
-from deerflow.config.memory_config import get_memory_config
-from deerflow.config.paths import get_paths
+from marketior.config.agents_config import AGENT_NAME_PATTERN
+from marketior.config.memory_config import get_memory_config
+from marketior.config.paths import get_paths
 
 logger = logging.getLogger(__name__)
 

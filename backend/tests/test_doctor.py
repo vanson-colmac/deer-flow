@@ -154,14 +154,14 @@ class TestCheckLLMApiKey:
 class TestCheckLLMAuth:
     def test_codex_auth_file_missing_fails(self, tmp_path, monkeypatch):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\nmodels:\n  - name: codex\n    use: deerflow.models.openai_codex_provider:CodexChatModel\n    model: gpt-5.4\n")
+        cfg.write_text("config_version: 5\nmodels:\n  - name: codex\n    use: marketior.models.openai_codex_provider:CodexChatModel\n    model: gpt-5.4\n")
         monkeypatch.setenv("CODEX_AUTH_PATH", str(tmp_path / "missing-auth.json"))
         results = doctor.check_llm_auth(cfg)
         assert any(result.status == "fail" and "Codex CLI auth available" in result.label for result in results)
 
     def test_claude_oauth_env_passes(self, tmp_path, monkeypatch):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\nmodels:\n  - name: claude\n    use: deerflow.models.claude_provider:ClaudeChatModel\n    model: claude-sonnet-4-6\n")
+        cfg.write_text("config_version: 5\nmodels:\n  - name: claude\n    use: marketior.models.claude_provider:ClaudeChatModel\n    model: claude-sonnet-4-6\n")
         monkeypatch.setenv("CLAUDE_CODE_OAUTH_TOKEN", "token")
         results = doctor.check_llm_auth(cfg)
         assert any(result.status == "ok" and "Claude auth available" in result.label for result in results)
@@ -176,7 +176,7 @@ class TestCheckWebSearch:
     def test_ddg_always_ok(self, tmp_path):
         cfg = tmp_path / "config.yaml"
         cfg.write_text(
-            "config_version: 5\nmodels:\n  - name: default\n    use: langchain_openai:ChatOpenAI\n    model: gpt-4o\n    api_key: $OPENAI_API_KEY\ntools:\n  - name: web_search\n    use: deerflow.community.ddg_search.tools:web_search_tool\n"
+            "config_version: 5\nmodels:\n  - name: default\n    use: langchain_openai:ChatOpenAI\n    model: gpt-4o\n    api_key: $OPENAI_API_KEY\ntools:\n  - name: web_search\n    use: marketior.community.ddg_search.tools:web_search_tool\n"
         )
         result = doctor.check_web_search(cfg)
         assert result.status == "ok"
@@ -185,14 +185,14 @@ class TestCheckWebSearch:
     def test_tavily_with_key_ok(self, tmp_path, monkeypatch):
         monkeypatch.setenv("TAVILY_API_KEY", "tvly-test")
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: deerflow.community.tavily.tools:web_search_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: marketior.community.tavily.tools:web_search_tool\n")
         result = doctor.check_web_search(cfg)
         assert result.status == "ok"
 
     def test_tavily_without_key_warns(self, tmp_path, monkeypatch):
         monkeypatch.delenv("TAVILY_API_KEY", raising=False)
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: deerflow.community.tavily.tools:web_search_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: marketior.community.tavily.tools:web_search_tool\n")
         result = doctor.check_web_search(cfg)
         assert result.status == "warn"
         assert result.fix is not None
@@ -212,7 +212,7 @@ class TestCheckWebSearch:
 
     def test_invalid_provider_use_fails(self, tmp_path):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: deerflow.community.not_real.tools:web_search_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_search\n    use: marketior.community.not_real.tools:web_search_tool\n")
         result = doctor.check_web_search(cfg)
         assert result.status == "fail"
 
@@ -225,7 +225,7 @@ class TestCheckWebSearch:
 class TestCheckWebFetch:
     def test_jina_always_ok(self, tmp_path):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: deerflow.community.jina_ai.tools:web_fetch_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: marketior.community.jina_ai.tools:web_fetch_tool\n")
         result = doctor.check_web_fetch(cfg)
         assert result.status == "ok"
         assert "Jina AI" in result.detail
@@ -233,7 +233,7 @@ class TestCheckWebFetch:
     def test_firecrawl_without_key_warns(self, tmp_path, monkeypatch):
         monkeypatch.delenv("FIRECRAWL_API_KEY", raising=False)
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: deerflow.community.firecrawl.tools:web_fetch_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: marketior.community.firecrawl.tools:web_fetch_tool\n")
         result = doctor.check_web_fetch(cfg)
         assert result.status == "warn"
         assert "FIRECRAWL_API_KEY" in (result.fix or "")
@@ -247,7 +247,7 @@ class TestCheckWebFetch:
 
     def test_invalid_provider_use_fails(self, tmp_path):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: deerflow.community.not_real.tools:web_fetch_tool\n")
+        cfg.write_text("config_version: 5\ntools:\n  - name: web_fetch\n    use: marketior.community.not_real.tools:web_fetch_tool\n")
         result = doctor.check_web_fetch(cfg)
         assert result.status == "fail"
 
@@ -300,13 +300,13 @@ class TestCheckSandbox:
 
     def test_local_sandbox_with_disabled_host_bash_warns(self, tmp_path):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\nsandbox:\n  use: deerflow.sandbox.local:LocalSandboxProvider\n  allow_host_bash: false\ntools:\n  - name: bash\n    use: deerflow.sandbox.tools:bash_tool\n")
+        cfg.write_text("config_version: 5\nsandbox:\n  use: marketior.sandbox.local:LocalSandboxProvider\n  allow_host_bash: false\ntools:\n  - name: bash\n    use: marketior.sandbox.tools:bash_tool\n")
         results = doctor.check_sandbox(cfg)
         assert any(result.status == "warn" for result in results)
 
     def test_container_sandbox_without_runtime_warns(self, tmp_path, monkeypatch):
         cfg = tmp_path / "config.yaml"
-        cfg.write_text("config_version: 5\nsandbox:\n  use: deerflow.community.aio_sandbox:AioSandboxProvider\ntools: []\n")
+        cfg.write_text("config_version: 5\nsandbox:\n  use: marketior.community.aio_sandbox:AioSandboxProvider\ntools: []\n")
         monkeypatch.setattr(doctor.shutil, "which", lambda _name: None)
         results = doctor.check_sandbox(cfg)
         assert any(result.label == "container runtime available" and result.status == "warn" for result in results)

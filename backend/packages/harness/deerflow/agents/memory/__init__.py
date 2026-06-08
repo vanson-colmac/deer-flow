@@ -1,4 +1,4 @@
-"""Memory module for DeerFlow.
+"""Memory module for Marketior.
 
 This module provides a global memory mechanism that:
 - Stores user context and conversation history in memory.json
@@ -6,24 +6,24 @@ This module provides a global memory mechanism that:
 - Injects relevant memory into system prompts for personalized responses
 """
 
-from deerflow.agents.memory.prompt import (
+from marketior.agents.memory.prompt import (
     FACT_EXTRACTION_PROMPT,
     MEMORY_UPDATE_PROMPT,
     format_conversation_for_update,
     format_memory_for_injection,
 )
-from deerflow.agents.memory.queue import (
+from marketior.agents.memory.queue import (
     ConversationContext,
     MemoryUpdateQueue,
     get_memory_queue,
     reset_memory_queue,
 )
-from deerflow.agents.memory.storage import (
+from marketior.agents.memory.storage import (
     FileMemoryStorage,
     MemoryStorage,
     get_memory_storage,
 )
-from deerflow.agents.memory.updater import (
+from marketior.agents.memory.updater import (
     MemoryUpdater,
     clear_memory_data,
     delete_memory_fact,

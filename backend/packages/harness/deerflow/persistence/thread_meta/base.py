@@ -5,7 +5,7 @@ Implementations:
 - MemoryThreadMetaStore: wraps LangGraph BaseStore (memory mode)
 
 All mutating and querying methods accept a ``user_id`` parameter with
-three-state semantics (see :mod:`deerflow.runtime.user_context`):
+three-state semantics (see :mod:`marketior.runtime.user_context`):
 
 - ``AUTO`` (default): resolve from the request-scoped contextvar.
 - Explicit ``str``: use the provided value verbatim.
@@ -17,7 +17,7 @@ from __future__ import annotations
 import abc
 from typing import Any
 
-from deerflow.runtime.user_context import AUTO, _AutoSentinel
+from marketior.runtime.user_context import AUTO, _AutoSentinel
 
 
 class InvalidMetadataFilterError(ValueError):

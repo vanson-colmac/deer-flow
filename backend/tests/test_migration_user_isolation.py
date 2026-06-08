@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from deerflow.config.paths import Paths
+from marketior.config.paths import Paths
 
 
 @pytest.fixture

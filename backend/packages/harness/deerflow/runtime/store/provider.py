@@ -1,14 +1,14 @@
 """Sync Store factory.
 
 Provides a **sync singleton** and a **sync context manager** for CLI tools
-and the embedded :class:`~deerflow.client.DeerFlowClient`.
+and the embedded :class:`~marketior.client.MarketiorClient`.
 
 The backend mirrors the configured checkpointer so that both always use the
 same persistence technology.  Supported backends: memory, sqlite, postgres.
 
 Usage::
 
-    from deerflow.runtime.store.provider import get_store, store_context
+    from marketior.runtime.store.provider import get_store, store_context
 
     # Singleton — reused across calls, closed on process exit
     store = get_store()
@@ -26,8 +26,8 @@ from collections.abc import Iterator
 
 from langgraph.store.base import BaseStore
 
-from deerflow.config.app_config import get_app_config
-from deerflow.runtime.store._sqlite_utils import ensure_sqlite_parent_dir, resolve_sqlite_conn_str
+from marketior.config.app_config import get_app_config
+from marketior.runtime.store._sqlite_utils import ensure_sqlite_parent_dir, resolve_sqlite_conn_str
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 SQLITE_STORE_INSTALL = "langgraph-checkpoint-sqlite is required for the SQLite store. Install it with: uv add langgraph-checkpoint-sqlite"
 POSTGRES_STORE_INSTALL = (
-    "langgraph-checkpoint-postgres is required for the PostgreSQL store. Install the package extra with: pip install 'deerflow-harness[postgres]' (or use: uv sync --all-packages --extra postgres when developing locally)"
+    "langgraph-checkpoint-postgres is required for the PostgreSQL store. Install the package extra with: pip install 'marketior-harness[postgres]' (or use: uv sync --all-packages --extra postgres when developing locally)"
 )
 POSTGRES_CONN_REQUIRED = "checkpointer.connection_string is required for the postgres backend"
 
@@ -51,7 +51,7 @@ def _sync_store_cm(config) -> Iterator[BaseStore]:
     """Context manager that creates and tears down a sync Store.
 
     The ``config`` argument is a
-    :class:`~deerflow.config.checkpointer_config.CheckpointerConfig` instance —
+    :class:`~marketior.config.checkpointer_config.CheckpointerConfig` instance —
     the same object used by the checkpointer factory.
     """
     if config.type == "memory":
@@ -119,8 +119,8 @@ def get_store() -> BaseStore:
 
     # Lazily load app config, mirroring the checkpointer singleton pattern so
     # that tests that set the global checkpointer config explicitly remain isolated.
-    from deerflow.config.app_config import _app_config
-    from deerflow.config.checkpointer_config import get_checkpointer_config
+    from marketior.config.app_config import _app_config
+    from marketior.config.checkpointer_config import get_checkpointer_config
 
     config = get_checkpointer_config()
 

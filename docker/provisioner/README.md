@@ -1,6 +1,6 @@
-# DeerFlow Sandbox Provisioner
+# Marketior Sandbox Provisioner
 
-The **Sandbox Provisioner** is a FastAPI service that dynamically manages sandbox Pods in Kubernetes. It provides a REST API for the DeerFlow backend to create, monitor, and destroy isolated sandbox environments for code execution.
+The **Sandbox Provisioner** is a FastAPI service that dynamically manages sandbox Pods in Kubernetes. It provides a REST API for the Marketior backend to create, monitor, and destroy isolated sandbox environments for code execution.
 
 ## Architecture
 
@@ -22,7 +22,7 @@ The **Sandbox Provisioner** is a FastAPI service that dynamically manages sandbo
 
 1. **Backend Request**: When the backend needs to execute code, it sends a `POST /api/sandboxes` request with a `sandbox_id`, `thread_id`, and optional `user_id`.
 
-2. **Pod Creation**: The provisioner creates a dedicated Pod in the `deer-flow` namespace with:
+2. **Pod Creation**: The provisioner creates a dedicated Pod in the `marketior` namespace with:
    - The sandbox container image (all-in-one-sandbox)
    - HostPath volumes mounted for:
      - `/mnt/skills` → Read-only access to public skills
@@ -136,21 +136,21 @@ The provisioner is configured via environment variables (set in [docker-compose-
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `K8S_NAMESPACE` | `deer-flow` | Kubernetes namespace for sandbox resources |
+| `K8S_NAMESPACE` | `marketior` | Kubernetes namespace for sandbox resources |
 | `SANDBOX_IMAGE` | `enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest` | Container image for sandbox Pods |
 | `SKILLS_HOST_PATH` | - | **Host machine** path to skills directory (must be absolute) |
 | `THREADS_HOST_PATH` | - | **Host machine** path to threads data directory (must be absolute) |
 | `SKILLS_PVC_NAME` | empty (use hostPath) | PVC name for skills volume; when set, sandbox Pods use PVC instead of hostPath |
-| `USERDATA_PVC_NAME` | empty (use hostPath) | PVC name for user-data volume; when set, uses PVC with `subPath: deer-flow/users/{user_id}/threads/{thread_id}/user-data` |
+| `USERDATA_PVC_NAME` | empty (use hostPath) | PVC name for user-data volume; when set, uses PVC with `subPath: marketior/users/{user_id}/threads/{thread_id}/user-data` |
 | `KUBECONFIG_PATH` | `/root/.kube/config` | Path to kubeconfig **inside** the provisioner container |
 | `NODE_HOST` | `host.docker.internal` | Hostname that backend containers use to reach host NodePorts |
 | `K8S_API_SERVER` | (from kubeconfig) | Override K8s API server URL (e.g., `https://host.docker.internal:26443`) |
 
 ### PVC User-Data Upgrade Note
 
-Older provisioner versions mounted PVC user-data from `threads/{thread_id}/user-data`. The user-scoped layout mounts from `deer-flow/users/{user_id}/threads/{thread_id}/user-data`.
+Older provisioner versions mounted PVC user-data from `threads/{thread_id}/user-data`. The user-scoped layout mounts from `marketior/users/{user_id}/threads/{thread_id}/user-data`.
 
-If an existing deployment already has PVC-backed user-data under the legacy layout, migrate the DeerFlow data directory before relying on the new PVC subPath. Mount the same PVC path that the gateway uses as its DeerFlow base directory, then run the existing user-isolation migration script:
+If an existing deployment already has PVC-backed user-data under the legacy layout, migrate the Marketior data directory before relying on the new PVC subPath. Mount the same PVC path that the gateway uses as its Marketior base directory, then run the existing user-isolation migration script:
 
 ```bash
 cd backend
@@ -158,7 +158,7 @@ PYTHONPATH=. python scripts/migrate_user_isolation.py --dry-run
 PYTHONPATH=. python scripts/migrate_user_isolation.py --user-id <target-user-id>
 ```
 
-This moves legacy `threads/{thread_id}/user-data` data under `users/<target-user-id>/threads/{thread_id}/user-data`, which matches the new provisioner PVC subPath when the gateway base directory is mounted at `deer-flow/` on the PVC. Use `default` as the target user only when the legacy data should remain in the default no-auth user namespace. Run the migration while no gateway or sandbox Pods are writing to those paths.
+This moves legacy `threads/{thread_id}/user-data` data under `users/<target-user-id>/threads/{thread_id}/user-data`, which matches the new provisioner PVC subPath when the gateway base directory is mounted at `marketior/` on the PVC. Use `default` as the target user only when the legacy data should remain in the default no-auth user namespace. Run the migration while no gateway or sandbox Pods are writing to those paths.
 
 ### Important: K8S_API_SERVER Override
 
@@ -193,9 +193,9 @@ kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
 
 3. **Kubernetes Access**:
    - The provisioner needs permissions to:
-     - Create/read/delete Pods in the `deer-flow` namespace
-     - Create/read/delete Services in the `deer-flow` namespace
-     - Read Namespaces (to create `deer-flow` if missing)
+     - Create/read/delete Pods in the `marketior` namespace
+     - Create/read/delete Services in the `marketior` namespace
+     - Read Namespaces (to create `marketior` if missing)
 
 4. **Host Paths**:
    - The `SKILLS_HOST_PATH` and `THREADS_HOST_PATH` must be **absolute paths on the host machine**
@@ -211,7 +211,7 @@ The provisioner runs as part of the docker-compose-dev stack:
 make docker-start
 
 # Or start just the provisioner
-docker compose -p deer-flow-dev -f docker/docker-compose-dev.yaml up -d provisioner
+docker compose -p marketior-dev -f docker/docker-compose-dev.yaml up -d provisioner
 ```
 
 The compose file:
@@ -228,21 +228,21 @@ The compose file:
 curl http://localhost:8002/health
 
 # Create a sandbox (via provisioner container for internal DNS)
-docker exec deer-flow-provisioner curl -X POST http://localhost:8002/api/sandboxes \
+docker exec marketior-provisioner curl -X POST http://localhost:8002/api/sandboxes \
   -H "Content-Type: application/json" \
   -d '{"sandbox_id":"test-001","thread_id":"thread-001","user_id":"user-001"}'
 
 # Check sandbox status
-docker exec deer-flow-provisioner curl http://localhost:8002/api/sandboxes/test-001
+docker exec marketior-provisioner curl http://localhost:8002/api/sandboxes/test-001
 
 # List all sandboxes
-docker exec deer-flow-provisioner curl http://localhost:8002/api/sandboxes
+docker exec marketior-provisioner curl http://localhost:8002/api/sandboxes
 
 # Verify Pod and Service in K8s
-kubectl get pod,svc -n deer-flow -l sandbox-id=test-001
+kubectl get pod,svc -n marketior -l sandbox-id=test-001
 
 # Delete sandbox
-docker exec deer-flow-provisioner curl -X DELETE http://localhost:8002/api/sandboxes/test-001
+docker exec marketior-provisioner curl -X DELETE http://localhost:8002/api/sandboxes/test-001
 ```
 
 ### Verify from Backend Containers
@@ -251,10 +251,10 @@ Once a sandbox is created, the backend containers (gateway, langgraph) can acces
 
 ```bash
 # Get sandbox URL from provisioner
-SANDBOX_URL=$(docker exec deer-flow-provisioner curl -s http://localhost:8002/api/sandboxes/test-001 | jq -r .sandbox_url)
+SANDBOX_URL=$(docker exec marketior-provisioner curl -s http://localhost:8002/api/sandboxes/test-001 | jq -r .sandbox_url)
 
 # Test from gateway container
-docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
+docker exec marketior-gateway curl -s $SANDBOX_URL/v1/sandbox
 ```
 
 ## Troubleshooting
@@ -276,7 +276,7 @@ docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
 - Ensure the compose mount source is a file (e.g., `~/.kube/config`) not a directory
 - Verify inside container:
   ```bash
-  docker exec deer-flow-provisioner ls -ld /root/.kube/config
+  docker exec marketior-provisioner ls -ld /root/.kube/config
   ```
 - Expected output should indicate a regular file (`-`), not a directory (`d`)
 
@@ -304,7 +304,7 @@ docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
 - Verify the paths exist on your host machine:
   ```bash
   ls -la /path/to/skills
-  ls -la /path/to/backend/.deer-flow/threads
+  ls -la /path/to/backend/.marketior/threads
   ```
 
 ### Issue: Pod stuck in "ContainerCreating"
@@ -313,7 +313,7 @@ docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
 
 **Solution**:
 - Pre-pull the image: `make docker-init`
-- Check Pod events: `kubectl describe pod sandbox-XXX -n deer-flow`
+- Check Pod events: `kubectl describe pod sandbox-XXX -n marketior`
 - Check node: `kubectl get nodes`
 
 ### Issue: Cannot access sandbox URL from backend
@@ -321,7 +321,7 @@ docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
 **Cause**: NodePort not reachable or `NODE_HOST` misconfigured.
 
 **Solution**:
-- Verify the Service exists: `kubectl get svc -n deer-flow`
+- Verify the Service exists: `kubectl get svc -n marketior`
 - Test from host: `curl http://localhost:NODE_PORT/v1/sandbox`
 - Ensure `extra_hosts` is set in docker-compose (Linux)
 - Check `NODE_HOST` env var matches how backend reaches host
@@ -332,7 +332,7 @@ docker exec deer-flow-gateway curl -s $SANDBOX_URL/v1/sandbox
 
 2. **Resource Limits**: Each sandbox Pod has CPU, memory, and storage limits to prevent resource exhaustion.
 
-3. **Network Isolation**: Sandbox Pods run in the `deer-flow` namespace but share the host's network namespace via NodePort. Consider NetworkPolicies for stricter isolation.
+3. **Network Isolation**: Sandbox Pods run in the `marketior` namespace but share the host's network namespace via NodePort. Consider NetworkPolicies for stricter isolation.
 
 4. **kubeconfig Access**: The provisioner has full access to your Kubernetes cluster via the mounted kubeconfig. Run it only in trusted environments.
 

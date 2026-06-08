@@ -1,10 +1,10 @@
-"""Tests for deerflow.config.tracing_config."""
+"""Tests for marketior.config.tracing_config."""
 
 from __future__ import annotations
 
 import pytest
 
-from deerflow.config import tracing_config as tracing_module
+from marketior.config import tracing_config as tracing_module
 
 
 def _reset_tracing_cache() -> None:
@@ -96,7 +96,7 @@ def test_defaults_when_project_not_set(monkeypatch):
     _reset_tracing_cache()
     cfg = tracing_module.get_tracing_config()
 
-    assert cfg.langsmith.project == "deer-flow"
+    assert cfg.langsmith.project == "marketior"
 
 
 def test_langfuse_config_is_loaded(monkeypatch):

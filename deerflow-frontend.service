@@ -1,0 +1,26 @@
+[Unit]
+Description=Marketior Frontend
+After=marketior.service
+
+[Service]
+Type=simple
+User=market
+WorkingDirectory=/home/market/marketior/frontend
+ExecStart=/usr/bin/node node_modules/.bin/next start -p 3000
+Restart=always
+RestartSec=5
+
+# RAM LIMITS (hard cap)
+MemoryMax=150M
+MemoryHigh=100M
+
+# CPU LIMITS
+CPUQuota=10%
+
+# Environment
+Environment=NODE_OPTIONS=--max-old-space-size=64
+Environment=NODE_ENV=production
+Environment=MARKETIOR_INTERNAL_GATEWAY_BASE_URL=http://127.0.0.1:8001
+
+[Install]
+WantedBy=multi-user.target

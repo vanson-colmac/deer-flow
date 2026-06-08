@@ -5,9 +5,9 @@ from __future__ import annotations
 import secrets
 from types import SimpleNamespace
 
-from deerflow.runtime.user_context import DEFAULT_USER_ID
+from marketior.runtime.user_context import DEFAULT_USER_ID
 
-INTERNAL_AUTH_HEADER_NAME = "X-DeerFlow-Internal-Token"
+INTERNAL_AUTH_HEADER_NAME = "X-Marketior-Internal-Token"
 _INTERNAL_AUTH_TOKEN = secrets.token_urlsafe(32)
 
 

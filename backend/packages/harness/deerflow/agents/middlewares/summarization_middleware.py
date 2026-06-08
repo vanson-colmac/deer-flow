@@ -1,4 +1,4 @@
-"""Summarization middleware extensions for DeerFlow."""
+"""Summarization middleware extensions for Marketior."""
 
 from __future__ import annotations
 
@@ -14,8 +14,8 @@ from langgraph.config import get_config
 from langgraph.graph.message import REMOVE_ALL_MESSAGES
 from langgraph.runtime import Runtime
 
-from deerflow.agents.middlewares.dynamic_context_middleware import is_dynamic_context_reminder
-from deerflow.agents.middlewares.tool_call_metadata import clone_ai_message_with_tool_calls
+from marketior.agents.middlewares.dynamic_context_middleware import is_dynamic_context_reminder
+from marketior.agents.middlewares.tool_call_metadata import clone_ai_message_with_tool_calls
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class _SkillBundle:
     skill_key: str
 
 
-class DeerFlowSummarizationMiddleware(SummarizationMiddleware):
+class MarketiorSummarizationMiddleware(SummarizationMiddleware):
     """Summarization middleware with pre-compression hook dispatch and skill rescue."""
 
     def __init__(

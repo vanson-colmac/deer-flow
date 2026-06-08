@@ -6,8 +6,8 @@ import uuid
 
 from agent_sandbox import Sandbox as AioSandboxClient
 
-from deerflow.sandbox.sandbox import Sandbox
-from deerflow.sandbox.search import GrepMatch, path_matches, should_ignore_path, truncate_line
+from marketior.sandbox.sandbox import Sandbox
+from marketior.sandbox.search import GrepMatch, path_matches, should_ignore_path, truncate_line
 
 logger = logging.getLogger(__name__)
 

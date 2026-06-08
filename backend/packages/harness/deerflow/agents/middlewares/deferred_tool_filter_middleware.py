@@ -32,7 +32,7 @@ class DeferredToolFilterMiddleware(AgentMiddleware[AgentState]):
     """
 
     def _filter_tools(self, request: ModelRequest) -> ModelRequest:
-        from deerflow.tools.builtins.tool_search import get_deferred_registry
+        from marketior.tools.builtins.tool_search import get_deferred_registry
 
         registry = get_deferred_registry()
         if not registry:
@@ -47,7 +47,7 @@ class DeferredToolFilterMiddleware(AgentMiddleware[AgentState]):
         return request.override(tools=active_tools)
 
     def _blocked_tool_message(self, request: ToolCallRequest) -> ToolMessage | None:
-        from deerflow.tools.builtins.tool_search import get_deferred_registry
+        from marketior.tools.builtins.tool_search import get_deferred_registry
 
         registry = get_deferred_registry()
         if not registry:

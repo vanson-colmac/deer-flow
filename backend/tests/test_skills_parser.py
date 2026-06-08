@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from deerflow.skills.parser import parse_skill_file
+from marketior.skills.parser import parse_skill_file
 
 # ---------------------------------------------------------------------------
 # Helpers

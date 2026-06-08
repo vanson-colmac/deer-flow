@@ -6,9 +6,9 @@ import pytest
 from langgraph.checkpoint.base import empty_checkpoint
 from langgraph.checkpoint.memory import InMemorySaver
 
-from deerflow.runtime.runs.manager import RunManager
-from deerflow.runtime.runs.schemas import RunStatus
-from deerflow.runtime.runs.worker import RunContext, _agent_factory_supports_app_config, _build_runtime_context, _install_runtime_context, _rollback_to_pre_run_checkpoint, run_agent
+from marketior.runtime.runs.manager import RunManager
+from marketior.runtime.runs.schemas import RunStatus
+from marketior.runtime.runs.worker import RunContext, _agent_factory_supports_app_config, _build_runtime_context, _install_runtime_context, _rollback_to_pre_run_checkpoint, run_agent
 
 
 class FakeCheckpointer:
@@ -381,6 +381,6 @@ def test_agent_factory_supports_app_config_returns_false_when_signature_lookup_f
         def __call__(self, **kwargs):
             return kwargs
 
-    monkeypatch.setattr("deerflow.runtime.runs.worker.inspect.signature", lambda _obj: (_ for _ in ()).throw(ValueError("boom")))
+    monkeypatch.setattr("marketior.runtime.runs.worker.inspect.signature", lambda _obj: (_ for _ in ()).throw(ValueError("boom")))
 
     assert _agent_factory_supports_app_config(BrokenCallable()) is False

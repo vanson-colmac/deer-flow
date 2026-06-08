@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 from langchain_core.messages import AIMessage, SystemMessage
 
-from deerflow.agents.middlewares.loop_detection_middleware import (
+from marketior.agents.middlewares.loop_detection_middleware import (
     _HARD_STOP_MSG,
     LoopDetectionMiddleware,
     _hash_tool_calls,
@@ -706,7 +706,7 @@ class TestFromConfig:
 
     @staticmethod
     def _config(**kwargs):
-        from deerflow.config.loop_detection_config import LoopDetectionConfig
+        from marketior.config.loop_detection_config import LoopDetectionConfig
 
         return LoopDetectionConfig(**kwargs)
 

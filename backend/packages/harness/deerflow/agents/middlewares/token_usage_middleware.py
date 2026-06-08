@@ -280,7 +280,7 @@ class TokenUsageMiddleware(AgentMiddleware):
         # written back to the same dispatch message (merging into one update).
         state_updates: dict[int, AIMessage] = {}
         if len(messages) >= 2:
-            from deerflow.tools.builtins.task_tool import pop_cached_subagent_usage
+            from marketior.tools.builtins.task_tool import pop_cached_subagent_usage
 
             idx = len(messages) - 2
             while idx >= 0:

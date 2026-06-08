@@ -2,11 +2,11 @@
 
 ## Supported Versions
 
-As deer-flow doesn't provide an official release yet, please use the latest version for the security updates.
+As marketior doesn't provide an official release yet, please use the latest version for the security updates.
 Currently, we have two branches to maintain:
-* main branch for deer-flow 2.x
-* main-1.x branch for deer-flow 1.x 
+* main branch for marketior 2.x
+* main-1.x branch for marketior 1.x 
 
 ## Reporting a Vulnerability
 
-Please go to https://github.com/bytedance/deer-flow/security to report the vulnerability you find.
+Please go to https://github.com/bytedance/marketior/security to report the vulnerability you find.

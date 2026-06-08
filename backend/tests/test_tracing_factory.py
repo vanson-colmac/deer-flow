@@ -1,4 +1,4 @@
-"""Tests for deerflow.tracing.factory."""
+"""Tests for marketior.tracing.factory."""
 
 from __future__ import annotations
 
@@ -7,12 +7,12 @@ import types
 
 import pytest
 
-from deerflow.tracing import factory as tracing_factory
+from marketior.tracing import factory as tracing_factory
 
 
 @pytest.fixture(autouse=True)
 def clear_tracing_env(monkeypatch):
-    from deerflow.config import tracing_config as tracing_module
+    from marketior.config import tracing_config as tracing_module
 
     for name in (
         "LANGSMITH_TRACING",
@@ -114,7 +114,7 @@ def test_build_tracing_callbacks_raises_when_enabled_provider_fails(monkeypatch)
 
 
 def test_build_tracing_callbacks_raises_for_explicitly_enabled_misconfigured_provider(monkeypatch):
-    from deerflow.config import tracing_config as tracing_module
+    from marketior.config import tracing_config as tracing_module
 
     monkeypatch.setenv("LANGFUSE_TRACING", "true")
     monkeypatch.delenv("LANGFUSE_PUBLIC_KEY", raising=False)

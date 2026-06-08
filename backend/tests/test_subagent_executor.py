@@ -9,7 +9,7 @@ Covers:
 - Cooperative cancellation via cancel_event
 
 Note: Due to circular import issues in the main codebase, conftest.py mocks
-deerflow.subagents.executor. This test file uses delayed import via fixture to test
+marketior.subagents.executor. This test file uses delayed import via fixture to test
 the real implementation in isolation.
 """
 
@@ -23,19 +23,19 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from deerflow.skills.types import Skill
+from marketior.skills.types import Skill
 
 # Module names that need to be mocked to break circular imports
 _MOCKED_MODULE_NAMES = [
-    "deerflow.agents",
-    "deerflow.agents.thread_state",
-    "deerflow.agents.middlewares",
-    "deerflow.agents.middlewares.thread_data_middleware",
-    "deerflow.sandbox",
-    "deerflow.sandbox.middleware",
-    "deerflow.sandbox.security",
-    "deerflow.models",
-    "deerflow.skills.storage",
+    "marketior.agents",
+    "marketior.agents.thread_state",
+    "marketior.agents.middlewares",
+    "marketior.agents.middlewares.thread_data_middleware",
+    "marketior.sandbox",
+    "marketior.sandbox.middleware",
+    "marketior.sandbox.security",
+    "marketior.models",
+    "marketior.skills.storage",
 ]
 
 
@@ -48,24 +48,24 @@ def _setup_executor_classes():
     """
     # Save original modules
     original_modules = {name: sys.modules.get(name) for name in _MOCKED_MODULE_NAMES}
-    original_executor = sys.modules.get("deerflow.subagents.executor")
+    original_executor = sys.modules.get("marketior.subagents.executor")
 
     # Remove mocked executor if exists (from conftest.py)
-    if "deerflow.subagents.executor" in sys.modules:
-        del sys.modules["deerflow.subagents.executor"]
+    if "marketior.subagents.executor" in sys.modules:
+        del sys.modules["marketior.subagents.executor"]
 
     # Set up mocks
     for name in _MOCKED_MODULE_NAMES:
         sys.modules[name] = MagicMock()
-    storage_module = ModuleType("deerflow.skills.storage")
+    storage_module = ModuleType("marketior.skills.storage")
     storage_module.get_or_new_skill_storage = lambda **kwargs: SimpleNamespace(load_skills=lambda *, enabled_only: [])
-    sys.modules["deerflow.skills.storage"] = storage_module
+    sys.modules["marketior.skills.storage"] = storage_module
 
     # Import real classes inside fixture
     from langchain_core.messages import AIMessage, HumanMessage
 
-    from deerflow.subagents.config import SubagentConfig
-    from deerflow.subagents.executor import (
+    from marketior.subagents.config import SubagentConfig
+    from marketior.subagents.executor import (
         SubagentExecutor,
         SubagentResult,
         SubagentStatus,
@@ -92,9 +92,9 @@ def _setup_executor_classes():
 
     # Restore executor module (conftest.py mock)
     if original_executor is not None:
-        sys.modules["deerflow.subagents.executor"] = original_executor
-    elif "deerflow.subagents.executor" in sys.modules:
-        del sys.modules["deerflow.subagents.executor"]
+        sys.modules["marketior.subagents.executor"] = original_executor
+    elif "marketior.subagents.executor" in sys.modules:
+        del sys.modules["marketior.subagents.executor"]
 
 
 # Helper classes that wrap real classes for testing
@@ -226,8 +226,8 @@ class TestAgentConstruction:
         monkeypatch: pytest.MonkeyPatch,
     ):
         """Explicit app_config must flow into both model and middleware factories."""
-        import deerflow.config as config_module
-        from deerflow.subagents import executor as executor_module
+        import marketior.config as config_module
+        from marketior.subagents import executor as executor_module
 
         SubagentExecutor = classes["SubagentExecutor"]
 
@@ -261,9 +261,9 @@ class TestAgentConstruction:
         monkeypatch.setattr(executor_module, "create_agent", fake_create_agent)
         monkeypatch.setitem(
             sys.modules,
-            "deerflow.agents.middlewares.tool_error_handling_middleware",
+            "marketior.agents.middlewares.tool_error_handling_middleware",
             _module(
-                "deerflow.agents.middlewares.tool_error_handling_middleware",
+                "marketior.agents.middlewares.tool_error_handling_middleware",
                 build_subagent_runtime_middlewares=fake_build_subagent_runtime_middlewares,
             ),
         )
@@ -315,7 +315,7 @@ class TestAgentConstruction:
             captured["app_config"] = app_config
             return SimpleNamespace(load_skills=lambda *, enabled_only: [SimpleNamespace(name="demo-skill", skill_file=skill_file)])
 
-        monkeypatch.setattr(sys.modules["deerflow.skills.storage"], "get_or_new_skill_storage", fake_get_or_new_skill_storage)
+        monkeypatch.setattr(sys.modules["marketior.skills.storage"], "get_or_new_skill_storage", fake_get_or_new_skill_storage)
 
         executor = SubagentExecutor(
             config=base_config,
@@ -348,7 +348,7 @@ class TestAgentConstruction:
         skill_file.write_text("Skill instructions here", encoding="utf-8")
 
         monkeypatch.setattr(
-            sys.modules["deerflow.skills.storage"],
+            sys.modules["marketior.skills.storage"],
             "get_or_new_skill_storage",
             lambda *, app_config=None: SimpleNamespace(load_skills=lambda *, enabled_only: [SimpleNamespace(name="my-skill", skill_file=skill_file, allowed_tools=None)]),
         )
@@ -386,7 +386,7 @@ class TestAgentConstruction:
         SubagentExecutor = classes["SubagentExecutor"]
 
         monkeypatch.setattr(
-            sys.modules["deerflow.skills.storage"],
+            sys.modules["marketior.skills.storage"],
             "get_or_new_skill_storage",
             lambda *, app_config=None: SimpleNamespace(load_skills=lambda *, enabled_only: []),
         )
@@ -431,7 +431,7 @@ class TestAgentConstruction:
         skill_file.write_text("Skill content", encoding="utf-8")
 
         monkeypatch.setattr(
-            sys.modules["deerflow.skills.storage"],
+            sys.modules["marketior.skills.storage"],
             "get_or_new_skill_storage",
             lambda *, app_config=None: SimpleNamespace(load_skills=lambda *, enabled_only: [SimpleNamespace(name="my-skill", skill_file=skill_file, allowed_tools=None)]),
         )
@@ -660,7 +660,7 @@ class TestAsyncExecutionPath:
         (skill_dir / "SKILL.md").write_text("Skill instruction text", encoding="utf-8")
 
         monkeypatch.setattr(
-            sys.modules["deerflow.skills.storage"],
+            sys.modules["marketior.skills.storage"],
             "get_or_new_skill_storage",
             lambda *, app_config=None: SimpleNamespace(load_skills=lambda *, enabled_only: [SimpleNamespace(name="regression-skill", skill_file=skill_dir / "SKILL.md", allowed_tools=None)]),
         )
@@ -883,7 +883,7 @@ class TestSyncExecutionPath:
     @pytest.mark.anyio
     async def test_execute_in_running_event_loop_calls_isolated_loop_directly(self, classes, base_config, mock_agent, msg):
         """Test that execute() calls the isolated-loop helper directly in a running loop."""
-        from deerflow.runtime.user_context import (
+        from marketior.runtime.user_context import (
             get_effective_user_id,
             reset_current_user,
             set_current_user,
@@ -1130,7 +1130,7 @@ class TestThreadSafety:
         """Import the executor module with real classes."""
         import importlib
 
-        from deerflow.subagents import executor
+        from marketior.subagents import executor
 
         return importlib.reload(executor)
 
@@ -1256,7 +1256,7 @@ class TestCleanupBackgroundTask:
         # Re-import to get the real module with cleanup_background_task
         import importlib
 
-        from deerflow.subagents import executor
+        from marketior.subagents import executor
 
         return importlib.reload(executor)
 
@@ -1401,7 +1401,7 @@ class TestCooperativeCancellation:
         """Import the executor module with real classes."""
         import importlib
 
-        from deerflow.subagents import executor
+        from marketior.subagents import executor
 
         return importlib.reload(executor)
 
@@ -1559,7 +1559,7 @@ class TestCooperativeCancellation:
         """Regression: background subagent execution must keep request user context."""
         import concurrent.futures
 
-        from deerflow.runtime.user_context import (
+        from marketior.runtime.user_context import (
             get_effective_user_id,
             reset_current_user,
             set_current_user,

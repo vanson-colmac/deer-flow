@@ -21,7 +21,7 @@ import logging
 
 import requests
 
-from deerflow.runtime.user_context import get_effective_user_id
+from marketior.runtime.user_context import get_effective_user_id
 
 from .backend import SandboxBackend
 from .sandbox_info import SandboxInfo
@@ -38,7 +38,7 @@ class RemoteSandboxBackend(SandboxBackend):
     Typical config.yaml::
 
         sandbox:
-          use: deerflow.community.aio_sandbox:AioSandboxProvider
+          use: marketior.community.aio_sandbox:AioSandboxProvider
           provisioner_url: http://provisioner:8002
     """
 

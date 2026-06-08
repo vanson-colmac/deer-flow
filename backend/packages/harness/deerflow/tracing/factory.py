@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from deerflow.config import (
+from marketior.config import (
     get_enabled_tracing_providers,
     get_tracing_config,
     validate_enabled_tracing_providers,

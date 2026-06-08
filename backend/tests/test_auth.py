@@ -308,7 +308,7 @@ def test_sqlite_round_trip_new_fields():
     """needs_setup and token_version survive create → read round-trip.
 
     Uses the shared persistence engine (same one threads_meta, runs,
-    run_events, and feedback use). The old separate .deer-flow/users.db
+    run_events, and feedback use). The old separate .marketior/users.db
     file is gone.
     """
     import asyncio
@@ -317,7 +317,7 @@ def test_sqlite_round_trip_new_fields():
     from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
 
     async def _run() -> None:
-        from deerflow.persistence.engine import (
+        from marketior.persistence.engine import (
             close_engine,
             get_session_factory,
             init_engine,
@@ -373,12 +373,12 @@ def test_update_user_raises_when_row_concurrently_deleted(tmp_path):
     from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
 
     async def _run() -> None:
-        from deerflow.persistence.engine import (
+        from marketior.persistence.engine import (
             close_engine,
             get_session_factory,
             init_engine,
         )
-        from deerflow.persistence.user.model import UserRow
+        from marketior.persistence.user.model import UserRow
 
         with tempfile.TemporaryDirectory() as d:
             url = f"sqlite+aiosqlite:///{d}/scratch.db"

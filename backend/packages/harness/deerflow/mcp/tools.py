@@ -4,11 +4,11 @@ import logging
 
 from langchain_core.tools import BaseTool
 
-from deerflow.config.extensions_config import ExtensionsConfig
-from deerflow.mcp.client import build_servers_config
-from deerflow.mcp.oauth import build_oauth_tool_interceptor, get_initial_oauth_headers
-from deerflow.reflection import resolve_variable
-from deerflow.tools.sync import make_sync_tool_wrapper
+from marketior.config.extensions_config import ExtensionsConfig
+from marketior.mcp.client import build_servers_config
+from marketior.mcp.oauth import build_oauth_tool_interceptor, get_initial_oauth_headers
+from marketior.reflection import resolve_variable
+from marketior.tools.sync import make_sync_tool_wrapper
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ async def get_mcp_tools() -> list[BaseTool]:
         tools = await client.get_tools()
         logger.info(f"Successfully loaded {len(tools)} tool(s) from MCP servers")
 
-        # Patch tools to support sync invocation, as deerflow client streams synchronously
+        # Patch tools to support sync invocation, as marketior client streams synchronously
         for tool in tools:
             if getattr(tool, "func", None) is None and getattr(tool, "coroutine", None) is not None:
                 tool.func = make_sync_tool_wrapper(tool.coroutine, tool.name)

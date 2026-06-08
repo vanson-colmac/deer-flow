@@ -18,14 +18,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from deerflow.community.aio_sandbox.sandbox_info import SandboxInfo
+from marketior.community.aio_sandbox.sandbox_info import SandboxInfo
 
 # ── SandboxBackend.list_running() default ────────────────────────────────────
 
 
 def test_backend_list_running_default_returns_empty():
     """Base SandboxBackend.list_running() returns empty list (backward compat for RemoteSandboxBackend)."""
-    from deerflow.community.aio_sandbox.backend import SandboxBackend
+    from marketior.community.aio_sandbox.backend import SandboxBackend
 
     class StubBackend(SandboxBackend):
         def create(self, thread_id, sandbox_id, extra_mounts=None):
@@ -49,12 +49,12 @@ def test_backend_list_running_default_returns_empty():
 
 def _make_local_backend():
     """Create a LocalContainerBackend with minimal config."""
-    from deerflow.community.aio_sandbox.local_backend import LocalContainerBackend
+    from marketior.community.aio_sandbox.local_backend import LocalContainerBackend
 
     return LocalContainerBackend(
         image="test-image:latest",
         base_port=8080,
-        container_prefix="deer-flow-sandbox",
+        container_prefix="marketior-sandbox",
         config_mounts=[],
         environment={},
     )
@@ -111,10 +111,10 @@ def test_list_running_returns_containers(monkeypatch):
 
     _mock_ps_and_inspect(
         monkeypatch,
-        ps_output="deer-flow-sandbox-abc12345\ndeer-flow-sandbox-def67890\n",
+        ps_output="marketior-sandbox-abc12345\nmarketior-sandbox-def67890\n",
         inspect_payload=[
-            _make_inspect_entry("deer-flow-sandbox-abc12345", "2026-04-08T01:22:50.000000000Z", "8081"),
-            _make_inspect_entry("deer-flow-sandbox-def67890", "2026-04-08T02:22:50.000000000Z", "8082"),
+            _make_inspect_entry("marketior-sandbox-abc12345", "2026-04-08T01:22:50.000000000Z", "8081"),
+            _make_inspect_entry("marketior-sandbox-def67890", "2026-04-08T02:22:50.000000000Z", "8082"),
         ],
     )
 
@@ -144,9 +144,9 @@ def test_list_running_skips_non_matching_names(monkeypatch):
 
     _mock_ps_and_inspect(
         monkeypatch,
-        ps_output="deer-flow-sandbox-abc12345\nsome-other-container\n",
+        ps_output="marketior-sandbox-abc12345\nsome-other-container\n",
         inspect_payload=[
-            _make_inspect_entry("deer-flow-sandbox-abc12345", "2026-04-08T01:22:50Z", "8081"),
+            _make_inspect_entry("marketior-sandbox-abc12345", "2026-04-08T01:22:50Z", "8081"),
         ],
     )
 
@@ -162,9 +162,9 @@ def test_list_running_includes_containers_without_port(monkeypatch):
 
     _mock_ps_and_inspect(
         monkeypatch,
-        ps_output="deer-flow-sandbox-abc12345\n",
+        ps_output="marketior-sandbox-abc12345\n",
         inspect_payload=[
-            _make_inspect_entry("deer-flow-sandbox-abc12345", "2026-04-08T01:22:50Z", host_port=None),
+            _make_inspect_entry("marketior-sandbox-abc12345", "2026-04-08T01:22:50Z", host_port=None),
         ],
     )
 
@@ -200,7 +200,7 @@ def test_list_running_handles_inspect_failure(monkeypatch):
 
     _mock_ps_and_inspect(
         monkeypatch,
-        ps_output="deer-flow-sandbox-abc12345\n",
+        ps_output="marketior-sandbox-abc12345\n",
         inspect_payload=None,  # Signals inspect failure
     )
 
@@ -218,7 +218,7 @@ def test_list_running_handles_malformed_inspect_json(monkeypatch):
         result = MagicMock()
         if len(cmd) >= 2 and cmd[1] == "ps":
             result.returncode = 0
-            result.stdout = "deer-flow-sandbox-abc12345\n"
+            result.stdout = "marketior-sandbox-abc12345\n"
             result.stderr = ""
         else:
             result.returncode = 0
@@ -244,19 +244,19 @@ def test_list_running_uses_single_batch_inspect_call(monkeypatch):
         result = MagicMock()
         if len(cmd) >= 2 and cmd[1] == "ps":
             result.returncode = 0
-            result.stdout = "deer-flow-sandbox-a\ndeer-flow-sandbox-b\ndeer-flow-sandbox-c\n"
+            result.stdout = "marketior-sandbox-a\nmarketior-sandbox-b\nmarketior-sandbox-c\n"
             result.stderr = ""
             return result
         if len(cmd) >= 2 and cmd[1] == "inspect":
             inspect_call_count["count"] += 1
             # Expect all three names passed in a single call
-            assert cmd[2:] == ["deer-flow-sandbox-a", "deer-flow-sandbox-b", "deer-flow-sandbox-c"]
+            assert cmd[2:] == ["marketior-sandbox-a", "marketior-sandbox-b", "marketior-sandbox-c"]
             result.returncode = 0
             result.stdout = json.dumps(
                 [
-                    _make_inspect_entry("deer-flow-sandbox-a", "2026-04-08T01:22:50Z", "8081"),
-                    _make_inspect_entry("deer-flow-sandbox-b", "2026-04-08T01:22:50Z", "8082"),
-                    _make_inspect_entry("deer-flow-sandbox-c", "2026-04-08T01:22:50Z", "8083"),
+                    _make_inspect_entry("marketior-sandbox-a", "2026-04-08T01:22:50Z", "8081"),
+                    _make_inspect_entry("marketior-sandbox-b", "2026-04-08T01:22:50Z", "8082"),
+                    _make_inspect_entry("marketior-sandbox-c", "2026-04-08T01:22:50Z", "8083"),
                 ]
             )
             result.stderr = ""
@@ -277,7 +277,7 @@ def test_list_running_uses_single_batch_inspect_call(monkeypatch):
 
 def test_parse_docker_timestamp_with_nanoseconds():
     """Should correctly parse Docker's ISO 8601 timestamp with nanoseconds."""
-    from deerflow.community.aio_sandbox.local_backend import _parse_docker_timestamp
+    from marketior.community.aio_sandbox.local_backend import _parse_docker_timestamp
 
     ts = _parse_docker_timestamp("2026-04-08T01:22:50.123456789Z")
     assert ts > 0
@@ -287,7 +287,7 @@ def test_parse_docker_timestamp_with_nanoseconds():
 
 def test_parse_docker_timestamp_without_fractional_seconds():
     """Should parse plain ISO 8601 timestamps without fractional seconds."""
-    from deerflow.community.aio_sandbox.local_backend import _parse_docker_timestamp
+    from marketior.community.aio_sandbox.local_backend import _parse_docker_timestamp
 
     ts = _parse_docker_timestamp("2026-04-08T01:22:50Z")
     expected = datetime(2026, 4, 8, 1, 22, 50, tzinfo=UTC).timestamp()
@@ -295,7 +295,7 @@ def test_parse_docker_timestamp_without_fractional_seconds():
 
 
 def test_parse_docker_timestamp_empty_returns_zero():
-    from deerflow.community.aio_sandbox.local_backend import _parse_docker_timestamp
+    from marketior.community.aio_sandbox.local_backend import _parse_docker_timestamp
 
     assert _parse_docker_timestamp("") == 0.0
     assert _parse_docker_timestamp("not a timestamp") == 0.0
@@ -305,21 +305,21 @@ def test_parse_docker_timestamp_empty_returns_zero():
 
 
 def test_extract_host_port_returns_mapped_port():
-    from deerflow.community.aio_sandbox.local_backend import _extract_host_port
+    from marketior.community.aio_sandbox.local_backend import _extract_host_port
 
     entry = {"NetworkSettings": {"Ports": {"8080/tcp": [{"HostIp": "0.0.0.0", "HostPort": "8081"}]}}}
     assert _extract_host_port(entry, 8080) == 8081
 
 
 def test_extract_host_port_returns_none_when_unmapped():
-    from deerflow.community.aio_sandbox.local_backend import _extract_host_port
+    from marketior.community.aio_sandbox.local_backend import _extract_host_port
 
     entry = {"NetworkSettings": {"Ports": {}}}
     assert _extract_host_port(entry, 8080) is None
 
 
 def test_extract_host_port_handles_missing_fields():
-    from deerflow.community.aio_sandbox.local_backend import _extract_host_port
+    from marketior.community.aio_sandbox.local_backend import _extract_host_port
 
     assert _extract_host_port({}, 8080) is None
     assert _extract_host_port({"NetworkSettings": None}, 8080) is None
@@ -339,7 +339,7 @@ def _make_provider_for_reconciliation():
     this helper must be updated in lockstep — otherwise tests will fail with a
     confusing ``AttributeError`` instead of a meaningful assertion failure.
     """
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+    aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
     provider = aio_mod.AioSandboxProvider.__new__(aio_mod.AioSandboxProvider)
     provider._lock = threading.Lock()
     provider._sandboxes = {}
@@ -367,7 +367,7 @@ def test_reconcile_adopts_old_containers_into_warm_pool():
     old_info = SandboxInfo(
         sandbox_id="old12345",
         sandbox_url="http://localhost:8081",
-        container_name="deer-flow-sandbox-old12345",
+        container_name="marketior-sandbox-old12345",
         created_at=now - 1200,  # 20 minutes old, > 600s idle_timeout
     )
     provider._backend.list_running.return_value = [old_info]
@@ -387,7 +387,7 @@ def test_reconcile_adopts_young_containers():
     young_info = SandboxInfo(
         sandbox_id="young123",
         sandbox_url="http://localhost:8082",
-        container_name="deer-flow-sandbox-young123",
+        container_name="marketior-sandbox-young123",
         created_at=now - 60,  # 1 minute old, < 600s idle_timeout
     )
     provider._backend.list_running.return_value = [young_info]
@@ -408,13 +408,13 @@ def test_reconcile_mixed_containers_all_adopted():
     old_info = SandboxInfo(
         sandbox_id="old_one",
         sandbox_url="http://localhost:8081",
-        container_name="deer-flow-sandbox-old_one",
+        container_name="marketior-sandbox-old_one",
         created_at=now - 1200,
     )
     young_info = SandboxInfo(
         sandbox_id="young_one",
         sandbox_url="http://localhost:8082",
-        container_name="deer-flow-sandbox-young_one",
+        container_name="marketior-sandbox-young_one",
         created_at=now - 60,
     )
     provider._backend.list_running.return_value = [old_info, young_info]
@@ -434,7 +434,7 @@ def test_reconcile_skips_already_tracked_containers():
     existing_info = SandboxInfo(
         sandbox_id="existing1",
         sandbox_url="http://localhost:8081",
-        container_name="deer-flow-sandbox-existing1",
+        container_name="marketior-sandbox-existing1",
         created_at=now - 1200,
     )
     # Pre-populate _sandboxes to simulate already-tracked container
@@ -532,7 +532,7 @@ def test_sighup_handler_registered():
     original_sigterm = signal.getsignal(signal.SIGTERM)
     original_sigint = signal.getsignal(signal.SIGINT)
     try:
-        aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+        aio_mod = importlib.import_module("marketior.community.aio_sandbox.aio_sandbox_provider")
         provider._original_sighup = original_sighup
         provider._original_sigterm = original_sigterm
         provider._original_sigint = original_sigint

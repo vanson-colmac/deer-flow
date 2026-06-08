@@ -10,7 +10,7 @@ import pytest
 @pytest.fixture(autouse=True)
 def reset_api_key_warned():
     """Reset the module-level warning flag before each test."""
-    import deerflow.community.serper.tools as serper_mod
+    import marketior.community.serper.tools as serper_mod
 
     serper_mod._api_key_warned = False
     yield
@@ -19,7 +19,7 @@ def reset_api_key_warned():
 
 @pytest.fixture
 def mock_config_with_key():
-    with patch("deerflow.community.serper.tools.get_app_config") as mock:
+    with patch("marketior.community.serper.tools.get_app_config") as mock:
         tool_config = MagicMock()
         tool_config.model_extra = {"api_key": "test-serper-key", "max_results": 5}
         mock.return_value.get_tool_config.return_value = tool_config
@@ -28,7 +28,7 @@ def mock_config_with_key():
 
 @pytest.fixture
 def mock_config_no_key():
-    with patch("deerflow.community.serper.tools.get_app_config") as mock:
+    with patch("marketior.community.serper.tools.get_app_config") as mock:
         tool_config = MagicMock()
         tool_config.model_extra = {}
         mock.return_value.get_tool_config.return_value = tool_config
@@ -44,61 +44,61 @@ def _make_serper_response(organic: list) -> MagicMock:
 
 class TestGetApiKey:
     def test_returns_config_key_when_present(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             tool_config = MagicMock()
             tool_config.model_extra = {"api_key": "from-config"}
             mock.return_value.get_tool_config.return_value = tool_config
 
-            from deerflow.community.serper.tools import _get_api_key
+            from marketior.community.serper.tools import _get_api_key
 
             assert _get_api_key() == "from-config"
 
     def test_falls_back_to_env_when_config_key_empty(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             tool_config = MagicMock()
             tool_config.model_extra = {"api_key": ""}
             mock.return_value.get_tool_config.return_value = tool_config
             with patch.dict("os.environ", {"SERPER_API_KEY": "env-key"}):
-                from deerflow.community.serper.tools import _get_api_key
+                from marketior.community.serper.tools import _get_api_key
 
                 assert _get_api_key() == "env-key"
 
     def test_falls_back_to_env_when_config_key_whitespace(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             tool_config = MagicMock()
             tool_config.model_extra = {"api_key": "   "}
             mock.return_value.get_tool_config.return_value = tool_config
             with patch.dict("os.environ", {"SERPER_API_KEY": "env-key"}):
-                from deerflow.community.serper.tools import _get_api_key
+                from marketior.community.serper.tools import _get_api_key
 
                 assert _get_api_key() == "env-key"
 
     def test_falls_back_to_env_when_config_key_null(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             tool_config = MagicMock()
             tool_config.model_extra = {"api_key": None}
             mock.return_value.get_tool_config.return_value = tool_config
             with patch.dict("os.environ", {"SERPER_API_KEY": "env-key"}):
-                from deerflow.community.serper.tools import _get_api_key
+                from marketior.community.serper.tools import _get_api_key
 
                 assert _get_api_key() == "env-key"
 
     def test_falls_back_to_env_when_no_config(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             mock.return_value.get_tool_config.return_value = None
             with patch.dict("os.environ", {"SERPER_API_KEY": "env-only"}):
-                from deerflow.community.serper.tools import _get_api_key
+                from marketior.community.serper.tools import _get_api_key
 
                 assert _get_api_key() == "env-only"
 
     def test_returns_none_when_no_key_anywhere(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             mock.return_value.get_tool_config.return_value = None
             with patch.dict("os.environ", {}, clear=True):
                 import os
 
                 os.environ.pop("SERPER_API_KEY", None)
-                from deerflow.community.serper.tools import _get_api_key
+                from marketior.community.serper.tools import _get_api_key
 
                 assert _get_api_key() is None
 
@@ -111,10 +111,10 @@ class TestWebSearchTool:
         ]
         mock_resp = _make_serper_response(organic)
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "python tutorial"})
             parsed = json.loads(result)
@@ -133,10 +133,10 @@ class TestWebSearchTool:
         organic = [{"title": f"R{i}", "link": f"https://x.com/{i}", "snippet": f"S{i}"} for i in range(10)]
         mock_resp = _make_serper_response(organic)
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "test"})
             parsed = json.loads(result)
@@ -150,10 +150,10 @@ class TestWebSearchTool:
         mock_resp = _make_serper_response(organic)
 
         with patch.dict("os.environ", {"SERPER_API_KEY": "env-key"}):
-            with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+            with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
                 mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-                from deerflow.community.serper.tools import web_search_tool
+                from marketior.community.serper.tools import web_search_tool
 
                 result = web_search_tool.invoke({"query": "test", "max_results": 2})
                 parsed = json.loads(result)
@@ -162,7 +162,7 @@ class TestWebSearchTool:
 
     def test_config_max_results_overrides_parameter(self):
         """Config max_results overrides the parameter passed at call time, matching ddg_search behaviour."""
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             tool_config = MagicMock()
             tool_config.model_extra = {"api_key": "test-key", "max_results": 3}
             mock.return_value.get_tool_config.return_value = tool_config
@@ -170,10 +170,10 @@ class TestWebSearchTool:
             organic = [{"title": f"R{i}", "link": f"https://x.com/{i}", "snippet": f"S{i}"} for i in range(10)]
             mock_resp = _make_serper_response(organic)
 
-            with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+            with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
                 mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-                from deerflow.community.serper.tools import web_search_tool
+                from marketior.community.serper.tools import web_search_tool
 
                 result = web_search_tool.invoke({"query": "test", "max_results": 8})
                 parsed = json.loads(result)
@@ -184,10 +184,10 @@ class TestWebSearchTool:
         """Empty organic list returns structured error, matching ddg_search convention."""
         mock_resp = _make_serper_response([])
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "no results"})
             parsed = json.loads(result)
@@ -202,7 +202,7 @@ class TestWebSearchTool:
 
             os.environ.pop("SERPER_API_KEY", None)
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "test"})
             parsed = json.loads(result)
@@ -218,9 +218,9 @@ class TestWebSearchTool:
 
             os.environ.pop("SERPER_API_KEY", None)
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
-            with caplog.at_level(logging.WARNING, logger="deerflow.community.serper.tools"):
+            with caplog.at_level(logging.WARNING, logger="marketior.community.serper.tools"):
                 web_search_tool.invoke({"query": "q1"})
                 web_search_tool.invoke({"query": "q2"})
 
@@ -232,10 +232,10 @@ class TestWebSearchTool:
         mock_error_response.status_code = 403
         mock_error_response.text = "Forbidden"
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.side_effect = httpx.HTTPStatusError("403", request=MagicMock(), response=mock_error_response)
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "test"})
             parsed = json.loads(result)
@@ -244,10 +244,10 @@ class TestWebSearchTool:
         assert "403" in parsed["error"]
 
     def test_network_exception_returns_error_json(self, mock_config_with_key):
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.side_effect = Exception("timeout")
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "test"})
             parsed = json.loads(result)
@@ -258,11 +258,11 @@ class TestWebSearchTool:
         organic = [{"title": "T", "link": "https://x.com", "snippet": "S"}]
         mock_resp = _make_serper_response(organic)
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_post = mock_client_cls.return_value.__enter__.return_value.post
             mock_post.return_value = mock_resp
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             web_search_tool.invoke({"query": "hello world"})
 
@@ -275,17 +275,17 @@ class TestWebSearchTool:
         assert payload["num"] == 5
 
     def test_uses_env_key_when_config_absent(self):
-        with patch("deerflow.community.serper.tools.get_app_config") as mock:
+        with patch("marketior.community.serper.tools.get_app_config") as mock:
             mock.return_value.get_tool_config.return_value = None
             with patch.dict("os.environ", {"SERPER_API_KEY": "env-only-key"}):
                 organic = [{"title": "T", "link": "https://x.com", "snippet": "S"}]
                 mock_resp = _make_serper_response(organic)
 
-                with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+                with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
                     mock_post = mock_client_cls.return_value.__enter__.return_value.post
                     mock_post.return_value = mock_resp
 
-                    from deerflow.community.serper.tools import web_search_tool
+                    from marketior.community.serper.tools import web_search_tool
 
                     web_search_tool.invoke({"query": "env key test"})
                     headers = mock_post.call_args.kwargs["headers"]
@@ -297,10 +297,10 @@ class TestWebSearchTool:
         organic = [{}]
         mock_resp = _make_serper_response(organic)
 
-        with patch("deerflow.community.serper.tools.httpx.Client") as mock_client_cls:
+        with patch("marketior.community.serper.tools.httpx.Client") as mock_client_cls:
             mock_client_cls.return_value.__enter__.return_value.post.return_value = mock_resp
 
-            from deerflow.community.serper.tools import web_search_tool
+            from marketior.community.serper.tools import web_search_tool
 
             result = web_search_tool.invoke({"query": "test"})
             parsed = json.loads(result)

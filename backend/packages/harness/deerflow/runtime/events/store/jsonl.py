@@ -1,7 +1,7 @@
 """JSONL file-backed RunEventStore implementation.
 
 Each run's events are stored in a single file:
-``.deer-flow/threads/{thread_id}/runs/{run_id}.jsonl``
+``.marketior/threads/{thread_id}/runs/{run_id}.jsonl``
 
 All categories (message, trace, lifecycle) are in the same file.
 This backend is suitable for lightweight single-node deployments.
@@ -19,7 +19,7 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from deerflow.runtime.events.store.base import RunEventStore
+from marketior.runtime.events.store.base import RunEventStore
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ _SAFE_ID_PATTERN = re.compile(r"^[A-Za-z0-9_\-]+$")
 
 class JsonlRunEventStore(RunEventStore):
     def __init__(self, base_dir: str | Path | None = None):
-        self._base_dir = Path(base_dir) if base_dir else Path(".deer-flow")
+        self._base_dir = Path(base_dir) if base_dir else Path(".marketior")
         self._seq_counters: dict[str, int] = {}  # thread_id -> current max seq
 
     @staticmethod

@@ -9,27 +9,27 @@ import yaml
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field
 
-from deerflow.config.acp_config import ACPAgentConfig, load_acp_config_from_dict
-from deerflow.config.agents_api_config import AgentsApiConfig, load_agents_api_config_from_dict
-from deerflow.config.checkpointer_config import CheckpointerConfig, load_checkpointer_config_from_dict
-from deerflow.config.database_config import DatabaseConfig
-from deerflow.config.extensions_config import ExtensionsConfig
-from deerflow.config.guardrails_config import GuardrailsConfig, load_guardrails_config_from_dict
-from deerflow.config.loop_detection_config import LoopDetectionConfig
-from deerflow.config.memory_config import MemoryConfig, load_memory_config_from_dict
-from deerflow.config.model_config import ModelConfig
-from deerflow.config.run_events_config import RunEventsConfig
-from deerflow.config.runtime_paths import existing_project_file
-from deerflow.config.sandbox_config import SandboxConfig
-from deerflow.config.skill_evolution_config import SkillEvolutionConfig
-from deerflow.config.skills_config import SkillsConfig
-from deerflow.config.stream_bridge_config import StreamBridgeConfig, load_stream_bridge_config_from_dict
-from deerflow.config.subagents_config import SubagentsAppConfig, load_subagents_config_from_dict
-from deerflow.config.summarization_config import SummarizationConfig, load_summarization_config_from_dict
-from deerflow.config.title_config import TitleConfig, load_title_config_from_dict
-from deerflow.config.token_usage_config import TokenUsageConfig
-from deerflow.config.tool_config import ToolConfig, ToolGroupConfig
-from deerflow.config.tool_search_config import ToolSearchConfig, load_tool_search_config_from_dict
+from marketior.config.acp_config import ACPAgentConfig, load_acp_config_from_dict
+from marketior.config.agents_api_config import AgentsApiConfig, load_agents_api_config_from_dict
+from marketior.config.checkpointer_config import CheckpointerConfig, load_checkpointer_config_from_dict
+from marketior.config.database_config import DatabaseConfig
+from marketior.config.extensions_config import ExtensionsConfig
+from marketior.config.guardrails_config import GuardrailsConfig, load_guardrails_config_from_dict
+from marketior.config.loop_detection_config import LoopDetectionConfig
+from marketior.config.memory_config import MemoryConfig, load_memory_config_from_dict
+from marketior.config.model_config import ModelConfig
+from marketior.config.run_events_config import RunEventsConfig
+from marketior.config.runtime_paths import existing_project_file
+from marketior.config.sandbox_config import SandboxConfig
+from marketior.config.skill_evolution_config import SkillEvolutionConfig
+from marketior.config.skills_config import SkillsConfig
+from marketior.config.stream_bridge_config import StreamBridgeConfig, load_stream_bridge_config_from_dict
+from marketior.config.subagents_config import SubagentsAppConfig, load_subagents_config_from_dict
+from marketior.config.summarization_config import SummarizationConfig, load_summarization_config_from_dict
+from marketior.config.title_config import TitleConfig, load_title_config_from_dict
+from marketior.config.token_usage_config import TokenUsageConfig
+from marketior.config.tool_config import ToolConfig, ToolGroupConfig
+from marketior.config.tool_search_config import ToolSearchConfig, load_tool_search_config_from_dict
 
 load_dotenv()
 
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 CONFIG_FILE_DATABASE_DEFAULTS = {
     "backend": "sqlite",
-    "sqlite_dir": ".deer-flow/data",
+    "sqlite_dir": ".marketior/data",
 }
 
 
@@ -63,9 +63,9 @@ def logging_level_from_config(name: str | None) -> int:
 
 
 def apply_logging_level(name: str | None) -> None:
-    """Resolve *name* to a logging level and apply it to the ``deerflow``/``app`` logger hierarchies.
+    """Resolve *name* to a logging level and apply it to the ``marketior``/``app`` logger hierarchies.
 
-    Only the ``deerflow`` and ``app`` logger levels are changed so that
+    Only the ``marketior`` and ``app`` logger levels are changed so that
     third-party library verbosity (e.g. uvicorn, sqlalchemy) is not
     affected. Root handler levels are lowered (never raised) so that
     messages from the configured loggers can propagate through without
@@ -73,7 +73,7 @@ def apply_logging_level(name: str | None) -> None:
     intentionally restrictive for third-party log output.
     """
     level = logging_level_from_config(name)
-    for logger_name in ("deerflow", "app"):
+    for logger_name in ("marketior", "app"):
         logging.getLogger(logger_name).setLevel(level)
     for handler in logging.root.handlers:
         if level < handler.level:
@@ -81,9 +81,9 @@ def apply_logging_level(name: str | None) -> None:
 
 
 class AppConfig(BaseModel):
-    """Config for the DeerFlow application"""
+    """Config for the Marketior application"""
 
-    log_level: str = Field(default="info", description="Logging level for deerflow and app modules (debug/info/warning/error); third-party libraries are not affected")
+    log_level: str = Field(default="info", description="Logging level for marketior and app modules (debug/info/warning/error); third-party libraries are not affected")
     token_usage: TokenUsageConfig = Field(default_factory=TokenUsageConfig, description="Token usage tracking configuration")
     models: list[ModelConfig] = Field(default_factory=list, description="Available models")
     sandbox: SandboxConfig = Field(description="Sandbox configuration")
@@ -114,7 +114,7 @@ class AppConfig(BaseModel):
 
         Priority:
         1. If provided `config_path` argument, use it.
-        2. If provided `DEER_FLOW_CONFIG_PATH` environment variable, use it.
+        2. If provided `MARKETIOR_CONFIG_PATH` environment variable, use it.
         3. Otherwise, search the caller project root.
         4. Finally, search legacy backend/repository-root defaults for monorepo compatibility.
         """
@@ -123,10 +123,10 @@ class AppConfig(BaseModel):
             if not Path.exists(path):
                 raise FileNotFoundError(f"Config file specified by param `config_path` not found at {path}")
             return path
-        elif os.getenv("DEER_FLOW_CONFIG_PATH"):
-            path = Path(os.getenv("DEER_FLOW_CONFIG_PATH"))
+        elif os.getenv("MARKETIOR_CONFIG_PATH"):
+            path = Path(os.getenv("MARKETIOR_CONFIG_PATH"))
             if not Path.exists(path):
-                raise FileNotFoundError(f"Config file specified by environment variable `DEER_FLOW_CONFIG_PATH` not found at {path}")
+                raise FileNotFoundError(f"Config file specified by environment variable `MARKETIOR_CONFIG_PATH` not found at {path}")
             return path
         else:
             project_config = existing_project_file(("config.yaml",))
@@ -184,7 +184,7 @@ class AppConfig(BaseModel):
 
     @classmethod
     def _apply_singleton_configs(cls, config: Self, acp_agents: dict[str, ACPAgentConfig]) -> None:
-        from deerflow.config.checkpointer_config import get_checkpointer_config
+        from marketior.config.checkpointer_config import get_checkpointer_config
 
         previous_checkpointer_config = get_checkpointer_config()
 
@@ -202,8 +202,8 @@ class AppConfig(BaseModel):
         if previous_checkpointer_config != config.checkpointer:
             # These runtime singletons derive their backend from checkpointer config.
             # Keep imports local to avoid cycles: both providers import get_app_config.
-            from deerflow.runtime.checkpointer import reset_checkpointer
-            from deerflow.runtime.store import reset_store
+            from marketior.runtime.checkpointer import reset_checkpointer
+            from marketior.runtime.store import reset_store
 
             reset_checkpointer()
             reset_store()
@@ -331,8 +331,8 @@ _app_config: AppConfig | None = None
 _app_config_path: Path | None = None
 _app_config_mtime: float | None = None
 _app_config_is_custom = False
-_current_app_config: ContextVar[AppConfig | None] = ContextVar("deerflow_current_app_config", default=None)
-_current_app_config_stack: ContextVar[tuple[AppConfig | None, ...]] = ContextVar("deerflow_current_app_config_stack", default=())
+_current_app_config: ContextVar[AppConfig | None] = ContextVar("marketior_current_app_config", default=None)
+_current_app_config_stack: ContextVar[tuple[AppConfig | None, ...]] = ContextVar("marketior_current_app_config_stack", default=())
 
 
 def _get_config_mtime(config_path: Path) -> float | None:
@@ -356,7 +356,7 @@ def _load_and_cache_app_config(config_path: str | None = None) -> AppConfig:
 
 
 def get_app_config() -> AppConfig:
-    """Get the DeerFlow config instance.
+    """Get the Marketior config instance.
 
     Returns a cached singleton instance and automatically reloads it when the
     underlying config file path or modification time changes. Use

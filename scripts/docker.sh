@@ -13,7 +13,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 DOCKER_DIR="$PROJECT_ROOT/docker"
 
 # Docker Compose command with project name
-COMPOSE_CMD="docker compose -p deer-flow-dev -f docker-compose-dev.yaml"
+COMPOSE_CMD="docker compose -p marketior-dev -f docker-compose-dev.yaml"
 
 detect_sandbox_mode() {
     local config_file="$PROJECT_ROOT/config.yaml"
@@ -47,9 +47,9 @@ detect_sandbox_mode() {
         }
     ' "$config_file")
 
-    if [[ "$sandbox_use" == *"deerflow.sandbox.local:LocalSandboxProvider"* ]]; then
+    if [[ "$sandbox_use" == *"marketior.sandbox.local:LocalSandboxProvider"* ]]; then
         echo "local"
-    elif [[ "$sandbox_use" == *"deerflow.community.aio_sandbox:AioSandboxProvider"* ]]; then
+    elif [[ "$sandbox_use" == *"marketior.community.aio_sandbox:AioSandboxProvider"* ]]; then
         if [ -n "$provisioner_url" ]; then
             echo "provisioner"
         else
@@ -87,7 +87,7 @@ docker_available() {
 # Initialize: pre-pull the sandbox image so first Pod startup is fast
 init() {
     echo "=========================================="
-    echo "  DeerFlow Init — Pull Sandbox Image"
+    echo "  Marketior Init — Pull Sandbox Image"
     echo "=========================================="
     echo ""
 
@@ -159,7 +159,7 @@ start() {
     fi
 
     echo "=========================================="
-    echo "  Starting DeerFlow Docker Development"
+    echo "  Starting Marketior Docker Development"
     echo "=========================================="
     echo ""
 
@@ -179,10 +179,10 @@ start() {
     fi
     echo ""
     
-    # Set DEER_FLOW_ROOT for provisioner if not already set
-    if [ -z "$DEER_FLOW_ROOT" ]; then
-        export DEER_FLOW_ROOT="$PROJECT_ROOT"
-        echo -e "${BLUE}Setting DEER_FLOW_ROOT=$DEER_FLOW_ROOT${NC}"
+    # Set MARKETIOR_ROOT for provisioner if not already set
+    if [ -z "$MARKETIOR_ROOT" ]; then
+        export MARKETIOR_ROOT="$PROJECT_ROOT"
+        echo -e "${BLUE}Setting MARKETIOR_ROOT=$MARKETIOR_ROOT${NC}"
         echo ""
     fi
     
@@ -194,7 +194,7 @@ start() {
             echo -e "${YELLOW}============================================================${NC}"
             echo -e "${YELLOW}  config.yaml has been created from config.example.yaml.${NC}"
             echo -e "${YELLOW}  Please edit config.yaml to set your API keys and model   ${NC}"
-            echo -e "${YELLOW}  configuration before starting DeerFlow.                  ${NC}"
+            echo -e "${YELLOW}  configuration before starting Marketior.                  ${NC}"
             echo -e "${YELLOW}============================================================${NC}"
             echo ""
             echo -e "${YELLOW}  Recommended: run 'make setup' before starting Docker.    ${NC}"
@@ -224,7 +224,7 @@ start() {
     cd "$DOCKER_DIR" && $COMPOSE_CMD up --build -d --remove-orphans $services
     echo ""
     echo "=========================================="
-    echo "  DeerFlow Docker is starting!"
+    echo "  Marketior Docker is starting!"
     echo "=========================================="
     echo ""
     echo "  🌐 Application: http://localhost:2026"
@@ -273,22 +273,22 @@ logs() {
 
 # Stop Docker development environment
 stop() {
-    # DEER_FLOW_ROOT is referenced in docker-compose-dev.yaml; set it before
+    # MARKETIOR_ROOT is referenced in docker-compose-dev.yaml; set it before
     # running compose down to suppress "variable is not set" warnings.
-    if [ -z "$DEER_FLOW_ROOT" ]; then
-        export DEER_FLOW_ROOT="$PROJECT_ROOT"
+    if [ -z "$MARKETIOR_ROOT" ]; then
+        export MARKETIOR_ROOT="$PROJECT_ROOT"
     fi
     echo "Stopping Docker development services..."
     cd "$DOCKER_DIR" && $COMPOSE_CMD down
     echo "Cleaning up sandbox containers..."
-    "$SCRIPT_DIR/cleanup-containers.sh" deer-flow-sandbox 2>/dev/null || true
+    "$SCRIPT_DIR/cleanup-containers.sh" marketior-sandbox 2>/dev/null || true
     echo -e "${GREEN}✓ Docker services stopped${NC}"
 }
 
 # Restart Docker development environment
 restart() {
     echo "========================================"
-    echo "  Restarting DeerFlow Docker Services"
+    echo "  Restarting Marketior Docker Services"
     echo "========================================"
     echo ""
     echo -e "${BLUE}Restarting containers...${NC}"
@@ -303,7 +303,7 @@ restart() {
 
 # Show help
 help() {
-    echo "DeerFlow Docker Management Script"
+    echo "Marketior Docker Management Script"
     echo ""
     echo "Usage: $0 <command> [options]"
     echo ""

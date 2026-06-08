@@ -49,10 +49,10 @@ The agent will automatically produce FastAPI-style code with type annotations.
 
 ## Inspect memory
 
-Memory is stored in `backend/.deer-flow/memory.json`:
+Memory is stored in `backend/.marketior/memory.json`:
 
 ```bash
-cat backend/.deer-flow/memory.json
+cat backend/.marketior/memory.json
 ```
 
 ## Per-agent memory
@@ -60,7 +60,7 @@ cat backend/.deer-flow/memory.json
 When a custom agent is active, it maintains its own memory file at:
 
 ```
-backend/.deer-flow/agents/{agent_name}/memory.json
+backend/.marketior/agents/{agent_name}/memory.json
 ```
 
 This keeps each agent's learned knowledge separate.

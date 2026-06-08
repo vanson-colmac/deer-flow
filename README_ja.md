@@ -1,4 +1,4 @@
-# 🦌 DeerFlow - 2.0
+# 🦌 Marketior - 2.0
 
 [English](./README.md) | [中文](./README_zh.md) | 日本語 | [Français](./README_fr.md) | [Русский](./README_ru.md)
 
@@ -6,33 +6,33 @@
 [![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white)](./Makefile)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-<a href="https://trendshift.io/repositories/14699" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14699" alt="bytedance%2Fdeer-flow | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-> 2026年2月28日、バージョン2のリリースに伴い、DeerFlowはGitHub Trendingで🏆 第1位を獲得しました。素晴らしいコミュニティの皆さん、ありがとうございます！💪🔥
+<a href="https://trendshift.io/repositories/14699" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14699" alt="bytedance%2Fmarketior | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+> 2026年2月28日、バージョン2のリリースに伴い、MarketiorはGitHub Trendingで🏆 第1位を獲得しました。素晴らしいコミュニティの皆さん、ありがとうございます！💪🔥
 
-DeerFlow（**D**eep **E**xploration and **E**fficient **R**esearch **Flow**）は、**サブエージェント**、**メモリ**、**サンドボックス**を統合し、**拡張可能なスキル**によってあらゆるタスクを実行できるオープンソースの**スーパーエージェントハーネス**です。
+Marketior（**D**eep **E**xploration and **E**fficient **R**esearch **Flow**）は、**サブエージェント**、**メモリ**、**サンドボックス**を統合し、**拡張可能なスキル**によってあらゆるタスクを実行できるオープンソースの**スーパーエージェントハーネス**です。
 
 https://github.com/user-attachments/assets/a8bcadc4-e040-4cf2-8fda-dd768b999c18
 
 > [!NOTE]
-> **DeerFlow 2.0はゼロからの完全な書き直しです。** v1とコードを共有していません。オリジナルのDeep Researchフレームワークをお探しの場合は、[`1.x`ブランチ](https://github.com/bytedance/deer-flow/tree/main-1.x)で引き続きメンテナンスされています。現在の開発は2.0に移行しています。
+> **Marketior 2.0はゼロからの完全な書き直しです。** v1とコードを共有していません。オリジナルのDeep Researchフレームワークをお探しの場合は、[`1.x`ブランチ](https://github.com/bytedance/marketior/tree/main-1.x)で引き続きメンテナンスされています。現在の開発は2.0に移行しています。
 
 ## 公式ウェブサイト
 
-[<img width="2880" height="1600" alt="image" src="https://github.com/user-attachments/assets/a598c49f-3b2f-41ea-a052-05e21349188a" />](https://deerflow.tech)
+[<img width="2880" height="1600" alt="image" src="https://github.com/user-attachments/assets/a598c49f-3b2f-41ea-a052-05e21349188a" />](https://marketior.tech)
 
-**実際のデモ**は[**公式ウェブサイト**](https://deerflow.tech)でご覧いただけます。
+**実際のデモ**は[**公式ウェブサイト**](https://marketior.tech)でご覧いただけます。
 
 ## ByteDance Volcengine のコーディングプラン
 
 <img width="4808" height="2400" alt="英文方舟" src="https://github.com/user-attachments/assets/2ecc7b9d-50be-4185-b1f7-5542d222fb2d" />
 
-- DeerFlowの実行には、Doubao-Seed-2.0-Code、DeepSeek v3.2、Kimi 2.5の使用を強く推奨します
-- [詳細はこちら](https://www.byteplus.com/en/activity/codingplan?utm_campaign=deer_flow&utm_content=deer_flow&utm_medium=devrel&utm_source=OWO&utm_term=deer_flow)
-- [中国大陸の開発者はこちらをクリック](https://www.volcengine.com/activity/codingplan?utm_campaign=deer_flow&utm_content=deer_flow&utm_medium=devrel&utm_source=OWO&utm_term=deer_flow)
+- Marketiorの実行には、Doubao-Seed-2.0-Code、DeepSeek v3.2、Kimi 2.5の使用を強く推奨します
+- [詳細はこちら](https://www.byteplus.com/en/activity/codingplan?utm_campaign=marketior&utm_content=marketior&utm_medium=devrel&utm_source=OWO&utm_term=marketior)
+- [中国大陸の開発者はこちらをクリック](https://www.volcengine.com/activity/codingplan?utm_campaign=marketior&utm_content=marketior&utm_medium=devrel&utm_source=OWO&utm_term=marketior)
 
 ## InfoQuest
 
-DeerFlowは、BytePlusが独自に開発したインテリジェント検索・クローリングツールセット「[InfoQuest（無料オンライン体験対応）](https://docs.byteplus.com/en/docs/InfoQuest/What_is_Info_Quest)」を新たに統合しました。
+Marketiorは、BytePlusが独自に開発したインテリジェント検索・クローリングツールセット「[InfoQuest（無料オンライン体験対応）](https://docs.byteplus.com/en/docs/InfoQuest/What_is_Info_Quest)」を新たに統合しました。
 
 <a href="https://docs.byteplus.com/en/docs/InfoQuest/What_is_Info_Quest" target="_blank">
   <img
@@ -44,7 +44,7 @@ DeerFlowは、BytePlusが独自に開発したインテリジェント検索・�
 
 ## 目次
 
-- [🦌 DeerFlow - 2.0](#-deerflow---20)
+- [🦌 Marketior - 2.0](#-marketior---20)
   - [公式ウェブサイト](#公式ウェブサイト)
   - [InfoQuest](#infoquest)
   - [目次](#目次)
@@ -82,7 +82,7 @@ DeerFlowは、BytePlusが独自に開発したインテリジェント検索・�
 Claude Code、Codex、Cursor、Windsurf などの coding agent を使っているなら、次の一文をそのまま渡せます。
 
 ```text
-DeerFlow がまだ clone されていなければ先に clone してから、https://raw.githubusercontent.com/bytedance/deer-flow/main/Install.md に従ってローカル開発環境を初期化してください
+Marketior がまだ clone されていなければ先に clone してから、https://raw.githubusercontent.com/bytedance/marketior/main/Install.md に従ってローカル開発環境を初期化してください
 ```
 
 このプロンプトは coding agent 向けです。必要なら先にリポジトリを clone し、Docker が使える場合は Docker を優先して初期セットアップを行い、最後に次の起動コマンドと不足している設定項目だけを返します。
@@ -91,16 +91,16 @@ DeerFlow がまだ clone されていなければ先に clone してから、htt
 
 ### 設定
 
-1. **DeerFlowリポジトリをクローン**
+1. **Marketiorリポジトリをクローン**
 
    ```bash
-   git clone https://github.com/bytedance/deer-flow.git
-   cd deer-flow
+   git clone https://github.com/bytedance/marketior.git
+   cd marketior
    ```
 
 2. **ローカル設定ファイルの生成**
 
-   プロジェクトルートディレクトリ（`deer-flow/`）から以下を実行します：
+   プロジェクトルートディレクトリ（`marketior/`）から以下を実行します：
 
    ```bash
    make config
@@ -171,7 +171,7 @@ make docker-init    # サンドボックスイメージをプル（初回また�
 make docker-start   # サービスを開始（config.yamlからサンドボックスモードを自動検出）
 ```
 
-`make docker-start`は、`config.yaml`がプロビジョナーモード（`sandbox.use: deerflow.community.aio_sandbox:AioSandboxProvider`と`provisioner_url`）を使用している場合にのみ`provisioner`を起動します。
+`make docker-start`は、`config.yaml`がプロビジョナーモード（`sandbox.use: marketior.community.aio_sandbox:AioSandboxProvider`と`provisioner_url`）を使用している場合にのみ`provisioner`を起動します。
 
 **本番環境**（ローカルでイメージをビルドし、ランタイム設定とデータをマウント）：
 
@@ -191,7 +191,7 @@ make down   # コンテナを停止して削除
 
 サービスをローカルで実行する場合：
 
-前提条件：上記の「設定」手順を先に完了してください（`make config`とモデルAPIキー）。`make dev`には有効な設定ファイルが必要です（デフォルトはプロジェクトルートの`config.yaml`。`DEER_FLOW_CONFIG_PATH`で上書き可能）。
+前提条件：上記の「設定」手順を先に完了してください（`make config`とモデルAPIキー）。`make dev`には有効な設定ファイルが必要です（デフォルトはプロジェクトルートの`config.yaml`。`MARKETIOR_CONFIG_PATH`で上書き可能）。
 
 1. **前提条件の確認**：
    ```bash
@@ -219,7 +219,7 @@ make down   # コンテナを停止して削除
 ### 詳細設定
 #### サンドボックスモード
 
-DeerFlowは複数のサンドボックス実行モードをサポートしています：
+Marketiorは複数のサンドボックス実行モードをサポートしています：
 - **ローカル実行**（ホストマシン上で直接サンドボックスコードを実行）
 - **Docker実行**（分離されたDockerコンテナ内でサンドボックスコードを実行）
 - **KubernetesによるDocker実行**（プロビジョナーサービス経由でKubernetesポッドでサンドボックスコードを実行）
@@ -230,13 +230,13 @@ Docker開発では、サービスの起動は`config.yaml`のサンドボック�
 
 #### MCPサーバー
 
-DeerFlowは、機能を拡張するための設定可能なMCPサーバーとスキルをサポートしています。
+Marketiorは、機能を拡張するための設定可能なMCPサーバーとスキルをサポートしています。
 HTTP/SSE MCPサーバーでは、OAuthトークンフロー（`client_credentials`、`refresh_token`）がサポートされています。
 詳細な手順は[MCPサーバーガイド](backend/docs/MCP_SERVER.md)をご覧ください。
 
 #### IMチャネル
 
-DeerFlowはメッセージングアプリからのタスク受信をサポートしています。チャネルは設定時に自動的に開始されます。いずれもパブリックIPは不要です。
+Marketiorはメッセージングアプリからのタスク受信をサポートしています。チャネルは設定時に自動的に開始されます。いずれもパブリックIPは不要です。
 
 | チャネル | トランスポート | 難易度 |
 |---------|-----------|------------|
@@ -352,7 +352,7 @@ DINGTALK_CLIENT_SECRET=your_client_secret
 
 **コマンド**
 
-チャネル接続後、チャットから直接DeerFlowと対話できます：
+チャネル接続後、チャットから直接Marketiorと対話できます：
 
 | コマンド | 説明 |
 |---------|-------------|
@@ -362,11 +362,11 @@ DINGTALK_CLIENT_SECRET=your_client_secret
 | `/memory` | メモリを表示 |
 | `/help` | ヘルプを表示 |
 
-> コマンドプレフィックスのないメッセージは通常のチャットとして扱われ、DeerFlowがスレッドを作成して会話形式で応答します。
+> コマンドプレフィックスのないメッセージは通常のチャットとして扱われ、Marketiorがスレッドを作成して会話形式で応答します。
 
 #### LangSmithトレーシング
 
-DeerFlowには[LangSmith](https://smith.langchain.com)による可観測性が組み込まれています。有効にすると、すべてのLLM呼び出し、エージェント実行、ツール実行がトレースされ、LangSmithダッシュボードで確認できます。
+Marketiorには[LangSmith](https://smith.langchain.com)による可観測性が組み込まれています。有効にすると、すべてのLLM呼び出し、エージェント実行、ツール実行がトレースされ、LangSmithダッシュボードで確認できます。
 
 `.env`ファイルに以下を追加します：
 
@@ -381,13 +381,13 @@ Dockerデプロイでは、トレーシングはデフォルトで無効です�
 
 ## Deep Researchからスーパーエージェントハーネスへ
 
-DeerFlowはDeep Researchフレームワークとして始まり、コミュニティがそれを大きく発展させました。リリース以来、開発者たちはリサーチを超えて活用してきました：データパイプラインの構築、スライドデッキの生成、ダッシュボードの立ち上げ、コンテンツワークフローの自動化。私たちが予想もしなかったことです。
+MarketiorはDeep Researchフレームワークとして始まり、コミュニティがそれを大きく発展させました。リリース以来、開発者たちはリサーチを超えて活用してきました：データパイプラインの構築、スライドデッキの生成、ダッシュボードの立ち上げ、コンテンツワークフローの自動化。私たちが予想もしなかったことです。
 
-これは重要なことを示していました：DeerFlowは単なるリサーチツールではなかったのです。それは**ハーネス**——エージェントが実際に仕事をこなすためのインフラを提供するランタイムでした。
+これは重要なことを示していました：Marketiorは単なるリサーチツールではなかったのです。それは**ハーネス**——エージェントが実際に仕事をこなすためのインフラを提供するランタイムでした。
 
 そこで、ゼロから再構築しました。
 
-DeerFlow 2.0は、もはやつなぎ合わせるフレームワークではありません。バッテリー同梱、完全に拡張可能なスーパーエージェントハーネスです。LangGraphとLangChainの上に構築され、エージェントが必要とするすべてを標準搭載しています：ファイルシステム、メモリ、スキル、サンドボックス実行、そして複雑なマルチステップタスクのためのプランニングとサブエージェントの生成機能。
+Marketior 2.0は、もはやつなぎ合わせるフレームワークではありません。バッテリー同梱、完全に拡張可能なスーパーエージェントハーネスです。LangGraphとLangChainの上に構築され、エージェントが必要とするすべてを標準搭載しています：ファイルシステム、メモリ、スキル、サンドボックス実行、そして複雑なマルチステップタスクのためのプランニングとサブエージェントの生成機能。
 
 そのまま使うもよし。分解して自分のものにするもよし。
 
@@ -395,15 +395,15 @@ DeerFlow 2.0は、もはやつなぎ合わせるフレームワークではあ�
 
 ### スキルとツール
 
-スキルこそが、DeerFlowを*ほぼ何でもできる*ものにしています。
+スキルこそが、Marketiorを*ほぼ何でもできる*ものにしています。
 
-標準的なエージェントスキルは構造化された機能モジュールです——ワークフロー、ベストプラクティス、サポートリソースへの参照を定義するMarkdownファイルです。DeerFlowにはリサーチ、レポート生成、スライド作成、Webページ、画像・動画生成などの組み込みスキルが付属しています。しかし、真の力は拡張性にあります：独自のスキルを追加し、組み込みスキルを置き換え、複合ワークフローに組み合わせることができます。
+標準的なエージェントスキルは構造化された機能モジュールです——ワークフロー、ベストプラクティス、サポートリソースへの参照を定義するMarkdownファイルです。Marketiorにはリサーチ、レポート生成、スライド作成、Webページ、画像・動画生成などの組み込みスキルが付属しています。しかし、真の力は拡張性にあります：独自のスキルを追加し、組み込みスキルを置き換え、複合ワークフローに組み合わせることができます。
 
-スキルはプログレッシブに読み込まれます——タスクが必要とする時にのみ、一度にすべてではありません。これによりコンテキストウィンドウを軽量に保ち、トークンに敏感なモデルでもDeerFlowがうまく動作します。
+スキルはプログレッシブに読み込まれます——タスクが必要とする時にのみ、一度にすべてではありません。これによりコンテキストウィンドウを軽量に保ち、トークンに敏感なモデルでもMarketiorがうまく動作します。
 
-Gateway経由で`.skill`アーカイブをインストールする際、DeerFlowは`version`、`author`、`compatibility`などの標準的なオプショナルフロントマターメタデータを受け入れ、有効な外部スキルを拒否しません。
+Gateway経由で`.skill`アーカイブをインストールする際、Marketiorは`version`、`author`、`compatibility`などの標準的なオプショナルフロントマターメタデータを受け入れ、有効な外部スキルを拒否しません。
 
-ツールも同じ哲学に従います。DeerFlowにはコアツールセット——Web検索、Webフェッチ、ファイル操作、bash実行——が付属し、MCPサーバーやPython関数によるカスタムツールをサポートしています。何でも入れ替え可能、何でも追加可能です。
+ツールも同じ哲学に従います。Marketiorにはコアツールセット——Web検索、Webフェッチ、ファイル操作、bash実行——が付属し、MCPサーバーやPython関数によるカスタムツールをサポートしています。何でも入れ替え可能、何でも追加可能です。
 
 Gatewayが生成するフォローアップ提案は、プレーン文字列のモデル出力とブロック/リスト形式のリッチコンテンツの両方をJSON配列レスポンスの解析前に正規化するため、プロバイダー固有のコンテンツラッパーが提案をサイレントにドロップすることはありません。
 
@@ -422,44 +422,44 @@ Gatewayが生成するフォローアップ提案は、プレーン文字列の�
 
 #### Claude Code連携
 
-`claude-to-deerflow`スキルを使えば、[Claude Code](https://docs.anthropic.com/en/docs/claude-code)から直接、実行中のDeerFlowインスタンスと対話できます。リサーチタスクの送信、ステータスの確認、スレッドの管理——すべてターミナルから離れずに実行できます。
+`claude-to-marketior`スキルを使えば、[Claude Code](https://docs.anthropic.com/en/docs/claude-code)から直接、実行中のMarketiorインスタンスと対話できます。リサーチタスクの送信、ステータスの確認、スレッドの管理——すべてターミナルから離れずに実行できます。
 
 **スキルのインストール**：
 
 ```bash
-npx skills add https://github.com/bytedance/deer-flow --skill claude-to-deerflow
+npx skills add https://github.com/bytedance/marketior --skill claude-to-marketior
 ```
 
-DeerFlowが実行中であることを確認し（デフォルトは`http://localhost:2026`）、Claude Codeで`/claude-to-deerflow`コマンドを使用します。
+Marketiorが実行中であることを確認し（デフォルトは`http://localhost:2026`）、Claude Codeで`/claude-to-marketior`コマンドを使用します。
 
 **できること**：
-- DeerFlowにメッセージを送信してストリーミングレスポンスを取得
+- Marketiorにメッセージを送信してストリーミングレスポンスを取得
 - 実行モードの選択：flash（高速）、standard、pro（プランニング）、ultra（サブエージェント）
-- DeerFlowのヘルスチェック、モデル/スキル/エージェントの一覧表示
+- Marketiorのヘルスチェック、モデル/スキル/エージェントの一覧表示
 - スレッドと会話履歴の管理
 - 分析用ファイルのアップロード
 
 **環境変数**（オプション、カスタムエンドポイント用）：
 
 ```bash
-DEERFLOW_URL=http://localhost:2026            # 統合プロキシベースURL
-DEERFLOW_GATEWAY_URL=http://localhost:2026    # Gateway API
-DEERFLOW_LANGGRAPH_URL=http://localhost:2026/api/langgraph  # LangGraph API
+MARKETIOR_URL=http://localhost:2026            # 統合プロキシベースURL
+MARKETIOR_GATEWAY_URL=http://localhost:2026    # Gateway API
+MARKETIOR_LANGGRAPH_URL=http://localhost:2026/api/langgraph  # LangGraph API
 ```
 
-完全なAPIリファレンスは[`skills/public/claude-to-deerflow/SKILL.md`](skills/public/claude-to-deerflow/SKILL.md)をご覧ください。
+完全なAPIリファレンスは[`skills/public/claude-to-marketior/SKILL.md`](skills/public/claude-to-marketior/SKILL.md)をご覧ください。
 
 ### サブエージェント
 
-複雑なタスクは単一のパスに収まりません。DeerFlowはそれを分解します。
+複雑なタスクは単一のパスに収まりません。Marketiorはそれを分解します。
 
 リードエージェントはオンザフライでサブエージェントを生成できます——それぞれ独自のスコープ付きコンテキスト、ツール、終了条件を持ちます。サブエージェントは可能な限り並列で実行され、構造化された結果を報告し、リードエージェントがすべてを一貫した出力に統合します。
 
-これがDeerFlowが数分から数時間かかるタスクを処理する方法です：リサーチタスクが十数のサブエージェントに展開され、それぞれが異なる角度を探索し、1つのレポート——またはWebサイト——または生成されたビジュアル付きのスライドデッキに収束します。1つのハーネス、多くの手。
+これがMarketiorが数分から数時間かかるタスクを処理する方法です：リサーチタスクが十数のサブエージェントに展開され、それぞれが異なる角度を探索し、1つのレポート——またはWebサイト——または生成されたビジュアル付きのスライドデッキに収束します。1つのハーネス、多くの手。
 
 ### サンドボックスとファイルシステム
 
-DeerFlowは物事を*語る*だけではありません。自分のコンピューターを持っています。
+Marketiorは物事を*語る*だけではありません。自分のコンピューターを持っています。
 
 各タスクは、完全なファイルシステムを持つ分離されたDockerコンテナ内で実行されます——スキル、ワークスペース、アップロード、出力。エージェントはファイルの読み書き・編集を行います。bashコマンドを実行し、コーディングを行います。画像を表示します。すべてサンドボックス化され、すべて監査可能で、セッション間の汚染はゼロです。
 
@@ -477,19 +477,19 @@ DeerFlowは物事を*語る*だけではありません。自分のコンピュ�
 
 **分離されたサブエージェントコンテキスト**：各サブエージェントは独自の分離されたコンテキストで実行されます。これにより、サブエージェントはメインエージェントや他のサブエージェントのコンテキストを見ることができません。これは、サブエージェントが目の前のタスクに集中し、メインエージェントや他のサブエージェントのコンテキストに気を取られないようにするために重要です。
 
-**要約化**：セッション内で、DeerFlowはコンテキストを積極的に管理します——完了したサブタスクの要約、中間結果のファイルシステムへのオフロード、もはや直接関係のないものの圧縮。これにより、コンテキストウィンドウを超えることなく、長いマルチステップタスク全体を通じてシャープさを維持します。
+**要約化**：セッション内で、Marketiorはコンテキストを積極的に管理します——完了したサブタスクの要約、中間結果のファイルシステムへのオフロード、もはや直接関係のないものの圧縮。これにより、コンテキストウィンドウを超えることなく、長いマルチステップタスク全体を通じてシャープさを維持します。
 
 ### 長期メモリ
 
-ほとんどのエージェントは、会話が終わるとすべてを忘れます。DeerFlowは記憶します。
+ほとんどのエージェントは、会話が終わるとすべてを忘れます。Marketiorは記憶します。
 
-セッションをまたいで、DeerFlowはあなたのプロフィール、好み、蓄積された知識の永続的なメモリを構築します。使えば使うほど、あなたのことをよく知るようになります——あなたの文体、技術スタック、繰り返されるワークフロー。メモリはローカルに保存され、あなたの管理下にあります。
+セッションをまたいで、Marketiorはあなたのプロフィール、好み、蓄積された知識の永続的なメモリを構築します。使えば使うほど、あなたのことをよく知るようになります——あなたの文体、技術スタック、繰り返されるワークフロー。メモリはローカルに保存され、あなたの管理下にあります。
 
 メモリ更新は適用時に重複するファクトエントリをスキップするようになり、繰り返される好みやコンテキストがセッションをまたいで際限なく蓄積されることはありません。
 
 ## 推奨モデル
 
-DeerFlowはモデルに依存しません——OpenAI互換APIを実装する任意のLLMで動作します。とはいえ、以下をサポートするモデルで最高のパフォーマンスを発揮します：
+Marketiorはモデルに依存しません——OpenAI互換APIを実装する任意のLLMで動作します。とはいえ、以下をサポートするモデルで最高のパフォーマンスを発揮します：
 
 - **長いコンテキストウィンドウ**（10万トークン以上）：深いリサーチとマルチステップタスク向け
 - **推論能力**：適応的なプランニングと複雑な分解向け
@@ -498,12 +498,12 @@ DeerFlowはモデルに依存しません——OpenAI互換APIを実装する任
 
 ## 組み込みPythonクライアント
 
-DeerFlowは、完全なHTTPサービスを実行せずに組み込みPythonライブラリとして使用できます。`DeerFlowClient`は、すべてのエージェントとGateway機能へのプロセス内直接アクセスを提供し、HTTP Gateway APIと同じレスポンススキーマを返します：
+Marketiorは、完全なHTTPサービスを実行せずに組み込みPythonライブラリとして使用できます。`MarketiorClient`は、すべてのエージェントとGateway機能へのプロセス内直接アクセスを提供し、HTTP Gateway APIと同じレスポンススキーマを返します：
 
 ```python
-from deerflow.client import DeerFlowClient
+from marketior.client import MarketiorClient
 
-client = DeerFlowClient()
+client = MarketiorClient()
 
 # チャット
 response = client.chat("Analyze this paper for me", thread_id="my-thread")
@@ -520,7 +520,7 @@ client.update_skill("web-search", enabled=True)
 client.upload_files("thread-1", ["./report.pdf"])  # {"success": True, "files": [...]}
 ```
 
-すべてのdict返却メソッドはCIでGateway Pydanticレスポンスモデルに対して検証されており（`TestGatewayConformance`）、組み込みクライアントがHTTP APIスキーマと同期していることを保証します。完全なAPIドキュメントは`backend/packages/harness/deerflow/client.py`をご覧ください。
+すべてのdict返却メソッドはCIでGateway Pydanticレスポンスモデルに対して検証されており（`TestGatewayConformance`）、組み込みクライアントがHTTP APIスキーマと同期していることを保証します。完全なAPIドキュメントは`backend/packages/harness/marketior/client.py`をご覧ください。
 
 ## ドキュメント
 
@@ -533,19 +533,19 @@ client.upload_files("thread-1", ["./report.pdf"])  # {"success": True, "files": 
 
 ### 不適切なデプロイはセキュリティリスクを引き起こす可能性があります
 
-DeerFlowは**システムコマンドの実行、リソース操作、ビジネスロジックの呼び出し**などの重要な高権限機能を備えており、デフォルトでは**ローカルの信頼できる環境（127.0.0.1のループバックアクセスのみ）にデプロイされる設計**になっています。信頼できないLAN、公開クラウドサーバー、または複数のエンドポイントからアクセス可能なネットワーク環境にエージェントをデプロイし、厳格なセキュリティ対策を講じない場合、以下のようなセキュリティリスクが生じる可能性があります：
+Marketiorは**システムコマンドの実行、リソース操作、ビジネスロジックの呼び出し**などの重要な高権限機能を備えており、デフォルトでは**ローカルの信頼できる環境（127.0.0.1のループバックアクセスのみ）にデプロイされる設計**になっています。信頼できないLAN、公開クラウドサーバー、または複数のエンドポイントからアクセス可能なネットワーク環境にエージェントをデプロイし、厳格なセキュリティ対策を講じない場合、以下のようなセキュリティリスクが生じる可能性があります：
 
 - **不正な違法呼び出し**：エージェントの機能が権限のない第三者や悪意のあるインターネットスキャナーに発見され、システムコマンドやファイル読み書きなどの高リスク操作を実行する不正な一括リクエストが引き起こされ、重大なセキュリティ上の問題が発生する可能性があります。
 - **コンプライアンスおよび法的リスク**：エージェントがサイバー攻撃やデータ窃取などの違法行為に不正使用された場合、法的責任やコンプライアンス上のリスクが生じる可能性があります。
 
 ### セキュリティ推奨事項
 
-**注意：DeerFlowはローカルの信頼できるネットワーク環境にデプロイすることを強く推奨します。** クロスデバイス・クロスネットワークのデプロイが必要な場合は、以下のような厳格なセキュリティ対策を実装する必要があります：
+**注意：Marketiorはローカルの信頼できるネットワーク環境にデプロイすることを強く推奨します。** クロスデバイス・クロスネットワークのデプロイが必要な場合は、以下のような厳格なセキュリティ対策を実装する必要があります：
 
 - **IPホワイトリストの設定**：`iptables`を使用するか、ハードウェアファイアウォール / ACL機能付きスイッチをデプロイして**IPホワイトリストルールを設定**し、他のすべてのIPアドレスからのアクセスを拒否します。
 - **前置認証**：リバースプロキシ（nginxなど）を設定し、**強力な前置認証を有効化**して、認証なしのアクセスをブロックします。
 - **ネットワーク分離**：可能であれば、エージェントと信頼できるデバイスを**同一の専用VLAN**に配置し、他のネットワークデバイスから隔離します。
-- **アップデートを継続的に確認**：DeerFlowのセキュリティ機能のアップデートを継続的にフォローしてください。
+- **アップデートを継続的に確認**：Marketiorのセキュリティ機能のアップデートを継続的にフォローしてください。
 
 ## コントリビュート
 
@@ -559,24 +559,24 @@ DeerFlowは**システムコマンドの実行、リソース操作、ビジネ�
 
 ## 謝辞
 
-DeerFlowはオープンソースコミュニティの素晴らしい成果の上に構築されています。DeerFlowを可能にしてくれたすべてのプロジェクトとコントリビューターに深く感謝いたします。まさに、巨人の肩の上に立っています。
+Marketiorはオープンソースコミュニティの素晴らしい成果の上に構築されています。Marketiorを可能にしてくれたすべてのプロジェクトとコントリビューターに深く感謝いたします。まさに、巨人の肩の上に立っています。
 
 以下のプロジェクトの貴重な貢献に心からの感謝を申し上げます：
 
 - **[LangChain](https://github.com/langchain-ai/langchain)**：その優れたフレームワークがLLMのインタラクションとチェーンを支え、シームレスな統合と機能を実現しています。
-- **[LangGraph](https://github.com/langchain-ai/langgraph)**：マルチエージェントオーケストレーションへの革新的なアプローチが、DeerFlowの洗練されたワークフローの実現に大きく貢献しています。
+- **[LangGraph](https://github.com/langchain-ai/langgraph)**：マルチエージェントオーケストレーションへの革新的なアプローチが、Marketiorの洗練されたワークフローの実現に大きく貢献しています。
 
 これらのプロジェクトはオープンソースコラボレーションの変革的な力を体現しており、その基盤の上に構築できることを誇りに思います。
 
 ### 主要コントリビューター
 
-`DeerFlow`のコア著者に心からの感謝を捧げます。そのビジョン、情熱、献身がこのプロジェクトに命を吹き込みました：
+`Marketior`のコア著者に心からの感謝を捧げます。そのビジョン、情熱、献身がこのプロジェクトに命を吹き込みました：
 
 - **[Daniel Walnut](https://github.com/hetaoBackend/)**
 - **[Henry Li](https://github.com/magiccube/)**
 
-揺るぎないコミットメントと専門知識が、DeerFlowの成功の原動力です。この旅の先頭に立ってくださっていることを光栄に思います。
+揺るぎないコミットメントと専門知識が、Marketiorの成功の原動力です。この旅の先頭に立ってくださっていることを光栄に思います。
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=bytedance/deer-flow&type=Date)](https://star-history.com/#bytedance/deer-flow&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=bytedance/marketior&type=Date)](https://star-history.com/#bytedance/marketior&Date)

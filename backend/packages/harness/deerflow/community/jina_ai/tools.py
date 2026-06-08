@@ -2,9 +2,9 @@ import asyncio
 
 from langchain.tools import tool
 
-from deerflow.community.jina_ai.jina_client import JinaClient
-from deerflow.config import get_app_config
-from deerflow.utils.readability import ReadabilityExtractor
+from marketior.community.jina_ai.jina_client import JinaClient
+from marketior.config import get_app_config
+from marketior.utils.readability import ReadabilityExtractor
 
 readability_extractor = ReadabilityExtractor()
 

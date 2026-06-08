@@ -6,7 +6,7 @@ import os
 
 import pytest
 
-from deerflow.skills.storage import get_or_new_skill_storage
+from marketior.skills.storage import get_or_new_skill_storage
 
 
 @pytest.fixture()

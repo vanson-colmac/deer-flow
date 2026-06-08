@@ -12,8 +12,8 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "deer-flow",
-    "deerflow-harness",
+    "marketior",
+    "marketior-harness",
 ]
 
 [[package]]
@@ -740,12 +740,12 @@ wheels = [
 ]
 
 [[package]]
-name = "deer-flow"
+name = "marketior"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "bcrypt" },
-    { name = "deerflow-harness" },
+    { name = "marketior-harness" },
     { name = "dingtalk-stream" },
     { name = "email-validator" },
     { name = "fastapi" },
@@ -767,7 +767,7 @@ discord = [
     { name = "discord-py" },
 ]
 postgres = [
-    { name = "deerflow-harness", extra = ["postgres"] },
+    { name = "marketior-harness", extra = ["postgres"] },
 ]
 
 [package.dev-dependencies]
@@ -781,8 +781,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bcrypt", specifier = ">=4.0.0" },
-    { name = "deerflow-harness", editable = "packages/harness" },
-    { name = "deerflow-harness", extras = ["postgres"], marker = "extra == 'postgres'", editable = "packages/harness" },
+    { name = "marketior-harness", editable = "packages/harness" },
+    { name = "marketior-harness", extras = ["postgres"], marker = "extra == 'postgres'", editable = "packages/harness" },
     { name = "dingtalk-stream", specifier = ">=0.24.3" },
     { name = "discord-py", marker = "extra == 'discord'", specifier = ">=2.7.0" },
     { name = "email-validator", specifier = ">=2.0.0" },
@@ -810,7 +810,7 @@ dev = [
 ]
 
 [[package]]
-name = "deerflow-harness"
+name = "marketior-harness"
 version = "0.1.0"
 source = { editable = "packages/harness" }
 dependencies = [

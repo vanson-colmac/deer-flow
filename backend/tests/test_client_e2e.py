@@ -1,4 +1,4 @@
-"""End-to-end tests for DeerFlowClient.
+"""End-to-end tests for MarketiorClient.
 
 Middle tier of the test pyramid:
 - Top:    test_client_live.py  — real LLM, needs API key
@@ -7,7 +7,7 @@ Middle tier of the test pyramid:
 
 Core principle: use the real LLM from config.yaml, let config, middleware
 chain, tool registration, file I/O, and event serialization all run for real.
-Only DEER_FLOW_HOME is redirected to tmp_path for filesystem isolation.
+Only MARKETIOR_HOME is redirected to tmp_path for filesystem isolation.
 
 Tests that call the LLM are marked ``requires_llm`` and skipped in CI.
 File-management tests (upload/list/delete) don't need LLM and run everywhere.
@@ -22,8 +22,8 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
-from deerflow.client import DeerFlowClient, StreamEvent
-from deerflow.config.app_config import AppConfig
+from marketior.client import MarketiorClient, StreamEvent
+from marketior.config.app_config import AppConfig
 
 # Load .env from project root (for OPENAI_API_KEY etc.)
 load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env"))
@@ -78,7 +78,7 @@ def _make_e2e_config() -> AppConfig:
                 }
             ],
             "sandbox": {
-                "use": "deerflow.sandbox.local:LocalSandboxProvider",
+                "use": "marketior.sandbox.local:LocalSandboxProvider",
                 "allow_host_bash": True,
             },
         }
@@ -94,72 +94,72 @@ def _make_e2e_config() -> AppConfig:
 def e2e_env(tmp_path, monkeypatch):
     """Isolated filesystem environment for E2E tests.
 
-    - DEER_FLOW_HOME → tmp_path (all thread data lands in a temp dir)
-    - DEER_FLOW_PROJECT_ROOT → repository root (shared skills/config assets
+    - MARKETIOR_HOME → tmp_path (all thread data lands in a temp dir)
+    - MARKETIOR_PROJECT_ROOT → repository root (shared skills/config assets
       still resolve correctly when tests run from backend/)
     - Singletons reset so they pick up the new env
     - Title/memory/summarization disabled to avoid extra LLM calls
     - AppConfig built programmatically (avoids config.yaml param-name issues)
     """
     # 1. Filesystem isolation
-    monkeypatch.setenv("DEER_FLOW_HOME", str(tmp_path))
+    monkeypatch.setenv("MARKETIOR_HOME", str(tmp_path))
     monkeypatch.setenv(
-        "DEER_FLOW_PROJECT_ROOT",
+        "MARKETIOR_PROJECT_ROOT",
         str(Path(__file__).resolve().parents[2]),
     )
-    monkeypatch.setattr("deerflow.config.paths._paths", None)
-    monkeypatch.setattr("deerflow.sandbox.sandbox_provider._default_sandbox_provider", None)
+    monkeypatch.setattr("marketior.config.paths._paths", None)
+    monkeypatch.setattr("marketior.sandbox.sandbox_provider._default_sandbox_provider", None)
 
     # 2. Inject a clean AppConfig. We must reset _app_config to None BEFORE
     # calling _make_e2e_config() because AppConfig() constructor misbehaves when
     # a disk config is already cached: it returns the cached model list instead
     # of the provided one. Clearing first ensures the test config is correct.
-    monkeypatch.setattr("deerflow.config.app_config._app_config", None)
-    monkeypatch.setattr("deerflow.config.app_config._app_config_is_custom", False)
+    monkeypatch.setattr("marketior.config.app_config._app_config", None)
+    monkeypatch.setattr("marketior.config.app_config._app_config_is_custom", False)
     config = _make_e2e_config()
-    monkeypatch.setattr("deerflow.config.app_config._app_config", config)
-    monkeypatch.setattr("deerflow.config.app_config._app_config_is_custom", True)
-    monkeypatch.setattr("deerflow.client.get_app_config", lambda: config)
+    monkeypatch.setattr("marketior.config.app_config._app_config", config)
+    monkeypatch.setattr("marketior.config.app_config._app_config_is_custom", True)
+    monkeypatch.setattr("marketior.client.get_app_config", lambda: config)
 
     # 3. Disable title generation (extra LLM call, non-deterministic)
-    from deerflow.config.title_config import TitleConfig
+    from marketior.config.title_config import TitleConfig
 
-    monkeypatch.setattr("deerflow.config.title_config._title_config", TitleConfig(enabled=False))
+    monkeypatch.setattr("marketior.config.title_config._title_config", TitleConfig(enabled=False))
 
     # 4. Disable memory queueing (avoids background threads & file writes)
-    from deerflow.config.memory_config import MemoryConfig
+    from marketior.config.memory_config import MemoryConfig
 
     monkeypatch.setattr(
-        "deerflow.agents.middlewares.memory_middleware.get_memory_config",
+        "marketior.agents.middlewares.memory_middleware.get_memory_config",
         lambda: MemoryConfig(enabled=False),
     )
 
     # 5. Ensure summarization is off (default, but be explicit)
-    from deerflow.config.summarization_config import SummarizationConfig
+    from marketior.config.summarization_config import SummarizationConfig
 
-    monkeypatch.setattr("deerflow.config.summarization_config._summarization_config", SummarizationConfig(enabled=False))
+    monkeypatch.setattr("marketior.config.summarization_config._summarization_config", SummarizationConfig(enabled=False))
 
     # 6. Exclude TitleMiddleware from the chain.
     #    It triggers an extra LLM call to generate a thread title, which adds
     #    non-determinism and cost to E2E tests (title generation is already
     #    disabled via TitleConfig above, but the middleware still participates
     #    in the chain and can interfere with event ordering).
-    from deerflow.agents.lead_agent.agent import _build_middlewares as _original_build_middlewares
-    from deerflow.agents.middlewares.title_middleware import TitleMiddleware
+    from marketior.agents.lead_agent.agent import _build_middlewares as _original_build_middlewares
+    from marketior.agents.middlewares.title_middleware import TitleMiddleware
 
     def _sync_safe_build_middlewares(*args, **kwargs):
         mws = _original_build_middlewares(*args, **kwargs)
         return [m for m in mws if not isinstance(m, TitleMiddleware)]
 
-    monkeypatch.setattr("deerflow.client._build_middlewares", _sync_safe_build_middlewares)
+    monkeypatch.setattr("marketior.client._build_middlewares", _sync_safe_build_middlewares)
 
     return {"tmp_path": tmp_path}
 
 
 @pytest.fixture()
 def client(e2e_env):
-    """A DeerFlowClient wired to the isolated e2e_env."""
-    return DeerFlowClient(checkpointer=None, thinking_enabled=False)
+    """A MarketiorClient wired to the isolated e2e_env."""
+    return MarketiorClient(checkpointer=None, thinking_enabled=False)
 
 
 # ---------------------------------------------------------------------------
@@ -273,7 +273,7 @@ class TestFileUploadIntegration:
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("Hello world")
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         result = c.upload_files(tid, [test_file])
@@ -282,8 +282,8 @@ class TestFileUploadIntegration:
         assert result["files"][0]["filename"] == "readme.txt"
 
         # Physically exists
-        from deerflow.config.paths import get_paths
-        from deerflow.runtime.user_context import get_effective_user_id
+        from marketior.config.paths import get_paths
+        from marketior.runtime.user_context import get_effective_user_id
 
         assert (get_paths().sandbox_uploads_dir(tid, user_id=get_effective_user_id()) / "readme.txt").exists()
 
@@ -296,7 +296,7 @@ class TestFileUploadIntegration:
         (d1 / "data.txt").write_text("content A")
         (d2 / "data.txt").write_text("content B")
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         result = c.upload_files(tid, [d1 / "data.txt", d2 / "data.txt"])
@@ -312,7 +312,7 @@ class TestFileUploadIntegration:
         test_file = tmp_path / "lifecycle.txt"
         test_file.write_text("lifecycle test")
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         c.upload_files(tid, [test_file])
@@ -334,7 +334,7 @@ class TestFileUploadIntegration:
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("The secret code is 7749.")
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         c.upload_files(tid, [test_file])
@@ -367,7 +367,7 @@ class TestLifecycleAndConfig:
 
     def test_reset_agent_clears_state(self, e2e_env):
         """reset_agent() sets the internal agent to None."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         # Before any call, agent is None
         assert c._agent is None
 
@@ -377,7 +377,7 @@ class TestLifecycleAndConfig:
 
     def test_plan_mode_config_key(self, e2e_env):
         """plan_mode is part of the config key tuple."""
-        c = DeerFlowClient(checkpointer=None, plan_mode=False)
+        c = MarketiorClient(checkpointer=None, plan_mode=False)
         cfg1 = c._get_runnable_config("test-thread")
         key1 = (
             cfg1["configurable"]["model_name"],
@@ -386,7 +386,7 @@ class TestLifecycleAndConfig:
             cfg1["configurable"]["subagent_enabled"],
         )
 
-        c2 = DeerFlowClient(checkpointer=None, plan_mode=True)
+        c2 = MarketiorClient(checkpointer=None, plan_mode=True)
         cfg2 = c2._get_runnable_config("test-thread")
         key2 = (
             cfg2["configurable"]["model_name"],
@@ -420,7 +420,7 @@ class TestMiddlewareChain:
 
         # ThreadDataMiddleware should have set paths in the state.
         # We verify the paths singleton can resolve the thread dir.
-        from deerflow.config.paths import get_paths
+        from marketior.config.paths import get_paths
 
         thread_dir = get_paths().thread_dir(tid)
         assert str(thread_dir).endswith(tid)
@@ -448,13 +448,13 @@ class TestErrorAndBoundary:
 
     def test_upload_nonexistent_file_raises(self, e2e_env):
         """Uploading a file that doesn't exist raises FileNotFoundError."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(FileNotFoundError):
             c.upload_files("test-thread", ["/nonexistent/file.txt"])
 
     def test_delete_nonexistent_upload_raises(self, e2e_env):
         """Deleting a file that doesn't exist raises FileNotFoundError."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
         # Ensure the uploads dir exists first
         c.list_uploads(tid)
@@ -463,7 +463,7 @@ class TestErrorAndBoundary:
 
     def test_artifact_path_traversal_blocked(self, e2e_env):
         """get_artifact blocks path traversal attempts."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(ValueError):
             c.get_artifact("test-thread", "../../etc/passwd")
 
@@ -471,7 +471,7 @@ class TestErrorAndBoundary:
         """Uploading a directory (not a file) is rejected."""
         d = tmp_path / "a_directory"
         d.mkdir()
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(ValueError, match="not a file"):
             c.upload_files("test-thread", [d])
 
@@ -493,10 +493,10 @@ class TestArtifactAccess:
 
     def test_get_artifact_happy_path(self, e2e_env):
         """Write a file to outputs, then read it back via get_artifact()."""
-        from deerflow.config.paths import get_paths
-        from deerflow.runtime.user_context import get_effective_user_id
+        from marketior.config.paths import get_paths
+        from marketior.runtime.user_context import get_effective_user_id
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         # Create an output file in the thread's outputs directory
@@ -510,10 +510,10 @@ class TestArtifactAccess:
 
     def test_get_artifact_nested_path(self, e2e_env):
         """Artifacts in subdirectories are accessible."""
-        from deerflow.config.paths import get_paths
-        from deerflow.runtime.user_context import get_effective_user_id
+        from marketior.config.paths import get_paths
+        from marketior.runtime.user_context import get_effective_user_id
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         tid = str(uuid.uuid4())
 
         outputs_dir = get_paths().sandbox_outputs_dir(tid, user_id=get_effective_user_id())
@@ -527,13 +527,13 @@ class TestArtifactAccess:
 
     def test_get_artifact_nonexistent_raises(self, e2e_env):
         """Reading a nonexistent artifact raises FileNotFoundError."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(FileNotFoundError):
             c.get_artifact("test-thread", "mnt/user-data/outputs/ghost.txt")
 
     def test_get_artifact_traversal_within_prefix_blocked(self, e2e_env):
         """Path traversal within the valid prefix is still blocked."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises((PermissionError, ValueError, FileNotFoundError)):
             c.get_artifact("test-thread", "mnt/user-data/outputs/../../etc/passwd")
 
@@ -549,11 +549,11 @@ class TestSkillInstallation:
     @pytest.fixture(autouse=True)
     def _allow_skill_security_scan(self, monkeypatch):
         async def _scan(*args, **kwargs):
-            from deerflow.skills.security_scanner import ScanResult
+            from marketior.skills.security_scanner import ScanResult
 
             return ScanResult(decision="allow", reason="ok")
 
-        monkeypatch.setattr("deerflow.skills.installer.scan_skill_content", _scan)
+        monkeypatch.setattr("marketior.skills.installer.scan_skill_content", _scan)
 
     @pytest.fixture(autouse=True)
     def _isolate_skills_dir(self, tmp_path, monkeypatch):
@@ -561,10 +561,10 @@ class TestSkillInstallation:
         skills_root = tmp_path / "skills"
         (skills_root / "public").mkdir(parents=True)
         (skills_root / "custom").mkdir(parents=True)
-        from deerflow.skills.storage.local_skill_storage import LocalSkillStorage
+        from marketior.skills.storage.local_skill_storage import LocalSkillStorage
 
         monkeypatch.setattr(
-            "deerflow.skills.storage._default_skill_storage",
+            "marketior.skills.storage._default_skill_storage",
             LocalSkillStorage(host_path=str(skills_root)),
         )
         self._skills_root = skills_root
@@ -584,7 +584,7 @@ class TestSkillInstallation:
     def test_install_skill_success(self, e2e_env, tmp_path):
         """A valid .skill archive installs to the custom skills directory."""
         archive = self._make_skill_zip(tmp_path)
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
 
         result = c.install_skill(archive)
         assert result["success"] is True
@@ -594,7 +594,7 @@ class TestSkillInstallation:
     def test_install_skill_duplicate_rejected(self, e2e_env, tmp_path):
         """Installing the same skill twice raises ValueError."""
         archive = self._make_skill_zip(tmp_path)
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
 
         c.install_skill(archive)
         with pytest.raises(ValueError, match="already exists"):
@@ -604,7 +604,7 @@ class TestSkillInstallation:
         """A file without .skill extension is rejected."""
         bad_file = tmp_path / "not_a_skill.zip"
         bad_file.write_bytes(b"PK\x03\x04")  # ZIP magic bytes
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(ValueError, match=".skill extension"):
             c.install_skill(bad_file)
 
@@ -619,13 +619,13 @@ class TestSkillInstallation:
             for file in skill_dir.rglob("*"):
                 zf.write(file, file.relative_to(tmp_path / "build"))
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(ValueError, match="Invalid skill"):
             c.install_skill(archive)
 
     def test_install_skill_nonexistent_file(self, e2e_env):
         """Installing from a nonexistent path raises FileNotFoundError."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(FileNotFoundError):
             c.install_skill("/nonexistent/skill.skill")
 
@@ -641,7 +641,7 @@ class TestConfigManagement:
     def test_list_models_returns_injected_config(self, e2e_env):
         """list_models() returns the model from the injected AppConfig."""
         expected_model_name = os.getenv("E2E_MODEL_NAME", "volcengine-ark")
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.list_models()
         assert "models" in result
         assert len(result["models"]) == 1
@@ -651,7 +651,7 @@ class TestConfigManagement:
     def test_get_model_found(self, e2e_env):
         """get_model() returns the model when it exists."""
         expected_model_name = os.getenv("E2E_MODEL_NAME", "volcengine-ark")
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         model = c.get_model(expected_model_name)
         assert model is not None
         assert model["name"] == expected_model_name
@@ -659,12 +659,12 @@ class TestConfigManagement:
 
     def test_get_model_not_found(self, e2e_env):
         """get_model() returns None for nonexistent model."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         assert c.get_model("nonexistent-model") is None
 
     def test_list_skills_returns_list(self, e2e_env):
         """list_skills() returns a dict with 'skills' key from real directory scan."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.list_skills()
         assert "skills" in result
         assert isinstance(result["skills"], list)
@@ -673,7 +673,7 @@ class TestConfigManagement:
 
     def test_get_skill_found(self, e2e_env):
         """get_skill() returns skill info for a known public skill."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         # 'deep-research' is a built-in public skill
         skill = c.get_skill("deep-research")
         if skill is not None:
@@ -683,12 +683,12 @@ class TestConfigManagement:
 
     def test_get_skill_not_found(self, e2e_env):
         """get_skill() returns None for nonexistent skill."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         assert c.get_skill("nonexistent-skill-xyz") is None
 
     def test_get_mcp_config_returns_dict(self, e2e_env):
         """get_mcp_config() returns a dict with 'mcp_servers' key."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.get_mcp_config()
         assert "mcp_servers" in result
         assert isinstance(result["mcp_servers"], dict)
@@ -698,14 +698,14 @@ class TestConfigManagement:
         # Set up a writable extensions_config.json
         config_file = tmp_path / "extensions_config.json"
         config_file.write_text(json.dumps({"mcpServers": {}, "skills": {}}))
-        monkeypatch.setenv("DEER_FLOW_EXTENSIONS_CONFIG_PATH", str(config_file))
+        monkeypatch.setenv("MARKETIOR_EXTENSIONS_CONFIG_PATH", str(config_file))
 
         # Force reload so the singleton picks up our test file
-        from deerflow.config.extensions_config import reload_extensions_config
+        from marketior.config.extensions_config import reload_extensions_config
 
         reload_extensions_config()
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         # Simulate a cached agent
         c._agent = "fake-agent-placeholder"
         c._agent_config_key = ("a", "b", "c", "d")
@@ -725,13 +725,13 @@ class TestConfigManagement:
         """update_skill() writes extensions_config.json and invalidates the agent."""
         config_file = tmp_path / "extensions_config.json"
         config_file.write_text(json.dumps({"mcpServers": {}, "skills": {}}))
-        monkeypatch.setenv("DEER_FLOW_EXTENSIONS_CONFIG_PATH", str(config_file))
+        monkeypatch.setenv("MARKETIOR_EXTENSIONS_CONFIG_PATH", str(config_file))
 
-        from deerflow.config.extensions_config import reload_extensions_config
+        from marketior.config.extensions_config import reload_extensions_config
 
         reload_extensions_config()
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         c._agent = "fake-agent-placeholder"
         c._agent_config_key = ("a", "b", "c", "d")
 
@@ -753,13 +753,13 @@ class TestConfigManagement:
         """update_skill() raises ValueError for nonexistent skill."""
         config_file = tmp_path / "extensions_config.json"
         config_file.write_text(json.dumps({"mcpServers": {}, "skills": {}}))
-        monkeypatch.setenv("DEER_FLOW_EXTENSIONS_CONFIG_PATH", str(config_file))
+        monkeypatch.setenv("MARKETIOR_EXTENSIONS_CONFIG_PATH", str(config_file))
 
-        from deerflow.config.extensions_config import reload_extensions_config
+        from marketior.config.extensions_config import reload_extensions_config
 
         reload_extensions_config()
 
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         with pytest.raises(ValueError, match="not found"):
             c.update_skill("nonexistent-skill-xyz", enabled=True)
 
@@ -774,19 +774,19 @@ class TestMemoryAccess:
 
     def test_get_memory_returns_dict(self, e2e_env):
         """get_memory() returns a dict (may be empty initial state)."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.get_memory()
         assert isinstance(result, dict)
 
     def test_reload_memory_returns_dict(self, e2e_env):
         """reload_memory() forces reload and returns a dict."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.reload_memory()
         assert isinstance(result, dict)
 
     def test_get_memory_config_fields(self, e2e_env):
         """get_memory_config() returns expected config fields."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.get_memory_config()
         assert "enabled" in result
         assert "storage_path" in result
@@ -798,7 +798,7 @@ class TestMemoryAccess:
 
     def test_get_memory_status_combines_config_and_data(self, e2e_env):
         """get_memory_status() returns both 'config' and 'data' keys."""
-        c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
+        c = MarketiorClient(checkpointer=None, thinking_enabled=False)
         result = c.get_memory_status()
         assert "config" in result
         assert "data" in result

@@ -22,8 +22,8 @@ This tutorial guides you through deploying Marketior.AI to a production environm
 ### Clone the repository
 
 ```bash
-git clone https://github.com/vanson-colmac/deer-flow.git
-cd deer-flow
+git clone https://github.com/vanson-colmac/marketior.git
+cd marketior
 ```
 
 ### Create the configuration file
@@ -39,7 +39,7 @@ Edit `config.yaml` to add your model configuration.
 ```bash
 cat > .env << EOF
 OPENAI_API_KEY=sk-your-key-here
-DEER_FLOW_ROOT=$(pwd)
+MARKETIOR_ROOT=$(pwd)
 BETTER_AUTH_SECRET=$(openssl rand -base64 32)
 BETTER_AUTH_URL=https://your-domain.com
 EOF
@@ -70,7 +70,7 @@ Open `http://your-server:2026` in your browser.
 - Configure HTTPS/TLS for nginx
 - Set `BETTER_AUTH_SECRET` to a strong random string (minimum 32 characters)
 - Configure firewall rules to allow only necessary ports
-- Back up `backend/.deer-flow/` directory regularly
+- Back up `backend/.marketior/` directory regularly
 - Consider using a container-based sandbox (`AioSandboxProvider`) for multi-user isolation
 
 ## Next steps

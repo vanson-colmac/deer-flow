@@ -1,11 +1,11 @@
 """Async stream bridge factory.
 
 Provides an **async context manager** aligned with
-:func:`deerflow.runtime.checkpointer.async_provider.make_checkpointer`.
+:func:`marketior.runtime.checkpointer.async_provider.make_checkpointer`.
 
 Usage (e.g. FastAPI lifespan)::
 
-    from deerflow.agents.stream_bridge import make_stream_bridge
+    from marketior.agents.stream_bridge import make_stream_bridge
 
     async with make_stream_bridge() as bridge:
         app.state.stream_bridge = bridge
@@ -17,8 +17,8 @@ import contextlib
 import logging
 from collections.abc import AsyncIterator
 
-from deerflow.config.app_config import AppConfig
-from deerflow.config.stream_bridge_config import get_stream_bridge_config
+from marketior.config.app_config import AppConfig
+from marketior.config.stream_bridge_config import get_stream_bridge_config
 
 from .base import StreamBridge
 
@@ -38,7 +38,7 @@ async def make_stream_bridge(app_config: AppConfig | None = None) -> AsyncIterat
         config = app_config.stream_bridge
 
     if config is None or config.type == "memory":
-        from deerflow.runtime.stream_bridge.memory import MemoryStreamBridge
+        from marketior.runtime.stream_bridge.memory import MemoryStreamBridge
 
         maxsize = config.queue_maxsize if config is not None else 256
         bridge = MemoryStreamBridge(queue_maxsize=maxsize)

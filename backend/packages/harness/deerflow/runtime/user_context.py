@@ -6,7 +6,7 @@ methods read the contextvar via a sentinel default parameter, letting
 routers stay free of ``user_id`` boilerplate.
 
 Three-state semantics for the repository ``user_id`` parameter (the
-consumer side of this module lives in ``deerflow.persistence.*``):
+consumer side of this module lives in ``marketior.persistence.*``):
 
 - ``_AUTO`` (module-private sentinel, default): read from contextvar;
   raise :class:`RuntimeError` if unset.
@@ -49,7 +49,7 @@ class CurrentUser(Protocol):
     id: str
 
 
-_current_user: Final[ContextVar[CurrentUser | None]] = ContextVar("deerflow_current_user", default=None)
+_current_user: Final[ContextVar[CurrentUser | None]] = ContextVar("marketior_current_user", default=None)
 
 
 def set_current_user(user: CurrentUser) -> Token[CurrentUser | None]:
