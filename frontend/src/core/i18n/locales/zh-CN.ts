@@ -104,7 +104,16 @@ export const zhCN: Translations = {
     reasoningEffortHighDescription: "全维度逻辑推演 + 多路径验证 + 反推校验",
     searchModels: "搜索模型...",
     surpriseMe: "小惊喜",
-    surpriseMePrompt: "给我一个小惊喜吧",
+    surpriseMePrompts: [
+      "告诉我一个关于太空的有趣事实",
+      "写一首关于编程的短诗",
+      "React性能优化的最佳实践是什么？",
+      "用简单的话解释量子计算",
+      "给我一个很酷的副项目点子",
+      "写一个Python脚本来对数字列表进行排序",
+      "如何使用CSS使div居中？",
+      "生命、宇宙以及一切的意义是什么？"
+    ],
     followupLoading: "正在生成可能的后续问题...",
     followupConfirmTitle: "发送建议问题？",
     followupConfirmDescription: "当前输入框已有内容，选择发送方式。",

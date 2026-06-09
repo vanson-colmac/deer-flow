@@ -862,7 +862,7 @@ export function InputBox({
 
       {isWelcomeMode && searchParams.get("mode") !== "skill" && (
         <div className="flex items-center justify-center pt-2">
-          <SuggestionList />
+          <SuggestionList requestSubmit={requestFormSubmit} />
         </div>
       )}
 
@@ -891,7 +891,11 @@ export function InputBox({
   );
 }
 
-function SuggestionList() {
+function SuggestionList({
+  requestSubmit,
+}: {
+  requestSubmit?: () => void;
+}) {
   const { t } = useI18n();
   const { textInput } = usePromptInputController();
   const handleSuggestionClick = useCallback(
@@ -908,6 +912,16 @@ function SuggestionList() {
           if (selStart !== -1 && selEnd !== -1) {
             textarea.setSelectionRange(selStart, selEnd + 1);
             textarea.focus();
+          } else {
+            textarea.focus();
+            const submitButton = textarea.form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+            if (submitButton) {
+              submitButton.click();
+            } else if (requestSubmit) {
+              requestSubmit();
+            } else {
+              textarea.form?.requestSubmit();
+            }
           }
         }
       }, 500);
@@ -920,7 +934,11 @@ function SuggestionList() {
         className="text-muted-foreground cursor-pointer rounded-full px-4 text-xs font-normal"
         variant="outline"
         size="sm"
-        onClick={() => handleSuggestionClick(t.inputBox.surpriseMePrompt)}
+        onClick={() => {
+          const prompts = t.inputBox.surpriseMePrompts;
+          const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+          handleSuggestionClick(randomPrompt);
+        }}
       >
         <SparklesIcon className="size-4" /> {t.inputBox.surpriseMe}
       </ConfettiButton>

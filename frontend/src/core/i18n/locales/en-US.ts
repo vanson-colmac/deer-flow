@@ -108,7 +108,16 @@ export const enUS: Translations = {
       "Full-dimensional Logic Deduction + Multi-path Verification + Backward Check",
     searchModels: "Search models...",
     surpriseMe: "Surprise",
-    surpriseMePrompt: "Surprise me",
+    surpriseMePrompts: [
+      "Tell me a fun fact about space",
+      "Write a short haiku about coding",
+      "What are the best practices for React performance?",
+      "Explain quantum computing in simple terms",
+      "Give me an idea for a cool side project",
+      "Write a Python script to sort a list of numbers",
+      "How do I center a div using CSS?",
+      "What is the meaning of life, the universe, and everything?"
+    ],
     followupLoading: "Generating follow-up questions...",
     followupConfirmTitle: "Send suggestion?",
     followupConfirmDescription:

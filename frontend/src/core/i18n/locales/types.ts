@@ -87,7 +87,7 @@ export interface Translations {
     reasoningEffortHighDescription: string;
     searchModels: string;
     surpriseMe: string;
-    surpriseMePrompt: string;
+    surpriseMePrompts: string[];
     followupLoading: string;
     followupConfirmTitle: string;
     followupConfirmDescription: string;
