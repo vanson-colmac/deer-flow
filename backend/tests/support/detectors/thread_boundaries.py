@@ -20,7 +20,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_SCAN_PATHS = (
     REPO_ROOT / "backend" / "app",
-    REPO_ROOT / "backend" / "packages" / "harness" / "deerflow",
+    REPO_ROOT / "backend" / "packages" / "harness" / "marketior",
 )
 IGNORED_DIR_NAMES = {
     ".git",

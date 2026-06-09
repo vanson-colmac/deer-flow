@@ -9,7 +9,7 @@ vi.mock("next/headers", () => ({
 }));
 
 const ENV_KEYS = [
-  "DEER_FLOW_AUTH_DISABLED",
+  "MARKETIOR_AUTH_DISABLED",
   "NEXT_PUBLIC_STATIC_WEBSITE_ONLY",
 ] as const;
 
@@ -50,7 +50,7 @@ describe("getServerSideUser", () => {
 
   beforeEach(() => {
     saved = snapshotEnv();
-    setEnv("DEER_FLOW_AUTH_DISABLED", undefined);
+    setEnv("MARKETIOR_AUTH_DISABLED", undefined);
     setEnv("NEXT_PUBLIC_STATIC_WEBSITE_ONLY", undefined);
   });
 

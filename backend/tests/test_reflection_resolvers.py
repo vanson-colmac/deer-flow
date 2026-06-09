@@ -2,8 +2,8 @@
 
 import pytest
 
-from deerflow.reflection import resolvers
-from deerflow.reflection.resolvers import resolve_variable
+from marketior.reflection import resolvers
+from marketior.reflection.resolvers import resolve_variable
 
 
 def test_resolve_variable_reports_install_hint_for_missing_google_provider(monkeypatch: pytest.MonkeyPatch):

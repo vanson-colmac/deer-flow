@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-05-20T11:00:06.243432Z",
+  "user": {
+    "workContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "personalContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "topOfMind": {
+      "summary": "",
+      "updatedAt": ""
+    }
+  },
+  "history": {
+    "recentMonths": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "earlierContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "longTermBackground": {
+      "summary": "",
+      "updatedAt": ""
+    }
+  },
+  "facts": [
+    {
+      "id": "fact_1f5464d6",
+      "content": "The user asked for help writing an email.",
+      "category": "goal",
+      "confidence": 0.95,
+      "createdAt": "2026-05-20T11:00:06.242771Z",
+      "source": "d604db17-474c-4598-af90-58da25b50fe1"
+    }
+  ]
+}

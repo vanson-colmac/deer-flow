@@ -32,7 +32,7 @@ different temp dirs. The same ``hash_messages`` is used by the recorder
 (``scripts/record_gateway.py``) and here, so record and replay agree by
 construction.
 
-This lives in ``tests/`` (not in the publishable ``deerflow-harness`` package),
+This lives in ``tests/`` (not in the publishable ``marketior-harness`` package),
 matching the repo convention for test-only fakes (cf. ``FakeToolCallingModel`` in
 ``_agent_e2e_helpers.py``). In-process tests get ``tests/`` on ``sys.path`` for
 free via pytest; a standalone replay gateway just needs ``PYTHONPATH`` to include
@@ -45,7 +45,7 @@ Point a config model's ``use`` at this class and set the fixture via env::
         use: replay_provider:ReplayChatModel
         model: gpt-5.5            # placeholder; ignored
 
-    DEERFLOW_REPLAY_FIXTURE=/path/to/write_read_file.ultra.json
+    MARKETIOR_REPLAY_FIXTURE=/path/to/write_read_file.ultra.json
 
 A cache miss raises loudly with a diagnostic — that is the signal that the
 replayed run diverged from the recording (graph changed, a new volatile field
@@ -74,7 +74,7 @@ from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResu
 from langchain_core.runnables import Runnable
 from pydantic import PrivateAttr
 
-_FIXTURE_ENV = "DEERFLOW_REPLAY_FIXTURE"
+_FIXTURE_ENV = "MARKETIOR_REPLAY_FIXTURE"
 
 # Process-wide record of replay misses. A miss raises inside the model, but the
 # gateway's LLMErrorHandlingMiddleware swallows it into a normal assistant error
@@ -105,7 +105,7 @@ _SYSTEM_REMINDER_RE = re.compile(r"<system-reminder>.*?</system-reminder>", re.D
 _UUID_RE = re.compile(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
 _ISO_TS_RE = re.compile(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?")
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
-# Absolute temp/home roots used for per-run isolation (macOS + Linux + DEER_FLOW_HOME tmp).
+# Absolute temp/home roots used for per-run isolation (macOS + Linux + MARKETIOR_HOME tmp).
 _PATH_RE = re.compile(r"(?:/private)?/(?:var/folders|tmp)/[^\s\"']*")
 
 
@@ -212,7 +212,7 @@ class ReplayChatModel(BaseChatModel):
 
     @property
     def _llm_type(self) -> str:
-        return "deerflow-replay"
+        return "marketior-replay"
 
     def _match(self, messages: list[BaseMessage]) -> AIMessage:
         key = hash_messages(messages)

@@ -27,11 +27,11 @@ from app.gateway.routers import (
     threads,
     uploads,
 )
-from deerflow.config import app_config as deerflow_app_config
-from deerflow.config.app_config import apply_logging_level
+from marketior.config import app_config as marketior_app_config
+from marketior.config.app_config import apply_logging_level
 
-AppConfig = deerflow_app_config.AppConfig
-get_app_config = deerflow_app_config.get_app_config
+AppConfig = marketior_app_config.AppConfig
+get_app_config = marketior_app_config.get_app_config
 
 # Default logging; lifespan overrides from config.yaml log_level.
 logging.basicConfig(
@@ -53,7 +53,7 @@ async def _ensure_admin_user(app: FastAPI) -> None:
 
     After admin creation, migrate orphan threads from the LangGraph
     store (metadata.user_id unset) to the admin account. This is the
-    "no-auth → with-auth" upgrade path: users who ran DeerFlow without
+    "no-auth → with-auth" upgrade path: users who ran Marketior without
     authentication have existing LangGraph thread data that needs an
     owner assigned.
         First boot (no admin exists):
@@ -72,8 +72,8 @@ async def _ensure_admin_user(app: FastAPI) -> None:
     from sqlalchemy import select
 
     from app.gateway.deps import get_local_provider
-    from deerflow.persistence.engine import get_session_factory
-    from deerflow.persistence.user.model import UserRow
+    from marketior.persistence.engine import get_session_factory
+    from marketior.persistence.user.model import UserRow
 
     try:
         provider = get_local_provider()
@@ -183,7 +183,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # never blocks on the BPE data download (which hits an OpenAI/Azure URL
     # that may be unreachable in restricted networks — see issue #3402).
     try:
-        from deerflow.agents.memory.prompt import warm_tiktoken_cache
+        from marketior.agents.memory.prompt import warm_tiktoken_cache
 
         warmed = await asyncio.wait_for(
             asyncio.to_thread(warm_tiktoken_cache),
@@ -248,11 +248,11 @@ def create_app() -> FastAPI:
     openapi_url = "/openapi.json" if config.enable_docs else None
 
     app = FastAPI(
-        title="DeerFlow API Gateway",
+        title="Marketior API Gateway",
         description="""
-## DeerFlow API Gateway
+## Marketior API Gateway
 
-API Gateway for DeerFlow - A LangGraph-based AI agent backend with sandbox execution capabilities.
+API Gateway for Marketior - A LangGraph-based AI agent backend with sandbox execution capabilities.
 
 ### Features
 
@@ -300,7 +300,7 @@ This gateway provides runtime endpoints for agent runs plus custom endpoints for
             },
             {
                 "name": "threads",
-                "description": "Manage DeerFlow thread-local filesystem data",
+                "description": "Manage Marketior thread-local filesystem data",
             },
             {
                 "name": "agents",

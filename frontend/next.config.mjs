@@ -5,7 +5,7 @@
 import "./src/env.js";
 
 function getInternalServiceURL(envKey, fallbackURL) {
-  const configured = process.env[envKey]?.trim() || process.env["DEER_FLOW_INTERNAL_GATEWAY_BASE_URL"]?.trim();
+  const configured = process.env[envKey]?.trim() || process.env["MARKETIOR_INTERNAL_GATEWAY_BASE_URL"]?.trim();
   return configured && configured.length > 0
     ? configured.replace(/\/+$/, "")
     : fallbackURL;
@@ -28,7 +28,7 @@ const config = {
   async rewrites() {
     const rewrites = [];
     const gatewayURL = getInternalServiceURL(
-      "DEER_FLOW_INTERNAL_GATEWAY_BASE_URL",
+      "MARKETIOR_INTERNAL_GATEWAY_BASE_URL",
       "http://127.0.0.1:8001",
     );
 

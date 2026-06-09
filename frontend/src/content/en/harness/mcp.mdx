@@ -39,10 +39,10 @@ The default location is the project root (same directory as `config.yaml`). The 
 ```
 
 <Callout type="warning">
-  Do not add an MCP filesystem server for DeerFlow workspace files. DeerFlow
+  Do not add an MCP filesystem server for Marketior.AI workspace files. Marketior.AI
   already provides built-in file tools for thread-scoped workspace access, and
   overlapping file tools with different path semantics can make LLM tool
-  selection and file access behavior unstable. DeerFlow does not currently
+  selection and file access behavior unstable. Marketior.AI does not currently
   adapt MCP Roots mode for filesystem servers: it does not publish per-thread
   MCP roots or map sandbox paths such as <code>/mnt/user-data/...</code> to
   paths accepted by <code>@modelcontextprotocol/server-filesystem</code>.

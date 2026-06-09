@@ -7,9 +7,9 @@ from langchain_core.messages import AIMessage
 from langgraph.checkpoint.base import empty_checkpoint
 from langgraph.checkpoint.memory import InMemorySaver
 
-from deerflow.runtime.runs.manager import RunManager
-from deerflow.runtime.runs.schemas import RunStatus
-from deerflow.runtime.runs.worker import (
+from marketior.runtime.runs.manager import RunManager
+from marketior.runtime.runs.schemas import RunStatus
+from marketior.runtime.runs.worker import (
     RunContext,
     _agent_factory_supports_app_config,
     _build_runtime_context,
@@ -122,7 +122,7 @@ async def test_run_agent_marks_llm_error_fallback_as_error_status():
                     AIMessage(
                         content="The configured LLM provider is temporarily unavailable after multiple retries.",
                         additional_kwargs={
-                            "deerflow_error_fallback": True,
+                            "marketior_error_fallback": True,
                             "error_type": "APIConnectionError",
                             "error_reason": "transient",
                             "error_detail": "Connection error.",
@@ -539,7 +539,7 @@ def test_agent_factory_supports_app_config_returns_false_when_signature_lookup_f
         def __call__(self, **kwargs):
             return kwargs
 
-    monkeypatch.setattr("deerflow.runtime.runs.worker.inspect.signature", lambda _obj: (_ for _ in ()).throw(ValueError("boom")))
+    monkeypatch.setattr("marketior.runtime.runs.worker.inspect.signature", lambda _obj: (_ for _ in ()).throw(ValueError("boom")))
 
     assert _agent_factory_supports_app_config(BrokenCallable()) is False
 
@@ -553,7 +553,7 @@ def test_try_extract_from_message_finds_fallback_on_message_object():
     msg = AIMessage(
         content="fallback",
         additional_kwargs={
-            "deerflow_error_fallback": True,
+            "marketior_error_fallback": True,
             "error_detail": "Connection error.",
             "error_reason": "transient",
         },
@@ -565,7 +565,7 @@ def test_try_extract_from_message_finds_fallback_on_dict():
     msg = {
         "content": "fallback",
         "additional_kwargs": {
-            "deerflow_error_fallback": True,
+            "marketior_error_fallback": True,
             "error_detail": "Quota exceeded.",
         },
     }
@@ -598,7 +598,7 @@ def test_extract_llm_error_fallback_message_finds_fallback_in_messages_list():
             AIMessage(
                 content="Unavailable.",
                 additional_kwargs={
-                    "deerflow_error_fallback": True,
+                    "marketior_error_fallback": True,
                     "error_detail": "Connection error.",
                 },
             ),
@@ -612,7 +612,7 @@ def test_extract_llm_error_fallback_message_finds_fallback_in_raw_message():
     msg = AIMessage(
         content="Unavailable.",
         additional_kwargs={
-            "deerflow_error_fallback": True,
+            "marketior_error_fallback": True,
             "error_reason": "quota",
         },
     )
@@ -625,7 +625,7 @@ def test_extract_llm_error_fallback_message_finds_fallback_in_tuple():
         AIMessage(
             content="Unavailable.",
             additional_kwargs={
-                "deerflow_error_fallback": True,
+                "marketior_error_fallback": True,
                 "error_detail": "Circuit open.",
             },
         ),
@@ -649,7 +649,7 @@ def test_extract_llm_error_fallback_message_finds_fallback_in_updates_mode():
                 AIMessage(
                     content="Unavailable.",
                     additional_kwargs={
-                        "deerflow_error_fallback": True,
+                        "marketior_error_fallback": True,
                         "error_detail": "Connection error.",
                     },
                 )

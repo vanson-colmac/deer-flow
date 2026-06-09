@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Signal Garden</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root{
+  --ink:#11130f;--paper:#f5f0df;--moss:#39543a;--lime:#c7ff5f;--blue:#4d7cff;--rose:#ff6f91;--gold:#e3b341;
+}
+*{box-sizing:border-box} html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:'IBM Plex Mono',monospace;cursor:none}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 20% 25%,rgba(199,255,95,.28),transparent 24%),radial-gradient(circle at 80% 15%,rgba(77,124,255,.18),transparent 24%),radial-gradient(circle at 70% 82%,rgba(255,111,145,.18),transparent 28%),linear-gradient(90deg,rgba(17,19,15,.05) 1px,transparent 1px),linear-gradient(rgba(17,19,15,.05) 1px,transparent 1px);background-size:auto,auto,auto,42px 42px,42px 42px;pointer-events:none}
+.noise{position:fixed;inset:-50%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E");mix-blend-mode:multiply;opacity:.16;animation:grain 7s steps(10) infinite;pointer-events:none}@keyframes grain{to{transform:translate(7%,3%)}}
+.wrap{height:100%;display:grid;grid-template-columns:1.05fr .95fr;gap:0;padding:38px}
+.panel{position:relative;border:1.5px solid rgba(17,19,15,.72);border-radius:34px;background:rgba(245,240,223,.72);backdrop-filter:blur(10px);box-shadow:12px 12px 0 rgba(17,19,15,.88);overflow:hidden}
+.left{padding:38px 38px 28px}.right{margin-left:26px;padding:28px;display:grid;place-items:center}
+.kicker{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--ink);border-radius:99px;padding:9px 13px;background:var(--lime);box-shadow:4px 4px 0 var(--ink);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;animation:pop .8s cubic-bezier(.2,1.7,.2,1)}
+.kicker i{width:9px;height:9px;border-radius:50%;background:var(--rose);box-shadow:0 0 0 5px rgba(255,111,145,.25)}
+h1{font-family:'Fraunces',serif;font-size:clamp(56px,9vw,126px);line-height:.82;margin:36px 0 20px;font-weight:850;letter-spacing:-.075em;font-variation-settings:'SOFT' 70,'WONK' 1}.tilt{display:inline-block;transform:rotate(-4deg);color:var(--blue);text-shadow:5px 5px 0 var(--lime)}
+.sub{max-width:640px;font-size:18px;line-height:1.55;margin:0 0 30px}.sub b{background:var(--ink);color:var(--paper);padding:2px 6px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}.card{border:1.3px solid var(--ink);border-radius:22px;padding:16px;min-height:150px;background:#fff8d8;box-shadow:5px 5px 0 rgba(17,19,15,.9);transform:rotate(var(--r));transition:.25s}.card:hover{transform:translateY(-8px) rotate(0);background:var(--lime)}.card:nth-child(2){background:#e9eeff}.card:nth-child(3){background:#ffe1e9}.num{font-family:'Fraunces';font-size:42px;font-weight:800}.label{font-size:12px;text-transform:uppercase;letter-spacing:.09em;margin-top:16px;color:var(--moss)}
+.controls{position:absolute;left:38px;right:38px;bottom:28px;display:flex;align-items:center;gap:14px}.btn{appearance:none;border:1.5px solid var(--ink);border-radius:18px;background:var(--ink);color:var(--paper);padding:14px 18px;font:600 13px 'IBM Plex Mono';box-shadow:4px 4px 0 var(--gold);transition:.2s}.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--gold)}.hint{font-size:12px;opacity:.72}
+canvas{width:100%;height:100%;border-radius:24px;background:radial-gradient(circle at 50% 50%,rgba(199,255,95,.12),transparent 40%)}
+.orbit{position:absolute;right:28px;top:28px;width:96px;height:96px;border:1px dashed var(--ink);border-radius:50%;animation:spin 18s linear infinite}.orbit:before,.orbit:after{content:"";position:absolute;border-radius:50%;background:var(--rose);width:18px;height:18px;left:8px;top:8px}.orbit:after{background:var(--blue);left:68px;top:58px}@keyframes spin{to{rotate:360deg}}@keyframes pop{from{transform:scale(.7) rotate(-8deg);opacity:0}}
+.badge{position:fixed;right:18px;bottom:16px;text-decoration:none;color:rgba(17,19,15,.58);font-size:11px;letter-spacing:.08em;border:1px solid rgba(17,19,15,.18);border-radius:99px;padding:8px 10px;background:rgba(245,240,223,.55);backdrop-filter:blur(6px)}.badge:hover{color:var(--ink);border-color:var(--ink)}
+.cursor{position:fixed;width:18px;height:18px;border:2px solid var(--ink);border-radius:50%;pointer-events:none;z-index:9;mix-blend-mode:multiply;transform:translate(-50%,-50%)}
+@media(max-width:900px){body{overflow:auto;cursor:auto}.wrap{height:auto;grid-template-columns:1fr;padding:18px}.right{margin:22px 0 0;height:55vh}.cards{grid-template-columns:1fr}.controls{position:static;margin-top:24px}.cursor{display:none}}
+</style>
+</head>
+<body>
+<div class="noise"></div><div class="cursor" id="cur"></div>
+<main class="wrap">
+<section class="panel left">
+  <div class="kicker"><i></i>Personal research greenhouse</div>
+  <h1>Signal<br><span class="tilt">Garden</span></h1>
+  <p class="sub">A tiny living map for your current obsessions: <b>AI health</b>, <b>EVs</b>, <b>space</b>, plus the hidden root system: <b>Python · JavaScript · Java</b>.</p>
+  <div class="cards">
+    <div class="card" style="--r:-2.2deg"><div class="num">01</div><div class="label">Health AI sprouts: promise vs proof</div></div>
+    <div class="card" style="--r:1.8deg"><div class="num">02</div><div class="label">EV weather: price cuts, range, infra</div></div>
+    <div class="card" style="--r:-1deg"><div class="num">03</div><div class="label">Orbital pulse: Moon, Mars, launch cadence</div></div>
+  </div>
+  <div class="controls"><button class="btn" id="seed">Plant new constellation</button><span class="hint">Click / drag in the garden → grow signal vines.</span></div>
+</section>
+<section class="panel right"><div class="orbit"></div><canvas id="c"></canvas></section>
+</main>
+<a class="badge" href="https://ai.marketior.com" target="_blank" rel="noreferrer">Created By Marketior</a>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d'),cur=document.getElementById('cur');let w,h,dpr,pts=[];const colors=['#39543a','#4d7cff','#ff6f91','#c7ff5f','#e3b341','#11130f'];
+function resize(){dpr=innerWidth<900?1:devicePixelRatio||1;const r=canvas.getBoundingClientRect();w=canvas.width=r.width*dpr;h=canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);seed()}addEventListener('resize',resize);
+function seed(){const r=canvas.getBoundingClientRect();pts=[];for(let i=0;i<58;i++)pts.push({x:Math.random()*r.width,y:Math.random()*r.height,vx:(Math.random()-.5)*.7,vy:(Math.random()-.5)*.7,s:2+Math.random()*7,c:colors[i%colors.length],a:Math.random()*6.28})}
+function add(x,y){const r=canvas.getBoundingClientRect();for(let i=0;i<8;i++)pts.push({x:x-r.left+(Math.random()-.5)*50,y:y-r.top+(Math.random()-.5)*50,vx:(Math.random()-.5)*1.6,vy:(Math.random()-.5)*1.6,s:3+Math.random()*9,c:colors[Math.floor(Math.random()*colors.length)],a:Math.random()*6.28})}
+function draw(){const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);ctx.lineCap='round';for(const p of pts){p.x+=p.vx+Math.cos(p.a)*.08;p.y+=p.vy+Math.sin(p.a)*.08;p.a+=.018;if(p.x<0||p.x>r.width)p.vx*=-1;if(p.y<0||p.y>r.height)p.vy*=-1}
+for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,dist=Math.hypot(dx,dy);if(dist<135){ctx.strokeStyle=`rgba(17,19,15,${(1-dist/135)*.23})`;ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(a.x,a.y);const mx=(a.x+b.x)/2+Math.sin((a.a+b.a))*18,my=(a.y+b.y)/2+Math.cos((a.a-b.a))*18;ctx.quadraticCurveTo(mx,my,b.x,b.y);ctx.stroke()}}
+for(const p of pts){ctx.fillStyle=p.c;ctx.strokeStyle='#11130f';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='rgba(245,240,223,.75)';ctx.beginPath();ctx.arc(p.x-p.s*.25,p.y-p.s*.3,p.s*.25,0,7);ctx.fill()}requestAnimationFrame(draw)}
+addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});canvas.addEventListener('pointerdown',e=>add(e.clientX,e.clientY));canvas.addEventListener('pointermove',e=>{if(e.buttons)add(e.clientX,e.clientY)});document.getElementById('seed').onclick=seed;resize();draw();
+</script>
+</body>
+</html>

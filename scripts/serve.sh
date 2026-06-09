@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# serve.sh — Unified DeerFlow service launcher
+# serve.sh — Unified Marketior.AI service launcher
 #
 # Usage:
 #   ./scripts/serve.sh [--dev|--prod] [--daemon] [--stop|--restart]
@@ -66,12 +66,12 @@ done
 # the same dev ports (8001/3000/2026), so a service started from ANY of them
 # must be reclaimable from here — otherwise `make stop`/`make dev` in this
 # worktree can neither kill nor take over a port held by a sibling worktree.
-# DEERFLOW_ROOTS is that set of roots; processes living outside all of them
+# MARKETIOR_ROOTS is that set of roots; processes living outside all of them
 # (e.g. an unrelated project on port 3000) are still never touched.
 # Sorted most-specific-first (longest path first): a linked worktree lives
 # under the main checkout, so both roots are substrings of its files — checking
 # the deeper root first attributes a reclaimed port to the right worktree.
-DEERFLOW_ROOTS="$(
+MARKETIOR_ROOTS="$(
     {
         printf '%s\n' "$REPO_ROOT"
         git -C "$REPO_ROOT" worktree list --porcelain 2>/dev/null |
@@ -82,7 +82,7 @@ DEERFLOW_ROOTS="$(
 # True if PID has an open file/cwd under any deer-flow worktree root. The
 # trailing slash keeps a sibling dir like ".../deer-flow-notes" from matching
 # the ".../deer-flow" root.
-_is_deerflow_pid() {
+_is_marketior_pid() {
     local pid=$1 files root
     files=$(lsof -p "$pid" 2>/dev/null) || return 1
     while IFS= read -r root; do
@@ -90,7 +90,7 @@ _is_deerflow_pid() {
         case "$files" in
             *"$root"/*) return 0 ;;
         esac
-    done <<< "$DEERFLOW_ROOTS"
+    done <<< "$MARKETIOR_ROOTS"
     return 1
 }
 
@@ -100,14 +100,14 @@ _report_reclaimed_ports() {
     local port pid files root owner
     for port in 8001 3000 2026; do
         for pid in $(lsof -nP -iTCP:"$port" -sTCP:LISTEN -t 2>/dev/null); do
-            _is_deerflow_pid "$pid" || continue
+            _is_marketior_pid "$pid" || continue
             files=$(lsof -p "$pid" 2>/dev/null)
             case "$files" in *"$REPO_ROOT"/*) continue ;; esac  # this worktree — normal
             owner=""
             while IFS= read -r root; do
                 [ -n "$root" ] || continue
                 case "$files" in *"$root"/*) owner="$root"; break ;; esac
-            done <<< "$DEERFLOW_ROOTS"
+            done <<< "$MARKETIOR_ROOTS"
             echo "  ↻ Reclaiming port $port from another worktree: ${owner:-?}"
             break
         done
@@ -120,7 +120,7 @@ _kill_repo_processes() {
     local pids=""
 
     while IFS= read -r pid; do
-        if [ -n "$pid" ] && _is_deerflow_pid "$pid"; then
+        if [ -n "$pid" ] && _is_marketior_pid "$pid"; then
             case " $pids " in
                 *" $pid "*) ;;
                 *) pids="$pids $pid" ;;
@@ -139,7 +139,7 @@ _kill_repo_port() {
     local pids=""
 
     while IFS= read -r pid; do
-        if [ -n "$pid" ] && _is_deerflow_pid "$pid"; then
+        if [ -n "$pid" ] && _is_marketior_pid "$pid"; then
             case " $pids " in
                 *" $pid "*) ;;
                 *) pids="$pids $pid" ;;
@@ -194,9 +194,9 @@ _is_repo_nginx_pid() {
         case "$args" in
             *"$root"/docker/nginx/nginx.local.conf*|*"$root"/*) return 0 ;;
         esac
-    done <<< "$DEERFLOW_ROOTS"
+    done <<< "$MARKETIOR_ROOTS"
 
-    _is_deerflow_pid "$pid"
+    _is_marketior_pid "$pid"
 }
 
 _kill_repo_nginx() {
@@ -286,15 +286,15 @@ else
 fi
 
 # Runtime path defaults. Local `make dev` launches Gateway from `backend/`,
-# so pin DeerFlow-owned state to the expected backend runtime directory and
+# so pin Marketior.AI-owned state to the expected backend runtime directory and
 # create it before uvicorn builds its reload exclude filter.
-if [ -z "$DEER_FLOW_PROJECT_ROOT" ]; then
-    export DEER_FLOW_PROJECT_ROOT="$REPO_ROOT"
+if [ -z "$MARKETIOR_PROJECT_ROOT" ]; then
+    export MARKETIOR_PROJECT_ROOT="$REPO_ROOT"
 fi
 
 BACKEND_RUNTIME_HOME="$REPO_ROOT/backend/.deer-flow"
-if [ -z "$DEER_FLOW_HOME" ]; then
-    export DEER_FLOW_HOME="$BACKEND_RUNTIME_HOME"
+if [ -z "$MARKETIOR_HOME" ]; then
+    export MARKETIOR_HOME="$BACKEND_RUNTIME_HOME"
 fi
 
 # `backend/sandbox` is excluded from uvicorn's reload watcher below. uvicorn only
@@ -302,14 +302,14 @@ fi
 # otherwise it globs the pattern, and Python 3.12's pathlib rejects absolute glob
 # patterns with NotImplementedError, crashing `make dev` on a fresh checkout
 # (#3459 / #3454). Creating it here keeps every absolute exclude on the is_dir path.
-mkdir -p "$DEER_FLOW_HOME" "$BACKEND_RUNTIME_HOME" "$REPO_ROOT/backend/sandbox"
-DEER_FLOW_HOME="$(cd "$DEER_FLOW_HOME" && pwd -P)"
+mkdir -p "$MARKETIOR_HOME" "$BACKEND_RUNTIME_HOME" "$REPO_ROOT/backend/sandbox"
+MARKETIOR_HOME="$(cd "$MARKETIOR_HOME" && pwd -P)"
 BACKEND_RUNTIME_HOME="$(cd "$BACKEND_RUNTIME_HOME" && pwd -P)"
-export DEER_FLOW_HOME
+export MARKETIOR_HOME
 
 # Extra flags for uvicorn
 if $DEV_MODE && ! $DAEMON_MODE; then
-    GATEWAY_EXTRA_FLAGS="--reload --reload-include='*.yaml' --reload-include='.env' --reload-exclude='*.pyc' --reload-exclude='__pycache__' --reload-exclude='$REPO_ROOT/backend/sandbox' --reload-exclude='$DEER_FLOW_HOME' --reload-exclude='$BACKEND_RUNTIME_HOME'"
+    GATEWAY_EXTRA_FLAGS="--reload --reload-include='*.yaml' --reload-include='.env' --reload-exclude='*.pyc' --reload-exclude='__pycache__' --reload-exclude='$REPO_ROOT/backend/sandbox' --reload-exclude='$MARKETIOR_HOME' --reload-exclude='$BACKEND_RUNTIME_HOME'"
 else
     GATEWAY_EXTRA_FLAGS=""
 fi
@@ -324,11 +324,11 @@ fi
 # ── Config check ─────────────────────────────────────────────────────────────
 
 if ! { \
-        [ -n "$DEER_FLOW_CONFIG_PATH" ] && [ -f "$DEER_FLOW_CONFIG_PATH" ] || \
+        [ -n "$MARKETIOR_CONFIG_PATH" ] && [ -f "$MARKETIOR_CONFIG_PATH" ] || \
         [ -f backend/config.yaml ] || \
         [ -f config.yaml ]; \
     }; then
-    echo "✗ No DeerFlow config file found."
+    echo "✗ No Marketior.AI config file found."
     echo "  Run 'make setup' (recommended) or 'make config' to generate config.yaml."
     exit 1
 fi
@@ -368,7 +368,7 @@ if ! $SKIP_INSTALL; then
     if [ -n "$UV_EXTRAS_FLAGS" ]; then
         echo "  • uv extras: $UV_EXTRAS_FLAGS"
     fi
-    # `--all-packages` propagates extras into workspace members (deerflow-harness
+    # `--all-packages` propagates extras into workspace members (marketior-harness
     # in particular). Required for postgres extras — see PR #2584.
     # Intentionally unquoted to splat multiple `--extra X` pairs.
     (cd backend && uv sync --quiet --all-packages $UV_EXTRAS_FLAGS) || { echo "✗ Backend dependency install failed"; exit 1; }
@@ -382,7 +382,7 @@ fi
 
 echo ""
 echo "=========================================="
-echo "  Starting DeerFlow"
+echo "  Starting Marketior.AI"
 echo "=========================================="
 echo ""
 echo "  Mode: $MODE_LABEL"
@@ -459,7 +459,7 @@ run_service "Nginx" \
 
 echo ""
 echo "=========================================="
-echo "  ✓ DeerFlow is running!  [$MODE_LABEL]"
+echo "  ✓ Marketior.AI is running!  [$MODE_LABEL]"
 echo "=========================================="
 echo ""
 echo "  🌐 http://localhost:2026"

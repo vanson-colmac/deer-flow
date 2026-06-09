@@ -21,12 +21,12 @@ from sqlalchemy import select
 from app.gateway.auth.credential_file import write_initial_credentials
 from app.gateway.auth.password import hash_password
 from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
-from deerflow.persistence.user.model import UserRow
+from marketior.persistence.user.model import UserRow
 
 
 async def _run(email: str | None) -> int:
-    from deerflow.config import get_app_config
-    from deerflow.persistence.engine import (
+    from marketior.config import get_app_config
+    from marketior.persistence.engine import (
         close_engine,
         get_session_factory,
         init_engine_from_config,

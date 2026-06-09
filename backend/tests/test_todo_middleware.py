@@ -9,7 +9,7 @@ from langchain_core.language_models.fake_chat_models import FakeMessagesListChat
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import PrivateAttr
 
-from deerflow.agents.middlewares.todo_middleware import (
+from marketior.agents.middlewares.todo_middleware import (
     TodoMiddleware,
     _completion_reminder_count,
     _format_todos,
@@ -17,7 +17,7 @@ from deerflow.agents.middlewares.todo_middleware import (
     _reminder_in_messages,
     _todos_in_messages,
 )
-from deerflow.agents.thread_state import ThreadState
+from marketior.agents.thread_state import ThreadState
 
 
 def _ai_with_write_todos():

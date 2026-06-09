@@ -28,9 +28,9 @@ def _reset_process_singletons(monkeypatch: pytest.MonkeyPatch) -> None:
 
     Same set the real-server e2e resets (see test_setup_agent_http_e2e_real_server).
     """
-    from deerflow.config import app_config as app_config_module
-    from deerflow.config import paths as paths_module
-    from deerflow.persistence import engine as engine_module
+    from marketior.config import app_config as app_config_module
+    from marketior.config import paths as paths_module
+    from marketior.persistence import engine as engine_module
 
     for module, attr in (
         (app_config_module, "_app_config"),
@@ -52,16 +52,16 @@ def test_replay_write_read_file_ultra_matches_golden(tmp_path: Path, monkeypatch
 
     home = tmp_path / "home"
     home.mkdir()
-    monkeypatch.setenv("DEER_FLOW_HOME", str(home))
-    monkeypatch.setenv("DEERFLOW_REPLAY_FIXTURE", str(fixture_path))
+    monkeypatch.setenv("MARKETIOR_HOME", str(home))
+    monkeypatch.setenv("MARKETIOR_REPLAY_FIXTURE", str(fixture_path))
 
     cfg_path = tmp_path / "config.yaml"
     cfg_path.write_text(build_config_yaml(model_block=REPLAY_MODEL_BLOCK, home=home), encoding="utf-8")
-    monkeypatch.setenv("DEER_FLOW_CONFIG_PATH", str(cfg_path))
-    monkeypatch.setenv("DEER_FLOW_EXTENSIONS_CONFIG_PATH", str(prepare_hermetic_extras(home)))
+    monkeypatch.setenv("MARKETIOR_CONFIG_PATH", str(cfg_path))
+    monkeypatch.setenv("MARKETIOR_EXTENSIONS_CONFIG_PATH", str(prepare_hermetic_extras(home)))
 
     _reset_process_singletons(monkeypatch)
-    from deerflow.config import app_config as app_config_module
+    from marketior.config import app_config as app_config_module
 
     cfg = app_config_module.get_app_config()
     cfg.database.sqlite_dir = str(home / "db")
@@ -85,8 +85,8 @@ def test_replay_write_read_file_ultra_matches_golden(tmp_path: Path, monkeypatch
     assert not misses, f"replay miss ({len(misses)}): the fixture is stale vs the current system prompt or agent graph. Re-record it (see backend/docs/REPLAY_E2E.md). Missed hashes: {misses}"
 
     # Regenerate the committed golden after re-recording the fixture:
-    #   DEERFLOW_WRITE_GOLDEN=1 uv run pytest tests/test_replay_golden.py
-    if os.environ.get("DEERFLOW_WRITE_GOLDEN"):
+    #   MARKETIOR_WRITE_GOLDEN=1 uv run pytest tests/test_replay_golden.py
+    if os.environ.get("MARKETIOR_WRITE_GOLDEN"):
         events_path.write_text(json.dumps({"scenario": scenario, "mode": mode, "events": events}, ensure_ascii=False, indent=2), encoding="utf-8")
         return
 

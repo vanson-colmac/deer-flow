@@ -38,7 +38,7 @@ export default defineConfig({
       // Mount the test-only run/message seeder used by multi-run-order.spec.ts
       // (#3352). The endpoint exists only on this replay gateway, never in the
       // production app.
-      env: { DEERFLOW_ENABLE_TEST_SEED: "1" },
+      env: { MARKETIOR_ENABLE_TEST_SEED: "1" },
     },
     {
       command: "pnpm build && pnpm start",
@@ -47,13 +47,13 @@ export default defineConfig({
       timeout: 240_000,
       env: {
         SKIP_ENV_VALIDATION: "1",
-        DEER_FLOW_AUTH_DISABLED: "1",
+        MARKETIOR_AUTH_DISABLED: "1",
         BETTER_AUTH_SECRET: "local-dev-secret",
         // Leave NEXT_PUBLIC_* unset so the frontend uses its built-in
         // next.config rewrites (same-origin proxy) instead of talking to the
         // gateway cross-origin — cross-origin fetches drop the auth cookies.
         // Just point that proxy at the replay gateway.
-        DEER_FLOW_INTERNAL_GATEWAY_BASE_URL: "http://127.0.0.1:8011",
+        MARKETIOR_INTERNAL_GATEWAY_BASE_URL: "http://127.0.0.1:8011",
       },
     },
   ],

@@ -8,11 +8,11 @@ import pytest
 from langchain_core.messages import AIMessage
 from langgraph.errors import GraphBubbleUp
 
-from deerflow.agents.middlewares.llm_error_handling_middleware import (
+from marketior.agents.middlewares.llm_error_handling_middleware import (
     LLMErrorHandlingMiddleware,
 )
-from deerflow.config.app_config import AppConfig
-from deerflow.config.sandbox_config import SandboxConfig
+from marketior.config.app_config import AppConfig
+from marketior.config.sandbox_config import SandboxConfig
 
 
 def _make_app_config() -> AppConfig:
@@ -94,7 +94,7 @@ def test_async_model_call_returns_user_message_for_quota_errors() -> None:
 
     assert isinstance(result, AIMessage)
     assert "out of quota" in str(result.content)
-    assert result.additional_kwargs["deerflow_error_fallback"] is True
+    assert result.additional_kwargs["marketior_error_fallback"] is True
     assert result.additional_kwargs["error_reason"] == "quota"
     assert result.additional_kwargs["error_type"] == "FakeError"
 
@@ -116,7 +116,7 @@ def test_async_model_call_marks_transient_retry_exhaustion_as_error_fallback(
 
     assert isinstance(result, AIMessage)
     assert "temporarily unavailable" in str(result.content)
-    assert result.additional_kwargs["deerflow_error_fallback"] is True
+    assert result.additional_kwargs["marketior_error_fallback"] is True
     assert result.additional_kwargs["error_reason"] == "transient"
     assert result.additional_kwargs["error_detail"] == "Connection error."
 

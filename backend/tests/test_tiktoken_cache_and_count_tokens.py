@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from unittest import mock
 
-from deerflow.agents.memory.prompt import (
+from marketior.agents.memory.prompt import (
     _count_tokens,
     _get_tiktoken_encoding,
     _tiktoken_encoding_cache,
@@ -27,7 +27,7 @@ class TestGetTiktokenEncoding:
     """Tests for _get_tiktoken_encoding caching and fallback."""
 
     def test_returns_none_when_tiktoken_unavailable(self, monkeypatch):
-        monkeypatch.setattr("deerflow.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
+        monkeypatch.setattr("marketior.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
         assert _get_tiktoken_encoding("cl100k_base") is None
 
     def test_returns_encoding_on_success(self, monkeypatch):
@@ -35,7 +35,7 @@ class TestGetTiktokenEncoding:
         _tiktoken_encoding_cache.pop("cl100k_base", None)
 
         fake_enc = mock.Mock()
-        monkeypatch.setattr("deerflow.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
+        monkeypatch.setattr("marketior.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
 
         enc = _get_tiktoken_encoding("cl100k_base")
         assert enc is fake_enc
@@ -44,7 +44,7 @@ class TestGetTiktokenEncoding:
         _tiktoken_encoding_cache.pop("cl100k_base", None)
 
         fake_enc = mock.Mock()
-        monkeypatch.setattr("deerflow.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
+        monkeypatch.setattr("marketior.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
 
         _get_tiktoken_encoding("cl100k_base")
         assert _tiktoken_encoding_cache["cl100k_base"] is fake_enc
@@ -81,14 +81,14 @@ class TestCountTokens:
     """Tests for _count_tokens fallback behaviour."""
 
     def test_returns_character_estimate_when_tiktoken_unavailable(self, monkeypatch):
-        monkeypatch.setattr("deerflow.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
+        monkeypatch.setattr("marketior.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
         text = "Hello, world! This is a test."
         result = _count_tokens(text)
         assert result == len(text) // 4
 
     def test_returns_character_estimate_when_encoding_fails(self, monkeypatch):
         monkeypatch.setattr(
-            "deerflow.agents.memory.prompt._get_tiktoken_encoding",
+            "marketior.agents.memory.prompt._get_tiktoken_encoding",
             lambda _name=None: None,
         )
         text = "Some text to count"
@@ -98,7 +98,7 @@ class TestCountTokens:
     def test_returns_token_count_on_success(self, monkeypatch):
         fake_enc = mock.Mock()
         fake_enc.encode.return_value = [0, 1, 2, 3]
-        monkeypatch.setattr("deerflow.agents.memory.prompt._get_tiktoken_encoding", mock.Mock(return_value=fake_enc))
+        monkeypatch.setattr("marketior.agents.memory.prompt._get_tiktoken_encoding", mock.Mock(return_value=fake_enc))
 
         text = "Hello, world!"
         result = _count_tokens(text)
@@ -128,7 +128,7 @@ class TestWarmTiktokenCache:
         _tiktoken_encoding_cache.pop("cl100k_base", None)
 
         fake_enc = mock.Mock()
-        monkeypatch.setattr("deerflow.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
+        monkeypatch.setattr("marketior.agents.memory.prompt.tiktoken.get_encoding", mock.Mock(return_value=fake_enc))
 
         assert warm_tiktoken_cache() is True
         assert _tiktoken_encoding_cache["cl100k_base"] is fake_enc
@@ -144,5 +144,5 @@ class TestWarmTiktokenCache:
         tiktoken.get_encoding.assert_not_called()
 
     def test_returns_false_when_tiktoken_unavailable(self, monkeypatch):
-        monkeypatch.setattr("deerflow.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
+        monkeypatch.setattr("marketior.agents.memory.prompt.TIKTOKEN_AVAILABLE", False)
         assert warm_tiktoken_cache() is False

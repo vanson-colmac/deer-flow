@@ -1,4 +1,4 @@
-# DeerFlow Development Environment
+# Marketior.AI Development Environment
 # Usage: docker-compose -f docker-compose-dev.yaml up --build
 #
 # Services:
@@ -32,9 +32,9 @@ services:
       # Host paths for K8s HostPath volumes (must be absolute paths accessible by K8s node)
       # On Docker Desktop/OrbStack, use your actual host paths like /Users/username/...
       # Set these in your shell before running docker-compose:
-      #   export DEER_FLOW_ROOT=/absolute/path/to/deer-flow
-      - SKILLS_HOST_PATH=${DEER_FLOW_ROOT}/skills
-      - THREADS_HOST_PATH=${DEER_FLOW_ROOT}/backend/.deer-flow/threads
+      #   export MARKETIOR_ROOT=/absolute/path/to/deer-flow
+      - SKILLS_HOST_PATH=${MARKETIOR_ROOT}/skills
+      - THREADS_HOST_PATH=${MARKETIOR_ROOT}/backend/.deer-flow/threads
       # Production: use PVC instead of hostPath to avoid data loss on node failure.
       # When set, hostPath vars above are ignored for the corresponding volume.
       # USERDATA_PVC_NAME uses subPath (deer-flow/users/{user_id}/threads/{thread_id}/user-data) automatically.
@@ -106,7 +106,7 @@ services:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
       - CI=true
-      - DEER_FLOW_INTERNAL_GATEWAY_BASE_URL=http://gateway:8001
+      - MARKETIOR_INTERNAL_GATEWAY_BASE_URL=http://gateway:8001
     env_file:
       - ../frontend/.env
     networks:
@@ -164,14 +164,14 @@ services:
     working_dir: /app
     environment:
       - CI=true
-      - DEER_FLOW_PROJECT_ROOT=/app
-      - DEER_FLOW_HOME=/app/backend/.deer-flow
-      - DEER_FLOW_CHANNELS_LANGGRAPH_URL=${DEER_FLOW_CHANNELS_LANGGRAPH_URL:-http://gateway:8001/api}
-      - DEER_FLOW_CHANNELS_GATEWAY_URL=${DEER_FLOW_CHANNELS_GATEWAY_URL:-http://gateway:8001}
-      - DEER_FLOW_INTERNAL_AUTH_TOKEN=${DEER_FLOW_INTERNAL_AUTH_TOKEN:-}
-      - DEER_FLOW_HOST_BASE_DIR=${DEER_FLOW_ROOT}/backend/.deer-flow
-      - DEER_FLOW_HOST_SKILLS_PATH=${DEER_FLOW_ROOT}/skills
-      - DEER_FLOW_SANDBOX_HOST=host.docker.internal
+      - MARKETIOR_PROJECT_ROOT=/app
+      - MARKETIOR_HOME=/app/backend/.deer-flow
+      - MARKETIOR_CHANNELS_LANGGRAPH_URL=${MARKETIOR_CHANNELS_LANGGRAPH_URL:-http://gateway:8001/api}
+      - MARKETIOR_CHANNELS_GATEWAY_URL=${MARKETIOR_CHANNELS_GATEWAY_URL:-http://gateway:8001}
+      - MARKETIOR_INTERNAL_AUTH_TOKEN=${MARKETIOR_INTERNAL_AUTH_TOKEN:-}
+      - MARKETIOR_HOST_BASE_DIR=${MARKETIOR_ROOT}/backend/.deer-flow
+      - MARKETIOR_HOST_SKILLS_PATH=${MARKETIOR_ROOT}/skills
+      - MARKETIOR_SANDBOX_HOST=host.docker.internal
       # Proxy values (HTTP_PROXY/HTTPS_PROXY/ALL_PROXY) are inherited from ../.env via env_file.
       # Only NO_PROXY is declared here so internal service hostnames are always exempt from the proxy.
       - NO_PROXY=${NO_PROXY:-}${NO_PROXY:+,}localhost,127.0.0.1,::1,gateway,frontend,nginx,provisioner,host.docker.internal

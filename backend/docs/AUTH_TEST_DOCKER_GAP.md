@@ -24,11 +24,11 @@ All other test plan sections were executed against either:
 
 | Case | Title | What it covers | Why not run |
 |---|---|---|---|
-| TC-DOCKER-01 | `deerflow.db` volume persistence | Verify the `DEER_FLOW_HOME` bind mount survives container restart | needs `docker compose up` |
+| TC-DOCKER-01 | `marketior.db` volume persistence | Verify the `MARKETIOR_HOME` bind mount survives container restart | needs `docker compose up` |
 | TC-DOCKER-02 | Session persistence across container restart | `AUTH_JWT_SECRET` env var keeps cookies valid after `docker compose down && up` | needs `docker compose down/up` |
 | TC-DOCKER-03 | Per-worker rate limiter divergence | Confirms in-process `_login_attempts` dict doesn't share state across `gunicorn` workers (4 by default in the compose file); known limitation, documented | needs multi-worker container |
 | TC-DOCKER-04 | IM channels use internal Gateway auth | Verify Feishu/Slack/Telegram dispatchers attach the process-local internal auth header plus CSRF cookie/header when calling Gateway-compatible LangGraph APIs | needs `docker logs` |
-| TC-DOCKER-05 | Reset credentials surfacing | `reset_admin` writes a 0600 credential file in `DEER_FLOW_HOME` instead of logging plaintext. The file-based behavior is validated by non-Docker reset tests, so the only Docker-specific gap is verifying the volume mount carries the file out to the host | needs container + host volume |
+| TC-DOCKER-05 | Reset credentials surfacing | `reset_admin` writes a 0600 credential file in `MARKETIOR_HOME` instead of logging plaintext. The file-based behavior is validated by non-Docker reset tests, so the only Docker-specific gap is verifying the volume mount carries the file out to the host | needs container + host volume |
 | TC-DOCKER-06 | Docker deploy uses Gateway embedded runtime | `./scripts/deploy.sh` produces a Gateway + frontend + nginx topology (no `langgraph` container); same auth flow as local `make dev` | needs `docker compose up` |
 
 ## Coverage already provided by non-Docker tests
@@ -59,8 +59,8 @@ docker compose version     # plugin >=2.x
 echo "AUTH_JWT_SECRET=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" \
   >> .env
 
-# Optional: pin DEER_FLOW_HOME to a stable host path
-echo "DEER_FLOW_HOME=$HOME/deer-flow-data" >> .env
+# Optional: pin MARKETIOR_HOME to a stable host path
+echo "MARKETIOR_HOME=$HOME/deer-flow-data" >> .env
 ```
 
 Then run TC-DOCKER-01..06 from the test plan as written.

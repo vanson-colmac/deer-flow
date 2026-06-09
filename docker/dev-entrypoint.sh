@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #
-# DeerFlow gateway dev entrypoint — runs inside the docker-compose-dev gateway
+# Marketior.AI gateway dev entrypoint — runs inside the docker-compose-dev gateway
 # container. Extracted from docker/docker-compose-dev.yaml's inline `command:`
 # (PR #2767, addressing review on Issue #2754).
 #
@@ -9,7 +9,7 @@
 #      mirroring scripts/detect_uv_extras.py for parity with local `make dev`).
 #   2. Validate each extra against [A-Za-z][A-Za-z0-9_-]* so a stray shell
 #      metacharacter in `.env` cannot reach `uv sync`.
-#   3. `uv sync --all-packages` so workspace member extras (deerflow-harness's
+#   3. `uv sync --all-packages` so workspace member extras (marketior-harness's
 #      postgres extra in particular) are installed — see PR #2584.
 #   4. Self-heal: if the first sync fails, recreate .venv and retry once.
 #   5. Hand off to uvicorn with reload, replacing this shell so uvicorn becomes
@@ -69,9 +69,9 @@ fi
 # directory, not as a plain glob pattern — on Python 3.12, globbing an absolute
 # pattern raises NotImplementedError and crashes startup (#3459 / #3454). That
 # means `sandbox` must be created here too, not just `.deer-flow`.
-: "${DEER_FLOW_HOME:=/app/backend/.deer-flow}"
-export DEER_FLOW_HOME
-mkdir -p "$DEER_FLOW_HOME" /app/backend/.deer-flow /app/backend/sandbox
+: "${MARKETIOR_HOME:=/app/backend/.deer-flow}"
+export MARKETIOR_HOME
+mkdir -p "$MARKETIOR_HOME" /app/backend/.deer-flow /app/backend/sandbox
 
 # ── Sync dependencies (with self-heal) ──────────────────────────────────────
 
@@ -95,5 +95,5 @@ PYTHONPATH=. exec uv run uvicorn app.gateway.app:app \
     --reload-include='*.yaml' \
     --reload-include='.env' \
     --reload-exclude=/app/backend/sandbox \
-    --reload-exclude="$DEER_FLOW_HOME" \
+    --reload-exclude="$MARKETIOR_HOME" \
     --reload-exclude=/app/backend/.deer-flow

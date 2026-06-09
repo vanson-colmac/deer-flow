@@ -67,7 +67,7 @@ Docker Compose runs all services in containers. Use this for a more production-l
 
 ```bash
 # Set the absolute path to your deer-flow repo root
-export DEER_FLOW_ROOT=/path/to/deer-flow
+export MARKETIOR_ROOT=/path/to/deer-flow
 
 docker compose -f docker/docker-compose-dev.yaml up --build
 ```
@@ -83,7 +83,7 @@ Create a `.env` file in the repo root for secrets and runtime configuration:
 ```bash
 # .env
 OPENAI_API_KEY=sk-...
-DEER_FLOW_ROOT=/absolute/path/to/deer-flow
+MARKETIOR_ROOT=/absolute/path/to/deer-flow
 BETTER_AUTH_SECRET=your-secret-here-min-32-chars
 ```
 
@@ -101,7 +101,7 @@ Thread data is stored in `backend/.deer-flow/threads/`. In Docker deployments, t
 
 To avoid data loss when containers are recreated:
 
-1. Set `DEER_FLOW_ROOT` to the absolute repo root path (or a stable host path).
+1. Set `MARKETIOR_ROOT` to the absolute repo root path (or a stable host path).
 2. Verify the `threads/` and `skills/` directories are mounted correctly.
 
 For production, use a named volume or a Persistent Volume Claim (PVC) instead of a host bind-mount.
@@ -131,7 +131,7 @@ Set required environment variables in your `.env` or compose override:
 ```bash
 K8S_NAMESPACE=deer-flow
 SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-DEER_FLOW_ROOT=/absolute/path/to/deer-flow
+MARKETIOR_ROOT=/absolute/path/to/deer-flow
 ```
 
 #### Configure the sandbox provider

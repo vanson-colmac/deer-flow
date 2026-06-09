@@ -7,8 +7,8 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
-from deerflow.mcp.tools import get_mcp_tools
-from deerflow.tools.sync import make_sync_tool_wrapper
+from marketior.mcp.tools import get_mcp_tools
+from marketior.tools.sync import make_sync_tool_wrapper
 
 
 class MockArgs(BaseModel):
@@ -35,9 +35,9 @@ def test_mcp_tool_sync_wrapper_generation():
 
     with (
         patch("langchain_mcp_adapters.client.MultiServerMCPClient", return_value=mock_client_instance),
-        patch("deerflow.config.extensions_config.ExtensionsConfig.from_file"),
-        patch("deerflow.mcp.tools.build_servers_config", return_value={"test-server": {}}),
-        patch("deerflow.mcp.tools.get_initial_oauth_headers", new_callable=AsyncMock, return_value={}),
+        patch("marketior.config.extensions_config.ExtensionsConfig.from_file"),
+        patch("marketior.mcp.tools.build_servers_config", return_value={"test-server": {}}),
+        patch("marketior.mcp.tools.get_initial_oauth_headers", new_callable=AsyncMock, return_value={}),
     ):
         # Run the async function manually with asyncio.run
         tools = asyncio.run(get_mcp_tools())
@@ -131,7 +131,7 @@ def test_mcp_tool_sync_wrapper_exception_logging():
 
     sync_func = make_sync_tool_wrapper(error_coro, "error_tool")
 
-    with patch("deerflow.tools.sync.logger.error") as mock_log_error:
+    with patch("marketior.tools.sync.logger.error") as mock_log_error:
         with pytest.raises(ValueError, match="Tool failure"):
             sync_func()
         mock_log_error.assert_called_once()

@@ -8,13 +8,13 @@ import re
 import pytest
 from sqlalchemy.dialects import postgresql
 
-from deerflow.persistence.run import RunRepository
-from deerflow.runtime import RunManager, RunStatus
-from deerflow.runtime.runs.store.base import RunStore
+from marketior.persistence.run import RunRepository
+from marketior.runtime import RunManager, RunStatus
+from marketior.runtime.runs.store.base import RunStore
 
 
 async def _make_repo(tmp_path):
-    from deerflow.persistence.engine import get_session_factory, init_engine
+    from marketior.persistence.engine import get_session_factory, init_engine
 
     url = f"sqlite+aiosqlite:///{tmp_path / 'test.db'}"
     await init_engine("sqlite", url=url, sqlite_dir=str(tmp_path))
@@ -22,7 +22,7 @@ async def _make_repo(tmp_path):
 
 
 async def _cleanup():
-    from deerflow.persistence.engine import close_engine
+    from marketior.persistence.engine import close_engine
 
     await close_engine()
 
@@ -424,7 +424,7 @@ class TestRunRepository:
     @pytest.mark.anyio
     async def test_model_name_persistence(self, tmp_path):
         """RunRepository should persist, normalize, and truncate model_name correctly via SQL."""
-        from deerflow.persistence.engine import get_session_factory, init_engine
+        from marketior.persistence.engine import get_session_factory, init_engine
 
         url = f"sqlite+aiosqlite:///{tmp_path / 'test.db'}"
         await init_engine("sqlite", url=url, sqlite_dir=str(tmp_path))

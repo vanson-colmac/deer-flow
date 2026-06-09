@@ -23,7 +23,7 @@ The primary integration point is `Marketior.AIClient`. It wraps the LangGraph ru
 from marketior.client import Marketior.AIClient
 from marketior.config import load_config
 
-# Load configuration (reads config.yaml or DEER_FLOW_CONFIG_PATH)
+# Load configuration (reads config.yaml or MARKETIOR_CONFIG_PATH)
 load_config()
 
 client = Marketior.AIClient()
@@ -157,7 +157,7 @@ When embedded in another application, set the config path explicitly to avoid am
 
 ```python
 import os
-os.environ["DEER_FLOW_CONFIG_PATH"] = "/path/to/my-marketior-config.yaml"
+os.environ["MARKETIOR_CONFIG_PATH"] = "/path/to/my-marketior-config.yaml"
 
 from marketior.config import load_config
 load_config()

@@ -7,7 +7,7 @@ overwrites the previously accumulated value.
 
 from typing import get_type_hints
 
-from deerflow.agents.thread_state import (
+from marketior.agents.thread_state import (
     ThreadState,
     merge_artifacts,
     merge_todos,

@@ -4,7 +4,7 @@
 missing, except ``get_store`` which returns ``None``.
 
 ``AppConfig`` is intentionally *not* cached on ``app.state``. Routers and the
-run path resolve it through :func:`deerflow.config.app_config.get_app_config`,
+run path resolve it through :func:`marketior.config.app_config.get_app_config`,
 which performs mtime-based hot reload, so edits to ``config.yaml`` take
 effect on the next request without a process restart. The engines created in
 :func:`langgraph_runtime` (stream bridge, persistence, checkpointer, store,
@@ -26,11 +26,11 @@ from typing import TYPE_CHECKING, TypeVar, cast
 from fastapi import FastAPI, HTTPException, Request
 from langgraph.types import Checkpointer
 
-from deerflow.config.app_config import AppConfig, get_app_config
-from deerflow.persistence.feedback import FeedbackRepository
-from deerflow.runtime import RunContext, RunManager, StreamBridge
-from deerflow.runtime.events.store.base import RunEventStore
-from deerflow.runtime.runs.store.base import RunStore
+from marketior.config.app_config import AppConfig, get_app_config
+from marketior.persistence.feedback import FeedbackRepository
+from marketior.runtime import RunContext, RunManager, StreamBridge
+from marketior.runtime.events.store.base import RunEventStore
+from marketior.runtime.runs.store.base import RunStore
 
 logger = logging.getLogger(__name__)
 
@@ -74,8 +74,8 @@ async def _drain_inflight_runs(run_manager: RunManager) -> None:
 if TYPE_CHECKING:
     from app.gateway.auth.local_provider import LocalAuthProvider
     from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
-    from deerflow.persistence.thread_meta.base import ThreadMetaStore
-    from deerflow.runtime import RunRecord
+    from marketior.persistence.thread_meta.base import ThreadMetaStore
+    from marketior.runtime import RunRecord
 
 
 T = TypeVar("T")
@@ -108,7 +108,7 @@ async def _mark_latest_recovered_threads_error(
 def get_config() -> AppConfig:
     """Return the freshest ``AppConfig`` for the current request.
 
-    Routes through :func:`deerflow.config.app_config.get_app_config`, which
+    Routes through :func:`marketior.config.app_config.get_app_config`, which
     honours runtime ``ContextVar`` overrides and reloads ``config.yaml`` from
     disk when its mtime changes. ``AppConfig`` is not cached on ``app.state``
     at all — the only startup-time snapshot lives as a local
@@ -122,7 +122,7 @@ def get_config() -> AppConfig:
     Hot-reload boundary: fields backed by startup-time singletons
     (engines, sandbox provider, IM channels, logging handler) require a
     process restart to change at runtime. The authoritative list lives in
-    :mod:`deerflow.config.reload_boundary` and is mirrored by the
+    :mod:`marketior.config.reload_boundary` and is mirrored by the
     standardised ``"startup-only:"`` prefix on the matching
     ``Field(description=...)`` in :class:`AppConfig` — IDE hover on those
     fields will surface the boundary inline. See
@@ -166,10 +166,10 @@ async def langgraph_runtime(app: FastAPI, startup_config: AppConfig) -> AsyncGen
         async with langgraph_runtime(app, startup_config):
             yield
     """
-    from deerflow.persistence.engine import close_engine, get_session_factory, init_engine_from_config
-    from deerflow.runtime import make_store, make_stream_bridge
-    from deerflow.runtime.checkpointer.async_provider import make_checkpointer
-    from deerflow.runtime.events.store import make_run_event_store
+    from marketior.persistence.engine import close_engine, get_session_factory, init_engine_from_config
+    from marketior.runtime import make_store, make_stream_bridge
+    from marketior.runtime.checkpointer.async_provider import make_checkpointer
+    from marketior.runtime.events.store import make_run_event_store
 
     async with AsyncExitStack() as stack:
         config = startup_config
@@ -186,18 +186,18 @@ async def langgraph_runtime(app: FastAPI, startup_config: AppConfig) -> AsyncGen
         # Initialize repositories — one get_session_factory() call for all.
         sf = get_session_factory()
         if sf is not None:
-            from deerflow.persistence.feedback import FeedbackRepository
-            from deerflow.persistence.run import RunRepository
+            from marketior.persistence.feedback import FeedbackRepository
+            from marketior.persistence.run import RunRepository
 
             app.state.run_store = RunRepository(sf)
             app.state.feedback_repo = FeedbackRepository(sf)
         else:
-            from deerflow.runtime.runs.store.memory import MemoryRunStore
+            from marketior.runtime.runs.store.memory import MemoryRunStore
 
             app.state.run_store = MemoryRunStore()
             app.state.feedback_repo = None
 
-        from deerflow.persistence.thread_meta import make_thread_store
+        from marketior.persistence.thread_meta import make_thread_store
 
         app.state.thread_store = make_thread_store(sf, app.state.store)
 
@@ -212,7 +212,7 @@ async def langgraph_runtime(app: FastAPI, startup_config: AppConfig) -> AsyncGen
         # RunManager with store backing for persistence
         app.state.run_manager = RunManager(store=app.state.run_store)
         if getattr(config.database, "backend", None) == "sqlite":
-            from deerflow.utils.time import now_iso
+            from marketior.utils.time import now_iso
 
             # Startup-only recovery: clean shutdowns return no active rows and
             # the thread-status update below becomes a no-op.
@@ -313,7 +313,7 @@ def get_local_provider() -> LocalAuthProvider:
     global _cached_local_provider, _cached_repo
     if _cached_repo is None:
         from app.gateway.auth.repositories.sqlite import SQLiteUserRepository
-        from deerflow.persistence.engine import get_session_factory
+        from marketior.persistence.engine import get_session_factory
 
         sf = get_session_factory()
         if sf is None:

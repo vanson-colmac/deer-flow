@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>2025 Signal Observatory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,700,80&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+:root{--ink:#f5eedf;--muted:#b7a98f;--void:#070806;--card:#11120e;--line:#373124;--gold:#f0b84a;--green:#8ee6a7;--blue:#79b8ff;--red:#ff786b;--violet:#d5a3ff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--void);color:var(--ink);font-family:'IBM Plex Mono',monospace;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 15%,#84611855,transparent 28%),radial-gradient(circle at 90% 12%,#245a7c55,transparent 25%),radial-gradient(circle at 52% 88%,#3a6b3655,transparent 30%),linear-gradient(120deg,#0000,#ffffff08,#0000);filter:saturate(1.2);z-index:-2}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");z-index:-1}
+.wrap{max-width:1220px;margin:0 auto;padding:46px 22px 90px}.top{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch}.hero{border:1px solid var(--line);border-radius:34px;padding:42px;min-height:460px;background:linear-gradient(145deg,#15130e,#090a08 55%,#17120b);position:relative;overflow:hidden;box-shadow:0 40px 120px #0008}.hero:before{content:"";position:absolute;width:520px;height:520px;border:1px solid #f0b84a30;border-radius:50%;right:-160px;top:-170px;box-shadow:0 0 0 42px #f0b84a08,0 0 0 86px #79b8ff07;animation:spin 32s linear infinite}.kicker{letter-spacing:.22em;color:var(--gold);font-size:12px;text-transform:uppercase}.hero h1{font-family:Fraunces,serif;font-size:clamp(54px,8vw,118px);line-height:.82;margin:28px 0 22px;letter-spacing:-.075em;max-width:850px}.hero p{max-width:650px;color:var(--muted);font-size:16px;line-height:1.7}.dial{position:absolute;right:42px;bottom:34px;width:176px;height:176px;border-radius:50%;border:1px dashed #f0b84a66;display:grid;place-items:center;background:#0005}.dial b{font-family:Fraunces,serif;font-size:42px;color:var(--gold)}.dial span{position:absolute;font-size:10px;color:var(--muted);letter-spacing:.12em}.side{display:grid;gap:18px}.card{border:1px solid var(--line);border-radius:26px;background:#10110dcc;padding:24px;backdrop-filter:blur(10px);position:relative;overflow:hidden}.card h2{font:700 24px Fraunces,serif;margin:0 0 14px}.metric{display:flex;align-items:end;gap:12px;margin-top:12px}.metric strong{font:700 54px Fraunces,serif}.metric small{color:var(--muted);padding-bottom:10px}.meter{height:10px;border-radius:99px;background:#2b261b;overflow:hidden;margin-top:14px}.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--green));width:0;animation:load 1.8s cubic-bezier(.2,.9,.1,1) forwards}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}.tile{min-height:260px;border:1px solid var(--line);border-radius:30px;padding:26px;background:linear-gradient(180deg,#12130f,#0b0c09);position:relative;overflow:hidden;transition:.35s transform,.35s border-color}.tile:hover{transform:translateY(-8px) rotate(-1deg);border-color:#f0b84aaa}.tile h3{font:700 36px Fraunces,serif;margin:0 0 12px}.tile p{color:var(--muted);line-height:1.55;font-size:14px}.tag{display:inline-flex;border:1px solid #ffffff22;border-radius:99px;padding:7px 10px;font-size:11px;color:var(--ink);margin-bottom:18px}.spark{position:absolute;right:18px;bottom:18px;width:130px;height:64px}.spark polyline{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:260;stroke-dashoffset:260;animation:draw 2.4s ease forwards}.panel{margin-top:18px;border:1px solid var(--line);border-radius:34px;padding:28px;background:#0f100d}.matrix{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.rank{border-left:3px solid var(--gold);padding:14px 16px;background:#ffffff06;border-radius:0 18px 18px 0}.rank b{font:700 28px Fraunces,serif}.rank em{display:block;color:var(--muted);font-style:normal;margin-top:6px;font-size:13px}.constellation{height:300px;margin-top:18px;border-radius:28px;background:radial-gradient(circle at 50% 50%,#f0b84a18,transparent 35%),#080906;border:1px solid var(--line);position:relative;overflow:hidden}.star{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 20px var(--gold);animation:pulse 2s infinite alternate}.star:before{content:attr(data-label);position:absolute;left:14px;top:-8px;color:var(--muted);font-size:11px;white-space:nowrap}.line{position:absolute;height:1px;background:#f0b84a55;transform-origin:left}.footer{display:flex;justify-content:space-between;align-items:center;margin-top:22px;color:var(--muted);font-size:12px}.badge{position:fixed;right:18px;bottom:18px;z-index:10;text-decoration:none;color:#f5eedf99;border:1px solid #ffffff22;border-radius:999px;padding:9px 12px;background:#050604aa;backdrop-filter:blur(8px);font-size:11px;transition:.25s}.badge:hover{color:var(--gold);border-color:var(--gold);transform:translateY(-2px)}button{font:700 12px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;border:1px solid #f0b84a80;color:var(--void);background:var(--gold);border-radius:999px;padding:13px 16px;cursor:pointer;box-shadow:0 0 30px #f0b84a30}button:hover{filter:brightness(1.08)}@keyframes spin{to{transform:rotate(360deg)}}@keyframes load{to{width:var(--w)}}@keyframes draw{to{stroke-dashoffset:0}}@keyframes pulse{from{transform:scale(.8);opacity:.55}to{transform:scale(1.25);opacity:1}}@media(max-width:880px){.top,.grid,.matrix{grid-template-columns:1fr}.dial{position:relative;right:auto;bottom:auto;margin-top:26px}.hero{padding:28px}.hero h1{font-size:62px}}
+</style>
+</head>
+<body>
+<a class="badge" href="https://ai.marketior.com" target="_blank">Created By Marketior</a>
+<main class="wrap">
+<section class="top">
+<div class="hero">
+<div class="kicker">private signal artifact · 2026-06-09</div>
+<h1>Three futures walk into a lab.</h1>
+<p>A tiny observatory built from your recent research trails: AI in healthcare, electric vehicles, space exploration, plus the quiet language stack powering them.</p>
+<div class="dial"><b id="score">0</b><span>COMPOSITE HUM</span></div>
+</div>
+<div class="side">
+<div class="card"><h2>Signal blend</h2><p style="color:var(--muted);line-height:1.6">Not a report. A compass. Move pointer across cards → readings shift.</p><div class="metric"><strong id="temp">72</strong><small>curiosity °C</small></div><div class="meter"><div class="fill" style="--w:72%"></div></div></div>
+<div class="card"><h2>Language triad</h2><div class="matrix"><div class="rank"><b>Python</b><em>research gravity</em></div><div class="rank" style="border-color:var(--blue)"><b>JS</b><em>interface weather</em></div><div class="rank" style="border-color:var(--red)"><b>Java</b><em>enterprise bedrock</em></div></div></div>
+</div>
+</section>
+<section class="grid">
+<article class="tile" data-v="86"><span class="tag">HEALTHCARE AI</span><h3>Promise meets proof.</h3><p>Clinical AI gets more useful when it becomes boring: verified, audited, explainable, integrated into workflow.</p><svg class="spark" viewBox="0 0 140 70"><polyline stroke="var(--green)" points="4,58 26,46 44,52 64,26 86,34 108,14 134,20"/></svg></article>
+<article class="tile" data-v="74"><span class="tag">ELECTRIC VEHICLES</span><h3>The curve bends sideways.</h3><p>EV growth no longer only about range. It becomes price, charging density, batteries, policy, fleets.</p><svg class="spark" viewBox="0 0 140 70"><polyline stroke="var(--blue)" points="4,54 25,50 46,38 62,42 82,28 104,30 134,12"/></svg></article>
+<article class="tile" data-v="91"><span class="tag">SPACE EXPLORATION</span><h3>Orbit industrializes.</h3><p>Launch cadence, lunar logistics, reusable rockets, smallsat networks turn exploration into infrastructure.</p><svg class="spark" viewBox="0 0 140 70"><polyline stroke="var(--violet)" points="4,60 28,55 44,30 64,46 88,18 108,24 134,8"/></svg></article>
+</section>
+<section class="panel">
+<h2 style="font:700 34px Fraunces,serif;margin:0 0 6px">Research constellation</h2>
+<p style="color:var(--muted);margin-top:0">Click → reshuffle orbit. Same themes, new route.</p>
+<div class="constellation" id="sky"></div>
+<div class="footer"><span>Built as a miniature strategy cockpit.</span><button id="shuffle">reshuffle signals</button></div>
+</section>
+</main>
+<script>
+const score=document.getElementById('score'),temp=document.getElementById('temp');let n=0;const tick=setInterval(()=>{n+=2;score.textContent=n;if(n>=88)clearInterval(tick)},22);
+document.querySelectorAll('.tile').forEach(t=>t.addEventListener('pointerenter',()=>{temp.textContent=t.dataset.v;document.querySelector('.fill').style.setProperty('--w',t.dataset.v+'%')}));
+const sky=document.getElementById('sky');const labels=['Python','JavaScript','Java','Clinical AI','EV Batteries','Charging','Reusable Launch','Moon Logistics','Sat Networks'];
+function draw(){sky.innerHTML='';const pts=labels.map((l,i)=>({l,x:8+Math.random()*82,y:10+Math.random()*78}));pts.forEach((p,i)=>{const s=document.createElement('div');s.className='star';s.dataset.label=p.l;s.style.left=p.x+'%';s.style.top=p.y+'%';s.style.background=i<3?['var(--gold)','var(--blue)','var(--red)'][i]:'var(--green)';sky.appendChild(s)});for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ang=Math.atan2(dy,dx)*180/Math.PI;const line=document.createElement('div');line.className='line';line.style.left=a.x+'%';line.style.top=a.y+'%';line.style.width=len+'%';line.style.transform='rotate('+ang+'deg)';sky.appendChild(line)}}
+draw();document.getElementById('shuffle').onclick=draw;
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""ChannelManager — consumes inbound messages and dispatches them to the DeerFlow agent via Gateway."""
+"""ChannelManager — consumes inbound messages and dispatches them to the Marketior agent via Gateway."""
 
 from __future__ import annotations
 
@@ -26,8 +26,8 @@ from app.channels.message_bus import (
 from app.channels.store import ChannelStore
 from app.gateway.csrf_middleware import CSRF_COOKIE_NAME, CSRF_HEADER_NAME, generate_csrf_token
 from app.gateway.internal_auth import create_internal_auth_headers
-from deerflow.config.paths import make_safe_user_id
-from deerflow.runtime.user_context import get_effective_user_id
+from marketior.config.paths import make_safe_user_id
+from marketior.runtime.user_context import get_effective_user_id
 
 logger = logging.getLogger(__name__)
 
@@ -420,7 +420,7 @@ def _resolve_attachments(thread_id: str, artifacts: list[str]) -> list[ResolvedA
     Skips artifacts that cannot be resolved (missing files, invalid paths)
     and logs warnings for them.
     """
-    from deerflow.config.paths import get_paths
+    from marketior.config.paths import get_paths
 
     attachments: list[ResolvedAttachment] = []
     paths = get_paths()
@@ -491,7 +491,7 @@ async def _ingest_inbound_files(thread_id: str, msg: InboundMessage) -> list[dic
     if not msg.files:
         return []
 
-    from deerflow.uploads.manager import (
+    from marketior.uploads.manager import (
         UnsafeUploadPathError,
         claim_unique_filename,
         ensure_uploads_dir,
@@ -596,7 +596,7 @@ def _format_uploaded_files_block(files: list[dict[str, Any]]) -> str:
 
 
 class ChannelManager:
-    """Core dispatcher that bridges IM channels to the DeerFlow agent.
+    """Core dispatcher that bridges IM channels to the Marketior agent.
 
     It reads from the MessageBus inbound queue, creates/reuses threads on
     Gateway's LangGraph-compatible API, sends messages via ``runs.wait``, and publishes
@@ -809,7 +809,7 @@ class ChannelManager:
     async def _handle_chat(self, msg: InboundMessage, extra_context: dict[str, Any] | None = None) -> None:
         client = self._get_client()
 
-        # Look up existing DeerFlow thread.
+        # Look up existing Marketior thread.
         # topic_id may be None (e.g. Telegram private chats) — the store
         # handles this by using the "channel:chat_id" key without a topic suffix.
         thread_id = self.store.get_thread_id(msg.channel_name, msg.chat_id, topic_id=msg.topic_id)

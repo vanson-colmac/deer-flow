@@ -1,4 +1,4 @@
-"""DeerFlow Sandbox Provisioner Service.
+"""Marketior.AI Sandbox Provisioner Service.
 
 Dynamically creates and manages per-sandbox Pods in Kubernetes.
 Each ``sandbox_id`` gets its own Pod + NodePort Service.  The backend
@@ -206,7 +206,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="DeerFlow Sandbox Provisioner", lifespan=lifespan)
+app = FastAPI(title="Marketior.AI Sandbox Provisioner", lifespan=lifespan)
 
 
 # ── Request / Response models ───────────────────────────────────────────

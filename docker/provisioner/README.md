@@ -1,6 +1,6 @@
-# DeerFlow Sandbox Provisioner
+# Marketior.AI Sandbox Provisioner
 
-The **Sandbox Provisioner** is a FastAPI service that dynamically manages sandbox Pods in Kubernetes. It provides a REST API for the DeerFlow backend to create, monitor, and destroy isolated sandbox environments for code execution.
+The **Sandbox Provisioner** is a FastAPI service that dynamically manages sandbox Pods in Kubernetes. It provides a REST API for the Marketior.AI backend to create, monitor, and destroy isolated sandbox environments for code execution.
 
 ## Architecture
 
@@ -150,7 +150,7 @@ The provisioner is configured via environment variables (set in [docker-compose-
 
 Older provisioner versions mounted PVC user-data from `threads/{thread_id}/user-data`. The user-scoped layout mounts from `deer-flow/users/{user_id}/threads/{thread_id}/user-data`.
 
-If an existing deployment already has PVC-backed user-data under the legacy layout, migrate the DeerFlow data directory before relying on the new PVC subPath. Mount the same PVC path that the gateway uses as its DeerFlow base directory, then run the existing user-isolation migration script:
+If an existing deployment already has PVC-backed user-data under the legacy layout, migrate the Marketior.AI data directory before relying on the new PVC subPath. Mount the same PVC path that the gateway uses as its Marketior.AI base directory, then run the existing user-isolation migration script:
 
 ```bash
 cd backend

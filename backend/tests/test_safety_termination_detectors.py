@@ -2,7 +2,7 @@
 
 from langchain_core.messages import AIMessage
 
-from deerflow.agents.middlewares.safety_termination_detectors import (
+from marketior.agents.middlewares.safety_termination_detectors import (
     AnthropicRefusalDetector,
     GeminiSafetyDetector,
     OpenAICompatibleContentFilterDetector,

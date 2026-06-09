@@ -122,7 +122,7 @@ class Channel(ABC):
 
         Args:
             msg: The inbound message, possibly containing file metadata in msg.files.
-            thread_id: The resolved DeerFlow thread ID for sandbox path context.
+            thread_id: The resolved Marketior thread ID for sandbox path context.
 
         Returns:
             The (possibly modified) InboundMessage, with text and/or files updated as needed.

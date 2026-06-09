@@ -566,7 +566,7 @@ class DingTalkChannel(Channel):
                 headers=self._api_headers(token),
                 json={
                     "msgKey": "sampleMarkdown",
-                    "msgParam": json.dumps({"title": "DeerFlow", "text": text}),
+                    "msgParam": json.dumps({"title": "Marketior", "text": text}),
                     "robotCode": robot_code,
                     "userIds": [user_id],
                 },
@@ -597,7 +597,7 @@ class DingTalkChannel(Channel):
                 headers=self._api_headers(token),
                 json={
                     "msgKey": "sampleMarkdown",
-                    "msgParam": json.dumps({"title": "DeerFlow", "text": text}),
+                    "msgParam": json.dumps({"title": "Marketior", "text": text}),
                     "robotCode": robot_code,
                     "openConversationId": conversation_id,
                 },

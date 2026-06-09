@@ -21,9 +21,9 @@ from app.channels.message_bus import (
     OutboundMessage,
     ResolvedAttachment,
 )
-from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
-from deerflow.runtime.user_context import get_effective_user_id
-from deerflow.sandbox.sandbox_provider import get_sandbox_provider
+from marketior.config.paths import VIRTUAL_PATH_PREFIX, get_paths
+from marketior.runtime.user_context import get_effective_user_id
+from marketior.sandbox.sandbox_provider import get_sandbox_provider
 
 logger = logging.getLogger(__name__)
 PENDING_CLARIFICATION_TTL_SECONDS = 30 * 60
@@ -743,7 +743,7 @@ class FeishuChannel(Channel):
             sender_id = event.event.sender.sender_id.open_id
 
             # root_id is set when the message is a reply within a Feishu thread.
-            # Use it as topic_id so all replies share the same DeerFlow thread.
+            # Use it as topic_id so all replies share the same Marketior thread.
             root_id = self._non_empty_str(getattr(message, "root_id", None))
             parent_id = self._non_empty_str(getattr(message, "parent_id", None))
             feishu_thread_id = self._non_empty_str(getattr(message, "thread_id", None))
@@ -828,7 +828,7 @@ class FeishuChannel(Channel):
             else:
                 msg_type = InboundMessageType.CHAT
 
-            # Prefer any platform message id that already maps to a DeerFlow
+            # Prefer any platform message id that already maps to a Marketior
             # thread. This keeps replies to bot clarification cards in the
             # original conversation even when Feishu reports the card as root.
             topic_id, resolved_from_stored_mapping = self._resolve_topic_id(

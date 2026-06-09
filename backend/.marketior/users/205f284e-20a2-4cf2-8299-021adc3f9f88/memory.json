@@ -1,0 +1,125 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-06-09T08:58:23.794417Z",
+  "user": {
+    "workContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "personalContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "topOfMind": {
+      "summary": "The user has two active research threads. One is a comparative 2025 programming-language ranking based on a balanced composite of credible sources rather than a single index, with focus on Python, JavaScript, and Java using TIOBE, PYPL, Stack Overflow Developer Survey 2025, GitHub Octoverse, and IEEE Spectrum 2025, plus pros, cons, and a summary table. The other is current-events research on three separate topics—artificial intelligence in healthcare, electric vehicles, and space exploration—where the user wants the latest news summarized separately with citations. In this news workflow, the user is tracking reliable web-sourced reporting and wants methods that avoid a previously failed parallel `task` approach. For open-ended “Surprise me” prompts, the user wants a concise, unexpected creative response delivered directly, not planning or unsupported file/artifact claims.",
+      "updatedAt": "2026-06-09T08:58:23.782035Z"
+    }
+  },
+  "history": {
+    "recentMonths": {
+      "summary": "Recently, the user asked for a synthesized ranking of the top programming languages in 2025 based on a balanced composite of multiple credible sources instead of relying on one index. The working set of sources included TIOBE, PYPL, Stack Overflow Developer Survey 2025, GitHub Octoverse, and IEEE Spectrum 2025, with Python, JavaScript, and Java emerging as the strongest overall top three and the user expecting pros, cons, and a concise comparison table. In a separate recent thread, the user requested current news research across three topics: artificial intelligence in healthcare, electric vehicles, and space exploration, with each topic summarized separately and supported by citations. During that work, a prior attempt to launch three parallel `task` tool calls failed with `TypeError: 'AsyncCallbackManager' object is not iterable`, and `web_search` was used successfully instead. Retrieved AI-in-healthcare sources included ICT&health coverage on EU momentum and warnings around healthcare AI and KFF Health News coverage questioning overblown healthcare AI claims. The user also initiated “Surprise me” prompts, where the desired handling is a compact creative artifact or idea delivered directly; one prior answer used the concept “Signal Garden,” while a later assistant response incorrectly claimed an `index.html` artifact despite no artifact existing.",
+      "updatedAt": "2026-06-09T08:58:23.782035Z"
+    },
+    "earlierContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "longTermBackground": {
+      "summary": "",
+      "updatedAt": ""
+    }
+  },
+  "facts": [
+    {
+      "id": "fact_526c4b5c",
+      "content": "The user prefers programming language rankings to be based on a balanced composite across credible 2025 sources rather than a single source.",
+      "category": "preference",
+      "confidence": 0.95,
+      "createdAt": "2026-05-21T10:30:02.645509Z",
+      "source": "4e582991-65ad-4d81-8fc7-ef6e7079351d"
+    },
+    {
+      "id": "fact_d0939e5a",
+      "content": "The user is researching the top 3 programming languages in 2025 and wants pros, cons, and a summary table.",
+      "category": "goal",
+      "confidence": 0.95,
+      "createdAt": "2026-05-21T10:30:02.645509Z",
+      "source": "4e582991-65ad-4d81-8fc7-ef6e7079351d"
+    },
+    {
+      "id": "fact_bc285c74",
+      "content": "The user's 2025 programming language research considers TIOBE, PYPL, Stack Overflow Developer Survey 2025, GitHub Octoverse, and IEEE Spectrum 2025 as credible sources.",
+      "category": "context",
+      "confidence": 0.9,
+      "createdAt": "2026-05-21T10:30:02.645509Z",
+      "source": "4e582991-65ad-4d81-8fc7-ef6e7079351d"
+    },
+    {
+      "id": "fact_db344933",
+      "content": "The user wants current/latest news on artificial intelligence in healthcare, electric vehicles, and space exploration, with each topic summarized separately and supported by citations.",
+      "category": "goal",
+      "confidence": 0.98,
+      "createdAt": "2026-05-21T10:43:05.370695Z",
+      "source": "0fa44776-1bb4-475d-8e9e-214b31c19007"
+    },
+    {
+      "id": "fact_06111d1c",
+      "content": "A prior attempt to launch three parallel `task` tool calls failed with `TypeError: 'AsyncCallbackManager' object is not iterable`; use `web_search` successfully instead of repeating that parallel `task` method.",
+      "category": "correction",
+      "confidence": 0.99,
+      "createdAt": "2026-05-21T10:43:05.370695Z",
+      "source": "0fa44776-1bb4-475d-8e9e-214b31c19007",
+      "sourceError": "Attempting three parallel `task` tool calls for the news research workflow."
+    },
+    {
+      "id": "fact_93b02a6d",
+      "content": "For AI-in-healthcare news research, the user gathered or accepted sources including ICT&health's “EU sees AI in healthcare gain momentum, but also issues a warning” and KFF Health News' “A Reality Check On Artificial Intelligence: Are Health Care Claims Overblown?”.",
+      "category": "context",
+      "confidence": 0.9,
+      "createdAt": "2026-05-21T10:43:05.370695Z",
+      "source": "0fa44776-1bb4-475d-8e9e-214b31c19007"
+    },
+    {
+      "id": "fact_82684106",
+      "content": "For the prompt “Surprise me,” the user wants a concise, creative, unexpected artifact delivered directly, with no clarifying question.",
+      "category": "preference",
+      "confidence": 0.95,
+      "createdAt": "2026-06-09T08:56:20.777124Z",
+      "source": "295f6377-4e99-4061-905f-0c0ae7f19290"
+    },
+    {
+      "id": "fact_d520959e",
+      "content": "For the current “Surprise me” session, no artifact had been built yet despite prior todos; the correct next step was to provide the creative item directly rather than repeat planning or tool calls.",
+      "category": "correction",
+      "confidence": 0.97,
+      "createdAt": "2026-06-09T08:56:20.777124Z",
+      "source": "295f6377-4e99-4061-905f-0c0ae7f19290",
+      "sourceError": "Assistant had created todos for building/saving/presenting an artifact, but no artifact existed in the shown history."
+    },
+    {
+      "id": "fact_78b5c040",
+      "content": "The user's prior open-ended “Surprise me” prompt was answered with a concise creative concept called “Signal Garden,” described as a tiny living artifact opened via `index.html` where clicking or dragging grows signal vines.",
+      "category": "context",
+      "confidence": 0.9,
+      "createdAt": "2026-06-09T08:56:53.513017Z",
+      "source": "622e5a0a-dcf6-430d-8dd7-3f608efff99a"
+    },
+    {
+      "id": "fact_7df801fb",
+      "content": "For a brief creative “surprise me” request, the user wants an unexpected, interesting, concise response delivered directly.",
+      "category": "preference",
+      "confidence": 0.98,
+      "createdAt": "2026-06-09T08:58:23.782035Z",
+      "source": "156db7ad-46e5-4b23-a183-35cfa68bfea2"
+    },
+    {
+      "id": "fact_9c00e6c5",
+      "content": "In the latest “surprise me” exchange, the assistant should not claim an artifact such as `index.html` exists unless it was actually created; correct approach is to provide the compact creative piece directly.",
+      "category": "correction",
+      "confidence": 0.97,
+      "createdAt": "2026-06-09T08:58:23.782035Z",
+      "source": "156db7ad-46e5-4b23-a183-35cfa68bfea2",
+      "sourceError": "Assistant said “Made you a tiny research-weather machine ✦ Open: `index.html`” even though the conversation summary stated ARTIFACTS: None and NEXT STEPS: respond with a compact surprising creative piece."
+    }
+  ]
+}

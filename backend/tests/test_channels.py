@@ -500,7 +500,7 @@ class TestChannelManager:
         csrf_token = headers["X-CSRF-Token"]
         assert csrf_token
         assert headers["Cookie"] == f"csrf_token={csrf_token}"
-        assert headers["X-DeerFlow-Internal-Token"]
+        assert headers["X-Marketior-Internal-Token"]
 
     def test_fetch_gateway_includes_internal_auth_headers(self, monkeypatch):
         from app.channels.manager import ChannelManager
@@ -539,7 +539,7 @@ class TestChannelManager:
             assert reply == "Available models:\n• default"
             assert calls[0]["url"] == "http://gateway:8001/api/models"
             assert calls[0]["timeout"] == 10
-            assert calls[0]["headers"]["X-DeerFlow-Internal-Token"]
+            assert calls[0]["headers"]["X-Marketior-Internal-Token"]
 
         _run(go())
 
@@ -1377,7 +1377,7 @@ class TestChannelManager:
         _run(go())
 
     def test_each_topic_creates_new_thread(self):
-        """Messages with distinct topic_ids should each create a new DeerFlow thread."""
+        """Messages with distinct topic_ids should each create a new Marketior thread."""
         from app.channels.manager import ChannelManager
 
         async def go():
@@ -1429,7 +1429,7 @@ class TestChannelManager:
         _run(go())
 
     def test_same_topic_reuses_thread(self):
-        """Messages with the same topic_id should reuse the same DeerFlow thread."""
+        """Messages with the same topic_id should reuse the same Marketior thread."""
         from app.channels.manager import ChannelManager
 
         async def go():
@@ -1809,7 +1809,7 @@ class TestResolveRunParamsUserId:
         assert run_context["channel_user_id"] == "123456"
 
     def test_unsafe_user_id_is_normalized_but_raw_preserved(self):
-        from deerflow.config.paths import make_safe_user_id
+        from marketior.config.paths import make_safe_user_id
 
         manager = self._manager()
         raw = "user@example.com"
@@ -2579,8 +2579,8 @@ class TestChannelService:
     def test_service_urls_fall_back_to_env(self, monkeypatch):
         from app.channels.service import ChannelService
 
-        monkeypatch.setenv("DEER_FLOW_CHANNELS_LANGGRAPH_URL", "http://gateway:8001/api")
-        monkeypatch.setenv("DEER_FLOW_CHANNELS_GATEWAY_URL", "http://gateway:8001")
+        monkeypatch.setenv("MARKETIOR_CHANNELS_LANGGRAPH_URL", "http://gateway:8001/api")
+        monkeypatch.setenv("MARKETIOR_CHANNELS_GATEWAY_URL", "http://gateway:8001")
 
         service = ChannelService(channels_config={})
 
@@ -2590,8 +2590,8 @@ class TestChannelService:
     def test_config_service_urls_override_env(self, monkeypatch):
         from app.channels.service import ChannelService
 
-        monkeypatch.setenv("DEER_FLOW_CHANNELS_LANGGRAPH_URL", "http://gateway:8001/api")
-        monkeypatch.setenv("DEER_FLOW_CHANNELS_GATEWAY_URL", "http://gateway:8001")
+        monkeypatch.setenv("MARKETIOR_CHANNELS_LANGGRAPH_URL", "http://gateway:8001/api")
+        monkeypatch.setenv("MARKETIOR_CHANNELS_GATEWAY_URL", "http://gateway:8001")
 
         service = ChannelService(
             channels_config={
@@ -2614,7 +2614,7 @@ class TestChannelService:
             }
         )
 
-        with patch("deerflow.config.app_config.get_app_config", side_effect=AssertionError("should not read global config")):
+        with patch("marketior.config.app_config.get_app_config", side_effect=AssertionError("should not read global config")):
             service = ChannelService.from_app_config(app_config)
 
         assert service._config == {"telegram": {"enabled": False}}

@@ -10,7 +10,7 @@ import argparse
 import logging
 import shutil
 
-from deerflow.config.paths import Paths, get_paths
+from marketior.config.paths import Paths, get_paths
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +186,7 @@ def _build_owner_map_from_db(paths: Paths) -> dict[str, str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Migrate DeerFlow data to per-user layout")
+    parser = argparse.ArgumentParser(description="Migrate Marketior data to per-user layout")
     parser.add_argument("--dry-run", action="store_true", help="Log actions without making changes")
     parser.add_argument(
         "--user-id",

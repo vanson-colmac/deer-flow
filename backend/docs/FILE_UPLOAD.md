@@ -2,7 +2,7 @@
 
 ## 概述
 
-DeerFlow 后端提供了完整的文件上传功能，支持多文件上传，并可选地将 Office 文档和 PDF 转换为 Markdown 格式。
+Marketior.AI 后端提供了完整的文件上传功能，支持多文件上传，并可选地将 Office 文档和 PDF 转换为 Markdown 格式。
 
 ## 功能特性
 
@@ -237,7 +237,7 @@ backend/.deer-flow/threads/
    - 处理文件上传、列表、删除请求
    - 使用 markitdown 转换文档
 
-2. **Uploads Middleware** (`packages/harness/deerflow/agents/middlewares/uploads_middleware.py`)
+2. **Uploads Middleware** (`packages/harness/marketior/agents/middlewares/uploads_middleware.py`)
    - 在每次 Agent 请求前注入文件列表
    - 自动生成格式化的文件列表消息
 

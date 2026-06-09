@@ -2,7 +2,7 @@
 
 ## 三种路径类型
 
-DeerFlow 的文件上传系统返回三种不同的路径，每种路径用于不同的场景：
+Marketior.AI 的文件上传系统返回三种不同的路径，每种路径用于不同的场景：
 
 ### 1. 实际文件系统路径 (path)
 
@@ -144,7 +144,7 @@ async function uploadAndProcess(threadId: string, file: File) {
 
 ```python
 from pathlib import Path
-from deerflow.agents.middlewares.thread_data_middleware import THREAD_DATA_BASE_DIR
+from marketior.agents.middlewares.thread_data_middleware import THREAD_DATA_BASE_DIR
 
 def process_uploaded_file(thread_id: str, filename: str):
     # 使用实际路径

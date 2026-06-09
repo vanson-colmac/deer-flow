@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from deerflow.mcp.session_pool import MCPSessionPool, get_session_pool, reset_session_pool
+from marketior.mcp.session_pool import MCPSessionPool, get_session_pool, reset_session_pool
 
 
 @pytest.fixture(autouse=True)
@@ -224,7 +224,7 @@ async def test_session_pool_tool_wrapping():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         url: str = Field(..., description="url")
@@ -267,7 +267,7 @@ async def test_session_pool_tool_forwards_interceptor_headers():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -309,7 +309,7 @@ async def test_session_pool_tool_no_headers_omits_meta():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -349,7 +349,7 @@ async def test_session_pool_tool_ignores_unsupported_header_type(caplog):
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -394,7 +394,7 @@ async def test_session_pool_tool_extracts_thread_id():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -433,7 +433,7 @@ async def test_session_pool_tool_default_scope():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -468,7 +468,7 @@ async def test_session_pool_tool_get_config_fallback():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
+    from marketior.mcp.tools import _make_session_pool_tool
 
     class Args(BaseModel):
         x: int = Field(..., description="x")
@@ -491,7 +491,7 @@ async def test_session_pool_tool_get_config_fallback():
 
     with (
         patch("langchain_mcp_adapters.sessions.create_session", return_value=mock_cm),
-        patch("deerflow.mcp.tools.get_config", return_value=fake_config),
+        patch("marketior.mcp.tools.get_config", return_value=fake_config),
     ):
         wrapped = _make_session_pool_tool(original_tool, "server", {"transport": "stdio", "command": "x", "args": []})
 
@@ -507,8 +507,8 @@ def test_session_pool_tool_sync_wrapper_path_is_safe():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import _make_session_pool_tool
-    from deerflow.tools.sync import make_sync_tool_wrapper
+    from marketior.mcp.tools import _make_session_pool_tool
+    from marketior.tools.sync import make_sync_tool_wrapper
 
     class Args(BaseModel):
         url: str = Field(..., description="url")
@@ -552,7 +552,7 @@ async def test_http_transport_tools_not_pooled():
     from langchain_core.tools import StructuredTool
     from pydantic import BaseModel, Field
 
-    from deerflow.mcp.tools import get_mcp_tools
+    from marketior.mcp.tools import get_mcp_tools
 
     class Args(BaseModel):
         query: str = Field(..., description="query")
@@ -591,10 +591,10 @@ async def test_http_transport_tools_not_pooled():
     }
 
     with (
-        patch("deerflow.mcp.tools.ExtensionsConfig.from_file", return_value=extensions_config),
-        patch("deerflow.mcp.tools.build_servers_config", return_value=servers_config),
-        patch("deerflow.mcp.tools.get_initial_oauth_headers", return_value={}),
-        patch("deerflow.mcp.tools.build_oauth_tool_interceptor", return_value=None),
+        patch("marketior.mcp.tools.ExtensionsConfig.from_file", return_value=extensions_config),
+        patch("marketior.mcp.tools.build_servers_config", return_value=servers_config),
+        patch("marketior.mcp.tools.get_initial_oauth_headers", return_value={}),
+        patch("marketior.mcp.tools.build_oauth_tool_interceptor", return_value=None),
         patch("langchain_mcp_adapters.client.MultiServerMCPClient") as MockClient,
         patch("langchain_mcp_adapters.sessions.create_session", return_value=mock_cm),
     ):
@@ -1170,8 +1170,8 @@ def test_reset_mcp_tools_cache_from_running_loop_is_bounded():
     so neither side could make progress. This test drives the exact scenario
     on a daemon thread and asserts the call returns within a bounded time.
     """
-    from deerflow.mcp.cache import reset_mcp_tools_cache
-    from deerflow.mcp.session_pool import get_session_pool
+    from marketior.mcp.cache import reset_mcp_tools_cache
+    from marketior.mcp.session_pool import get_session_pool
 
     conn = {"transport": "stdio", "command": "x", "args": []}
     cm = _CloseTrackingCm()

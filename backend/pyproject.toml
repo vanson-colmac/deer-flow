@@ -5,7 +5,7 @@ description = "LangGraph-based AI agent system with sandbox execution capabiliti
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "deerflow-harness",
+    "marketior-harness",
     "fastapi>=0.115.0",
     "httpx>=0.28.0",
     "python-multipart>=0.0.27",
@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-postgres = ["deerflow-harness[postgres]"]
+postgres = ["marketior-harness[postgres]"]
 discord = ["discord.py>=2.7.0"]
 
 [dependency-groups]
@@ -50,4 +50,4 @@ index-url = "https://pypi.org/simple"
 members = ["packages/harness"]
 
 [tool.uv.sources]
-deerflow-harness = { workspace = true }
+marketior-harness = { workspace = true }

@@ -21,8 +21,8 @@ from langchain_core.messages.utils import convert_to_messages
 from app.gateway.deps import get_run_context, get_run_manager, get_stream_bridge
 from app.gateway.internal_auth import INTERNAL_SYSTEM_ROLE
 from app.gateway.utils import sanitize_log_param
-from deerflow.config.app_config import get_app_config
-from deerflow.runtime import (
+from marketior.config.app_config import get_app_config
+from marketior.runtime import (
     END_SENTINEL,
     HEARTBEAT_SENTINEL,
     ConflictError,
@@ -34,7 +34,7 @@ from deerflow.runtime import (
     UnsupportedStrategyError,
     run_agent,
 )
-from deerflow.runtime.runs.naming import resolve_root_run_name
+from marketior.runtime.runs.naming import resolve_root_run_name
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +193,7 @@ def resolve_agent_factory(assistant_id: str | None):
     same factory; the routing happens inside ``make_lead_agent`` when it reads
     ``cfg["agent_name"]``.
     """
-    from deerflow.agents.lead_agent.agent import make_lead_agent
+    from marketior.agents.lead_agent.agent import make_lead_agent
 
     return make_lead_agent
 
@@ -350,7 +350,7 @@ async def start_run(
     graph_input = normalize_input(body.input)
     config = build_run_config(thread_id, body.config, body.metadata, assistant_id=body.assistant_id)
 
-    # Merge DeerFlow-specific context overrides into both ``configurable`` and ``context``.
+    # Merge Marketior-specific context overrides into both ``configurable`` and ``context``.
     # The ``context`` field is a custom extension for the langgraph-compat layer
     # that carries agent configuration (model_name, thinking_enabled, etc.).
     # Only agent-relevant keys are forwarded; unknown keys (e.g. thread_id) are ignored.

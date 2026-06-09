@@ -21,7 +21,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_SCAN_PATHS = (
     REPO_ROOT / "backend" / "app",
-    REPO_ROOT / "backend" / "packages" / "harness" / "deerflow",
+    REPO_ROOT / "backend" / "packages" / "harness" / "marketior",
     REPO_ROOT / "backend" / "scripts",
 )
 IGNORED_DIR_NAMES = {
@@ -783,8 +783,8 @@ def write_json_report(findings: Sequence[BlockingIOStaticFinding], output_path: 
 
 def _scan_root(path: str) -> str:
     parts = path.split("/")
-    if parts[:4] == ["backend", "packages", "harness", "deerflow"]:
-        return "backend/packages/harness/deerflow"
+    if parts[:4] == ["backend", "packages", "harness", "marketior"]:
+        return "backend/packages/harness/marketior"
     if len(parts) >= 2 and parts[0] == "backend":
         return "/".join(parts[:2])
     return parts[0] if parts else path

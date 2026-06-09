@@ -7,14 +7,14 @@ from pydantic import BaseModel, Field
 
 from app.gateway.deps import get_config
 from app.gateway.path_utils import resolve_thread_virtual_path
-from deerflow.agents.lead_agent.prompt import refresh_skills_system_prompt_cache_async
-from deerflow.config.app_config import AppConfig
-from deerflow.config.extensions_config import ExtensionsConfig, SkillStateConfig, get_extensions_config, reload_extensions_config
-from deerflow.skills import Skill
-from deerflow.skills.installer import SkillAlreadyExistsError
-from deerflow.skills.security_scanner import scan_skill_content
-from deerflow.skills.storage import get_or_new_skill_storage
-from deerflow.skills.types import SKILL_MD_FILE, SkillCategory
+from marketior.agents.lead_agent.prompt import refresh_skills_system_prompt_cache_async
+from marketior.config.app_config import AppConfig
+from marketior.config.extensions_config import ExtensionsConfig, SkillStateConfig, get_extensions_config, reload_extensions_config
+from marketior.skills import Skill
+from marketior.skills.installer import SkillAlreadyExistsError
+from marketior.skills.security_scanner import scan_skill_content
+from marketior.skills.storage import get_or_new_skill_storage
+from marketior.skills.types import SKILL_MD_FILE, SkillCategory
 
 logger = logging.getLogger(__name__)
 

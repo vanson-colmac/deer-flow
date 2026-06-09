@@ -27,9 +27,9 @@ pytestmark = pytest.mark.asyncio
 
 _MISSING = object()
 _EXECUTOR_IMPORT_MOCKS = (
-    "deerflow.agents",
-    "deerflow.agents.thread_state",
-    "deerflow.models",
+    "marketior.agents",
+    "marketior.agents.thread_state",
+    "marketior.models",
 )
 
 
@@ -46,22 +46,22 @@ def _seed_skill(skills_root: Path) -> None:
 def _real_subagent_executor() -> Iterator[type]:
     """Import the real executor despite the suite-level circular-import mock."""
     original_modules = {name: sys.modules.get(name, _MISSING) for name in _EXECUTOR_IMPORT_MOCKS}
-    original_executor = sys.modules.get("deerflow.subagents.executor", _MISSING)
-    parent_module = sys.modules.get("deerflow.subagents")
+    original_executor = sys.modules.get("marketior.subagents.executor", _MISSING)
+    parent_module = sys.modules.get("marketior.subagents")
     original_parent_executor = getattr(parent_module, "executor", _MISSING) if parent_module is not None else _MISSING
 
-    sys.modules.pop("deerflow.subagents.executor", None)
+    sys.modules.pop("marketior.subagents.executor", None)
     for name in _EXECUTOR_IMPORT_MOCKS:
         sys.modules[name] = MagicMock()
 
     try:
-        executor_module = importlib.import_module("deerflow.subagents.executor")
+        executor_module = importlib.import_module("marketior.subagents.executor")
         yield executor_module.SubagentExecutor
     finally:
         if original_executor is _MISSING:
-            sys.modules.pop("deerflow.subagents.executor", None)
+            sys.modules.pop("marketior.subagents.executor", None)
         else:
-            sys.modules["deerflow.subagents.executor"] = original_executor
+            sys.modules["marketior.subagents.executor"] = original_executor
 
         if parent_module is not None:
             if original_parent_executor is _MISSING:
@@ -80,8 +80,8 @@ def _real_subagent_executor() -> Iterator[type]:
 
 
 async def test_load_skills_via_to_thread_does_not_block_event_loop(tmp_path: Path) -> None:
-    from deerflow.config.skills_config import SkillsConfig
-    from deerflow.subagents.config import SubagentConfig
+    from marketior.config.skills_config import SkillsConfig
+    from marketior.subagents.config import SubagentConfig
 
     _seed_skill(tmp_path)
 

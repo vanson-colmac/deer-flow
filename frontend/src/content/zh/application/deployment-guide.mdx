@@ -67,7 +67,7 @@ Docker Compose 在容器中运行所有服务。适用于更接近生产的本�
 
 ```bash
 # 设置 deer-flow 仓库根目录的绝对路径
-export DEER_FLOW_ROOT=/path/to/deer-flow
+export MARKETIOR_ROOT=/path/to/deer-flow
 
 docker compose -f docker/docker-compose-dev.yaml up --build
 ```
@@ -81,7 +81,7 @@ docker compose -f docker/docker-compose-dev.yaml up --build
 ```bash
 # .env
 OPENAI_API_KEY=sk-...
-DEER_FLOW_ROOT=/absolute/path/to/deer-flow
+MARKETIOR_ROOT=/absolute/path/to/deer-flow
 BETTER_AUTH_SECRET=your-secret-here-min-32-chars
 ```
 
@@ -98,7 +98,7 @@ BETTER_AUTH_SECRET=your-secret-here-min-32-chars
 
 为避免容器重建时数据丢失：
 
-1. 将 `DEER_FLOW_ROOT` 设置为仓库根目录的绝对路径。
+1. 将 `MARKETIOR_ROOT` 设置为仓库根目录的绝对路径。
 2. 验证 `threads/` 和 `skills/` 目录挂载正确。
 
 对于生产环境，使用命名卷或持久化卷声明（PVC）代替主机绑定挂载。
@@ -126,7 +126,7 @@ BETTER_AUTH_SECRET=your-secret-here-min-32-chars
 ```bash
 K8S_NAMESPACE=deer-flow
 SANDBOX_IMAGE=enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-DEER_FLOW_ROOT=/absolute/path/to/deer-flow
+MARKETIOR_ROOT=/absolute/path/to/deer-flow
 ```
 
 #### 配置沙箱提供者

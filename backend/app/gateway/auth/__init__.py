@@ -1,4 +1,4 @@
-"""Authentication module for DeerFlow.
+"""Authentication module for Marketior.
 
 This module provides:
 - JWT-based authentication
