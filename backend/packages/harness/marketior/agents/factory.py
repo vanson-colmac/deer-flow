@@ -201,6 +201,9 @@ def _assemble_from_features(
             chain.append(ThreadDataMiddleware(lazy_init=True))
             chain.append(UploadsMiddleware())
             chain.append(SandboxMiddleware(lazy_init=True))
+            
+            from marketior.tools.builtins import save_artifact_tool
+            extra_tools.append(save_artifact_tool)
 
     # --- [3] DanglingToolCall (always) ---
     chain.append(DanglingToolCallMiddleware())

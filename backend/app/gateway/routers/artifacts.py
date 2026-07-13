@@ -6,9 +6,12 @@ from urllib.parse import quote
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, PlainTextResponse, Response
+from pydantic import BaseModel
 
 from app.gateway.authz import require_permission
 from app.gateway.path_utils import resolve_thread_virtual_path
+from marketior.persistence.engine import get_session_factory
+from marketior.persistence.artifact.repo import ArtifactRepository
 
 logger = logging.getLogger(__name__)
 
@@ -200,3 +203,74 @@ async def get_artifact(thread_id: str, path: str, request: Request, download: bo
         return PlainTextResponse(content=actual_path.read_text(encoding="utf-8"), media_type=mime_type)
 
     return Response(content=actual_path.read_bytes(), media_type=mime_type, headers={"Content-Disposition": _build_content_disposition("inline", actual_path.name)})
+
+
+class ArtifactCreate(BaseModel):
+    name: str
+    type: str
+    description: str = ""
+    content: str = ""
+    commit_message: str = "Initial draft"
+
+
+class ArtifactVersionCreate(BaseModel):
+    content: str
+    commit_message: str = ""
+
+
+@router.post("/projects/{project_id}/artifacts", summary="Create an Artifact")
+async def create_artifact(project_id: str, req: ArtifactCreate):
+    sf = get_session_factory()
+    if not sf:
+        raise HTTPException(status_code=500, detail="Database not configured")
+    repo = ArtifactRepository(sf)
+    try:
+        return await repo.create_artifact(
+            project_id=project_id,
+            name=req.name,
+            type=req.type,
+            description=req.description,
+            content=req.content,
+            commit_message=req.commit_message,
+        )
+    except Exception as e:
+        logger.error(f"Error creating artifact: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/projects/{project_id}/artifacts", summary="List Artifacts for a Project")
+async def list_artifacts(project_id: str):
+    sf = get_session_factory()
+    if not sf:
+        raise HTTPException(status_code=500, detail="Database not configured")
+    repo = ArtifactRepository(sf)
+    return await repo.list_by_project(project_id)
+
+
+@router.get("/artifacts/{artifact_id}", summary="Get Artifact Details")
+async def get_artifact_details(artifact_id: str, include_versions: bool = False):
+    sf = get_session_factory()
+    if not sf:
+        raise HTTPException(status_code=500, detail="Database not configured")
+    repo = ArtifactRepository(sf)
+    artifact = await repo.get_artifact(artifact_id, include_versions=include_versions)
+    if not artifact:
+        raise HTTPException(status_code=404, detail="Artifact not found")
+    return artifact
+
+
+@router.post("/artifacts/{artifact_id}/versions", summary="Create a new Artifact Version")
+async def create_artifact_version(artifact_id: str, req: ArtifactVersionCreate):
+    sf = get_session_factory()
+    if not sf:
+        raise HTTPException(status_code=500, detail="Database not configured")
+    repo = ArtifactRepository(sf)
+    version = await repo.create_version(
+        artifact_id=artifact_id,
+        content=req.content,
+        commit_message=req.commit_message,
+    )
+    if not version:
+        raise HTTPException(status_code=404, detail="Artifact not found")
+    return version
+

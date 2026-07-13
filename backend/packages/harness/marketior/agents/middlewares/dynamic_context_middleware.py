@@ -108,7 +108,7 @@ class DynamicContextMiddleware(AgentMiddleware):
         self._agent_name = agent_name
         self._app_config = app_config
 
-    def _build_full_reminder(self) -> str:
+    def _build_full_reminder(self, project_instructions: str = "") -> str:
         from marketior.agents.lead_agent.prompt import _get_memory_context
 
         # Memory injection is gated by injection_enabled; date is always included.
@@ -120,6 +120,13 @@ class DynamicContextMiddleware(AgentMiddleware):
         if memory_context:
             lines.append(memory_context.strip())
             lines.append("")  # blank line separating memory from date
+        
+        if project_instructions:
+            lines.append("<project_instructions>")
+            lines.append(project_instructions.strip())
+            lines.append("</project_instructions>")
+            lines.append("")
+
         lines.append(f"<current_date>{current_date}</current_date>")
         lines.append("</system-reminder>")
 
@@ -160,7 +167,7 @@ class DynamicContextMiddleware(AgentMiddleware):
         )
         return reminder_msg, user_msg
 
-    def _inject(self, state) -> dict | None:
+    def _inject(self, state, project_instructions: str = "") -> dict | None:
         messages = list(state.get("messages", []))
         if not messages:
             return None
@@ -179,7 +186,7 @@ class DynamicContextMiddleware(AgentMiddleware):
             first_idx = next((i for i, m in enumerate(messages) if _is_user_injection_target(m)), None)
             if first_idx is None:
                 return None
-            full_reminder = self._build_full_reminder()
+            full_reminder = self._build_full_reminder(project_instructions)
             logger.info(
                 "DynamicContextMiddleware: injecting full reminder (len=%d, has_memory=%s) into first HumanMessage id=%r",
                 len(full_reminder),
@@ -208,6 +215,34 @@ class DynamicContextMiddleware(AgentMiddleware):
 
     @override
     async def abefore_agent(self, state, runtime: Runtime) -> dict | None:
+        project_instructions = ""
+        try:
+            context = runtime.context or {}
+            thread_id = context.get("thread_id")
+            if thread_id is None:
+                from langgraph.config import get_config
+                thread_id = get_config().get("configurable", {}).get("thread_id")
+
+            if thread_id:
+                from marketior.persistence.engine import get_session_factory
+                from marketior.persistence.project.repo import ProjectRepository
+                from marketior.persistence.thread_meta.sql import ThreadMetaRepository
+                from marketior.runtime.user_context import resolve_runtime_user_id
+                
+                sf = get_session_factory()
+                if sf:
+                    user_id = resolve_runtime_user_id(runtime)
+                    repo = ThreadMetaRepository(sf)
+                    thread_meta = await repo.get(thread_id, user_id=user_id)
+                    if thread_meta and thread_meta.get("metadata", {}).get("project_id"):
+                        project_id = thread_meta["metadata"]["project_id"]
+                        project_repo = ProjectRepository(sf)
+                        project = await project_repo.get(project_id, user_id=user_id)
+                        if project and project.get("instructions"):
+                            project_instructions = project["instructions"]
+        except Exception:
+            logger.exception("Failed to load project instructions")
+
         # _inject() performs synchronous file I/O (memory JSON loading) and
         # potentially blocking network calls (tiktoken encoding download on
         # first use).  Offload to a thread so the event loop is never blocked
@@ -221,7 +256,7 @@ class DynamicContextMiddleware(AgentMiddleware):
         # hanging.
         try:
             return await asyncio.wait_for(
-                asyncio.to_thread(self._inject, state),
+                asyncio.to_thread(self._inject, state, project_instructions),
                 timeout=_INJECT_TIMEOUT_SECONDS,
             )
         except TimeoutError:

@@ -15,11 +15,13 @@ from app.gateway.routers import (
     artifacts,
     assistants_compat,
     auth,
+    automations,
     channels,
     feedback,
     mcp,
     memory,
     models,
+    projects,
     runs,
     skills,
     suggestions,
@@ -215,6 +217,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         except Exception:
             logger.exception("No IM channels configured or channel service failed to start")
 
+        # Start Marketior Automations Engine (APScheduler)
+        try:
+            from marketior.automations.scheduler import start_scheduler
+            await start_scheduler()
+        except Exception:
+            logger.exception("Failed to start Marketior Automations Engine")
+
         yield
 
         # Stop channel service on shutdown (bounded to prevent worker hang)
@@ -232,6 +241,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             )
         except Exception:
             logger.exception("Failed to stop channel service")
+
+        # Stop Marketior Automations Engine
+        try:
+            from marketior.automations.scheduler import stop_scheduler
+            await stop_scheduler()
+        except Exception:
+            logger.exception("Failed to stop Marketior Automations Engine")
 
     logger.info("Shutting down API Gateway")
 
@@ -354,6 +370,12 @@ This gateway provides runtime endpoints for agent runs plus custom endpoints for
 
     # MCP API is mounted at /api/mcp
     app.include_router(mcp.router)
+
+    # Projects API is mounted at /api/projects
+    app.include_router(projects.router)
+
+    # Automations API is mounted at /api/projects/{project_id}/automations
+    app.include_router(automations.router)
 
     # Memory API is mounted at /api/memory
     app.include_router(memory.router)

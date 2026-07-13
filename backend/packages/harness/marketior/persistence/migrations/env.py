@@ -21,9 +21,11 @@ try:
     import marketior.persistence.models as models  # register ORM models with Base.metadata
 
     _ = models
-except ImportError:
+except ImportError as e:
+    import traceback
     # Models not available — migration will work with existing metadata only.
     logging.getLogger(__name__).warning("Could not import marketior.persistence.models; Alembic may not detect all tables")
+    traceback.print_exc()
 
 config = context.config
 if config.config_file_name is not None:

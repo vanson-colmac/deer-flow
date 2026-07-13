@@ -6,7 +6,7 @@ from marketior.config import get_app_config
 from marketior.config.app_config import AppConfig
 from marketior.reflection import resolve_variable
 from marketior.sandbox.security import is_host_bash_allowed
-from marketior.tools.builtins import ask_clarification_tool, present_file_tool, task_tool, view_image_tool
+from marketior.tools.builtins import ask_clarification_tool, present_file_tool, task_tool, view_image_tool, save_artifact_tool
 from marketior.tools.mcp_metadata import tag_mcp_tool
 from marketior.tools.sync import make_sync_tool_wrapper
 
@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 BUILTIN_TOOLS = [
     present_file_tool,
     ask_clarification_tool,
+    save_artifact_tool,
 ]
 
 SUBAGENT_TOOLS = [

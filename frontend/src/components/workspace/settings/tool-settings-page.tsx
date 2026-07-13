@@ -35,9 +35,9 @@ export function ToolSettingsPage() {
 }
 
 function MCPServerList({
-  servers,
+  servers = {},
 }: {
-  servers: Record<string, MCPServerConfig>;
+  servers?: Record<string, MCPServerConfig>;
 }) {
   const { mutate: enableMCPServer } = useEnableMCPServer();
   return (

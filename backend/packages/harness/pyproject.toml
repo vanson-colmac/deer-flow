@@ -36,6 +36,7 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0,<3.0",
     "aiosqlite>=0.19",
     "alembic>=1.13",
+    "apscheduler>=3.11.2",
 ]
 
 [project.optional-dependencies]

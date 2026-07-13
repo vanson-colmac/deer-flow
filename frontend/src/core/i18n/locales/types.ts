@@ -283,6 +283,7 @@ export interface Translations {
       appearance: string;
       memory: string;
       tools: string;
+      models: string;
       skills: string;
       notification: string;
       about: string;
@@ -375,6 +376,33 @@ export interface Translations {
     tools: {
       title: string;
       description: string;
+    };
+    models: {
+      title: string;
+      description: string;
+      addModel: string;
+      editModel: string;
+      deleteModel: string;
+      deleteConfirm: string;
+      noModels: string;
+      noModelsDescription: string;
+      fieldName: string;
+      fieldNamePlaceholder: string;
+      fieldModel: string;
+      fieldModelPlaceholder: string;
+      fieldDisplayName: string;
+      fieldDisplayNamePlaceholder: string;
+      fieldProvider: string;
+      fieldProviderPlaceholder: string;
+      fieldApiKey: string;
+      fieldApiKeyPlaceholder: string;
+      fieldBaseUrl: string;
+      fieldBaseUrlPlaceholder: string;
+      thinkingSupport: string;
+      reasoningEffortSupport: string;
+      createSuccess: string;
+      updateSuccess: string;
+      deleteSuccess: string;
     };
     skills: {
       title: string;

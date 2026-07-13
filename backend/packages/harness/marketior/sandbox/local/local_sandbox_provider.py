@@ -299,14 +299,34 @@ class LocalSandboxProvider(SandboxProvider):
 
     def release(self, sandbox_id: str) -> None:
         # LocalSandbox has no resources to release; keep the cached instance so
-        # that ``_agent_written_paths`` (used to reverse-resolve agent-authored
-        # file contents on read) survives between turns. LRU eviction in
-        # ``acquire`` and explicit ``reset()`` / ``shutdown()`` are the only
-        # paths that drop cached entries.
-        #
-        # Note: This method is intentionally not called by SandboxMiddleware
-        # to allow sandbox reuse across multiple turns in a thread.
+        # that ``_agent_written_paths`` survives between turns.
         pass
+
+    def destroy(self, sandbox_id: str) -> None:
+        """Forcefully destroy the sandbox environment (Ephemeral mode)."""
+        if sandbox_id == "local":
+            return
+            
+        if isinstance(sandbox_id, str) and sandbox_id.startswith("local:"):
+            thread_id = sandbox_id[len("local:") :]
+            
+            with self._lock:
+                self._thread_sandboxes.pop(thread_id, None)
+                
+            try:
+                import shutil
+                from marketior.config.paths import get_paths
+                from marketior.runtime.user_context import get_effective_user_id
+                
+                paths = get_paths()
+                user_id = get_effective_user_id()
+                
+                user_data_dir = paths.sandbox_user_data_dir(thread_id, user_id=user_id)
+                if user_data_dir.exists():
+                    shutil.rmtree(user_data_dir, ignore_errors=True)
+                    logger.info("Destroyed ephemeral sandbox directory: %s", user_data_dir)
+            except Exception as e:
+                logger.error("Failed to destroy ephemeral sandbox directory: %s", e)
 
     def reset(self) -> None:
         """Drop all cached LocalSandbox instances.

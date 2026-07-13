@@ -1,6 +1,8 @@
 import asyncio
 from abc import ABC, abstractmethod
 
+from contextlib import asynccontextmanager
+
 from marketior.config import get_app_config
 from marketior.reflection import resolve_class
 from marketior.sandbox.sandbox import Sandbox
@@ -43,6 +45,15 @@ class SandboxProvider(ABC):
     @abstractmethod
     def release(self, sandbox_id: str) -> None:
         """Release a sandbox environment.
+
+        Args:
+            sandbox_id: The ID of the sandbox environment to release.
+        """
+        pass
+
+    @abstractmethod
+    def destroy(self, sandbox_id: str) -> None:
+        """Forcefully destroy a sandbox environment.
 
         Args:
             sandbox_id: The ID of the sandbox environment to destroy.
@@ -119,3 +130,17 @@ def set_sandbox_provider(provider: SandboxProvider) -> None:
     """
     global _default_sandbox_provider
     _default_sandbox_provider = provider
+
+
+@asynccontextmanager
+async def ephemeral_sandbox(thread_id: str | None = None):
+    """
+    Acquire an ephemeral sandbox environment and ensure it gets completely
+    destroyed when the block exits.
+    """
+    provider = get_sandbox_provider()
+    sandbox_id = await provider.acquire_async(thread_id)
+    try:
+        yield sandbox_id
+    finally:
+        provider.destroy(sandbox_id)

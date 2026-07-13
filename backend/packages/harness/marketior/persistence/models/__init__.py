@@ -19,5 +19,8 @@ from marketior.persistence.models.run_event import RunEventRow
 from marketior.persistence.run.model import RunRow
 from marketior.persistence.thread_meta.model import ThreadMetaRow
 from marketior.persistence.user.model import UserRow
+from marketior.persistence.project.model import ProjectRow, ProjectFileRow
+from marketior.persistence.artifact.model import ArtifactRow, ArtifactVersionRow
+from marketior.persistence.automation.model import AutomationRow
 
-__all__ = ["FeedbackRow", "RunEventRow", "RunRow", "ThreadMetaRow", "UserRow"]
+__all__ = ["FeedbackRow", "RunEventRow", "RunRow", "ThreadMetaRow", "UserRow", "ProjectRow", "ProjectFileRow", "ArtifactRow", "ArtifactVersionRow", "AutomationRow"]

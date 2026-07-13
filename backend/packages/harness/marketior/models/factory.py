@@ -155,7 +155,18 @@ def create_chat_model(name: str | None = None, thinking_enabled: bool = False, *
         elif has_thinking_settings and effective_wte.get("thinking", {}).get("type"):
             # Native langchain_anthropic: thinking is a direct constructor parameter
             model_settings_from_config["thinking"] = {"type": "disabled"}
-    if not model_config.supports_reasoning_effort:
+    # Check if the model targets the marketior proxy router
+    is_marketior_router = False
+    if hasattr(model_config, "base_url") and model_config.base_url:
+        is_marketior_router = "router.marketior.com" in model_config.base_url
+    if hasattr(model_config, "openai_api_base") and model_config.openai_api_base:
+        is_marketior_router = is_marketior_router or "router.marketior.com" in model_config.openai_api_base
+
+    # Extract reasoning_effort if the model supports it
+    explicit_effort = None
+    if model_config.supports_reasoning_effort:
+        explicit_effort = kwargs.pop("reasoning_effort", None) or model_settings_from_config.pop("reasoning_effort", None)
+    else:
         kwargs.pop("reasoning_effort", None)
         model_settings_from_config.pop("reasoning_effort", None)
 
@@ -169,13 +180,36 @@ def create_chat_model(name: str | None = None, thinking_enabled: bool = False, *
         # The ChatGPT Codex endpoint currently rejects max_tokens/max_output_tokens.
         model_settings_from_config.pop("max_tokens", None)
 
-        # Use explicit reasoning_effort from frontend if provided (low/medium/high)
-        explicit_effort = kwargs.pop("reasoning_effort", None)
         if not thinking_enabled:
             model_settings_from_config["reasoning_effort"] = "none"
         elif explicit_effort and explicit_effort in ("low", "medium", "high", "xhigh"):
             model_settings_from_config["reasoning_effort"] = explicit_effort
         elif "reasoning_effort" not in model_settings_from_config:
+            model_settings_from_config["reasoning_effort"] = "medium"
+    elif model_config.supports_reasoning_effort and is_marketior_router:
+        if not thinking_enabled:
+            effort = "none"
+        else:
+            effort = explicit_effort or "medium"
+            if effort not in ("none", "minimal", "low", "medium", "high", "xhigh"):
+                effort = "medium"
+
+        # Inject "reasoning.effort" into extra_body for the router
+        if "extra_body" not in model_settings_from_config:
+            model_settings_from_config["extra_body"] = {}
+        model_settings_from_config["extra_body"]["reasoning.effort"] = effort
+
+        # Strip any "thinking" configurations to prevent triggering the router's buggy path
+        model_settings_from_config.pop("thinking", None)
+        if "extra_body" in model_settings_from_config:
+            model_settings_from_config["extra_body"].pop("thinking", None)
+    elif model_config.supports_reasoning_effort:
+        # Default behavior: pass reasoning_effort directly to the model constructor
+        if explicit_effort:
+            model_settings_from_config["reasoning_effort"] = explicit_effort
+        elif not thinking_enabled:
+            model_settings_from_config["reasoning_effort"] = "none"
+        else:
             model_settings_from_config["reasoning_effort"] = "medium"
 
     # For MindIE models: enforce conservative retry defaults.
